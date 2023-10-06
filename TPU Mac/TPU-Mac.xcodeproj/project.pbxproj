@@ -14,6 +14,8 @@
 		C45099272ACFFA8100FA9247 /* TPU_MacTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45099262ACFFA8100FA9247 /* TPU_MacTests.swift */; };
 		C45099312ACFFA8100FA9247 /* TPU_MacUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45099302ACFFA8100FA9247 /* TPU_MacUITests.swift */; };
 		C45099332ACFFA8100FA9247 /* TPU_MacUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45099322ACFFA8100FA9247 /* TPU_MacUITestsLaunchTests.swift */; };
+		C48C2E9E2AD0417B0000A362 /* Apollo in Frameworks */ = {isa = PBXBuildFile; productRef = C48C2E9D2AD0417B0000A362 /* Apollo */; };
+		C48C2EA22AD042630000A362 /* login.graphql in Sources */ = {isa = PBXBuildFile; fileRef = C48C2EA12AD042630000A362 /* login.graphql */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,11 +42,12 @@
 		C45099182ACFFA8100FA9247 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C450991A2ACFFA8100FA9247 /* TPU_Mac.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TPU_Mac.entitlements; sourceTree = "<group>"; };
 		C450991C2ACFFA8100FA9247 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		C45099222ACFFA8100FA9247 /* TPU MacTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "TPU MacTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C45099222ACFFA8100FA9247 /* TPU-MacTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "TPU-MacTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C45099262ACFFA8100FA9247 /* TPU_MacTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPU_MacTests.swift; sourceTree = "<group>"; };
-		C450992C2ACFFA8100FA9247 /* TPU MacUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "TPU MacUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C450992C2ACFFA8100FA9247 /* TPU-MacUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "TPU-MacUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C45099302ACFFA8100FA9247 /* TPU_MacUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPU_MacUITests.swift; sourceTree = "<group>"; };
 		C45099322ACFFA8100FA9247 /* TPU_MacUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPU_MacUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		C48C2EA12AD042630000A362 /* login.graphql */ = {isa = PBXFileReference; lastKnownFileType = text; path = login.graphql; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,6 +55,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C48C2E9E2AD0417B0000A362 /* Apollo in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,8 +90,8 @@
 			isa = PBXGroup;
 			children = (
 				C45099112ACFFA7F00FA9247 /* TPU Mac.app */,
-				C45099222ACFFA8100FA9247 /* TPU MacTests.xctest */,
-				C450992C2ACFFA8100FA9247 /* TPU MacUITests.xctest */,
+				C45099222ACFFA8100FA9247 /* TPU-MacTests.xctest */,
+				C450992C2ACFFA8100FA9247 /* TPU-MacUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -100,6 +104,7 @@
 				C45099182ACFFA8100FA9247 /* Assets.xcassets */,
 				C450991A2ACFFA8100FA9247 /* TPU_Mac.entitlements */,
 				C450991B2ACFFA8100FA9247 /* Preview Content */,
+				C48C2EA12AD042630000A362 /* login.graphql */,
 			);
 			path = "TPU Mac";
 			sourceTree = "<group>";
@@ -145,13 +150,16 @@
 			dependencies = (
 			);
 			name = "TPU Mac";
+			packageProductDependencies = (
+				C48C2E9D2AD0417B0000A362 /* Apollo */,
+			);
 			productName = "TPU Mac";
 			productReference = C45099112ACFFA7F00FA9247 /* TPU Mac.app */;
 			productType = "com.apple.product-type.application";
 		};
-		C45099212ACFFA8100FA9247 /* TPU MacTests */ = {
+		C45099212ACFFA8100FA9247 /* TPU-MacTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C45099392ACFFA8100FA9247 /* Build configuration list for PBXNativeTarget "TPU MacTests" */;
+			buildConfigurationList = C45099392ACFFA8100FA9247 /* Build configuration list for PBXNativeTarget "TPU-MacTests" */;
 			buildPhases = (
 				C450991E2ACFFA8100FA9247 /* Sources */,
 				C450991F2ACFFA8100FA9247 /* Frameworks */,
@@ -162,14 +170,14 @@
 			dependencies = (
 				C45099242ACFFA8100FA9247 /* PBXTargetDependency */,
 			);
-			name = "TPU MacTests";
+			name = "TPU-MacTests";
 			productName = "TPU MacTests";
-			productReference = C45099222ACFFA8100FA9247 /* TPU MacTests.xctest */;
+			productReference = C45099222ACFFA8100FA9247 /* TPU-MacTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		C450992B2ACFFA8100FA9247 /* TPU MacUITests */ = {
+		C450992B2ACFFA8100FA9247 /* TPU-MacUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C450993C2ACFFA8100FA9247 /* Build configuration list for PBXNativeTarget "TPU MacUITests" */;
+			buildConfigurationList = C450993C2ACFFA8100FA9247 /* Build configuration list for PBXNativeTarget "TPU-MacUITests" */;
 			buildPhases = (
 				C45099282ACFFA8100FA9247 /* Sources */,
 				C45099292ACFFA8100FA9247 /* Frameworks */,
@@ -180,9 +188,9 @@
 			dependencies = (
 				C450992E2ACFFA8100FA9247 /* PBXTargetDependency */,
 			);
-			name = "TPU MacUITests";
+			name = "TPU-MacUITests";
 			productName = "TPU MacUITests";
-			productReference = C450992C2ACFFA8100FA9247 /* TPU MacUITests.xctest */;
+			productReference = C450992C2ACFFA8100FA9247 /* TPU-MacUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -208,7 +216,7 @@
 					};
 				};
 			};
-			buildConfigurationList = C450990C2ACFFA7F00FA9247 /* Build configuration list for PBXProject "TPU Mac" */;
+			buildConfigurationList = C450990C2ACFFA7F00FA9247 /* Build configuration list for PBXProject "TPU-Mac" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -217,13 +225,16 @@
 				Base,
 			);
 			mainGroup = C45099082ACFFA7F00FA9247;
+			packageReferences = (
+				C48C2E9C2AD0417B0000A362 /* XCRemoteSwiftPackageReference "apollo-ios" */,
+			);
 			productRefGroup = C45099122ACFFA7F00FA9247 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				C45099102ACFFA7F00FA9247 /* TPU Mac */,
-				C45099212ACFFA8100FA9247 /* TPU MacTests */,
-				C450992B2ACFFA8100FA9247 /* TPU MacUITests */,
+				C45099212ACFFA8100FA9247 /* TPU-MacTests */,
+				C450992B2ACFFA8100FA9247 /* TPU-MacUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -260,6 +271,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C45099172ACFFA7F00FA9247 /* ContentView.swift in Sources */,
+				C48C2EA22AD042630000A362 /* login.graphql in Sources */,
 				C45099152ACFFA7F00FA9247 /* TPU_MacApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -506,7 +518,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TPU Mac.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TPU Mac";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TPU-Mac.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TPU-Mac";
 			};
 			name = Debug;
 		};
@@ -529,7 +541,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TPU Mac.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TPU Mac";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TPU-Mac.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TPU-Mac";
 			};
 			name = Release;
 		};
@@ -580,7 +592,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		C450990C2ACFFA7F00FA9247 /* Build configuration list for PBXProject "TPU Mac" */ = {
+		C450990C2ACFFA7F00FA9247 /* Build configuration list for PBXProject "TPU-Mac" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C45099342ACFFA8100FA9247 /* Debug */,
@@ -598,7 +610,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C45099392ACFFA8100FA9247 /* Build configuration list for PBXNativeTarget "TPU MacTests" */ = {
+		C45099392ACFFA8100FA9247 /* Build configuration list for PBXNativeTarget "TPU-MacTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C450993A2ACFFA8100FA9247 /* Debug */,
@@ -607,7 +619,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C450993C2ACFFA8100FA9247 /* Build configuration list for PBXNativeTarget "TPU MacUITests" */ = {
+		C450993C2ACFFA8100FA9247 /* Build configuration list for PBXNativeTarget "TPU-MacUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C450993D2ACFFA8100FA9247 /* Debug */,
@@ -617,6 +629,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		C48C2E9C2AD0417B0000A362 /* XCRemoteSwiftPackageReference "apollo-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apollographql/apollo-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.5.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		C48C2E9D2AD0417B0000A362 /* Apollo */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C48C2E9C2AD0417B0000A362 /* XCRemoteSwiftPackageReference "apollo-ios" */;
+			productName = Apollo;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = C45099092ACFFA7F00FA9247 /* Project object */;
 }

@@ -6,8 +6,16 @@
 //
 
 import SwiftUI
+import Apollo
+
+let apolloClient = ApolloClient(url: URL(string: "https://privateuploader.com/graphql")!)
+
+let password = "password"
+let username = "username"
+let totp = 123456
 
 struct TwoColumnSplitView: View {
+    @AppStorage("tapCount") private var tapCount = 0
     
     var body: some View {
         NavigationSplitView {
@@ -33,6 +41,9 @@ struct TwoColumnSplitView: View {
                 .imageScale(.large)
                 .foregroundStyle(.tint)
             Text("TPU Mac")
+            Button("Tap count: \(tapCount)") {
+                        tapCount += 1
+                    }
             
         }
     }
