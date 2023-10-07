@@ -7,12 +7,11 @@
 
 import SwiftUI
 import Apollo
-
-let apolloClient = ApolloClient(url: URL(string: "https://privateuploader.com/graphql")!)
+import PrivateUploaderAPI
 
 let password = "password"
 let username = "username"
-let totp = 123456
+let totp = "123456"
 
 struct TwoColumnSplitView: View {
     @AppStorage("tapCount") private var tapCount = 0
@@ -50,9 +49,20 @@ struct TwoColumnSplitView: View {
 }
 
 struct HomeView: View {
+    @AppStorage("tapCount") private var tapCount = 0
     var body: some View {
         Text("Home")
             .navigationTitle("Home")
+        Button("Test") {
+            Network.shared.apollo.perform(mutation: LoginMutation(input: LoginInput(username: username, password: password, totp: nil))) { result in
+                switch result {
+                case .success(let graphQLResult):
+                    print("Success! Result: \(graphQLResult)")
+                case .failure(let error):
+                    print("Failure! Error: \(error)")
+                }
+            }
+        }
     }
 }
 
