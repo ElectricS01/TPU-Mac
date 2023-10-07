@@ -79,7 +79,7 @@
 		C45099082ACFFA7F00FA9247 = {
 			isa = PBXGroup;
 			children = (
-				C45099132ACFFA7F00FA9247 /* TPU Mac */,
+				C45099132ACFFA7F00FA9247 /* TPU-Mac */,
 				C45099252ACFFA8100FA9247 /* TPU MacTests */,
 				C450992F2ACFFA8100FA9247 /* TPU MacUITests */,
 				C45099122ACFFA7F00FA9247 /* Products */,
@@ -96,7 +96,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		C45099132ACFFA7F00FA9247 /* TPU Mac */ = {
+		C45099132ACFFA7F00FA9247 /* TPU-Mac */ = {
 			isa = PBXGroup;
 			children = (
 				C45099142ACFFA7F00FA9247 /* TPU_MacApp.swift */,
@@ -106,7 +106,7 @@
 				C450991B2ACFFA8100FA9247 /* Preview Content */,
 				C48C2EA12AD042630000A362 /* login.graphql */,
 			);
-			path = "TPU Mac";
+			path = "TPU-Mac";
 			sourceTree = "<group>";
 		};
 		C450991B2ACFFA8100FA9247 /* Preview Content */ = {
@@ -428,10 +428,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "TPU Mac/TPU_Mac.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "TPU-Mac/TPU_Mac.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"TPU Mac/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"TPU-Mac/Preview Content\"";
 				DEVELOPMENT_TEAM = 9R84L57UN4;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -466,10 +466,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "TPU Mac/TPU_Mac.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "TPU-Mac/TPU_Mac.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"TPU Mac/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"TPU-Mac/Preview Content\"";
 				DEVELOPMENT_TEAM = 9R84L57UN4;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
