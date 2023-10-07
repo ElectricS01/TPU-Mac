@@ -1,20 +1,5 @@
 {
-  "schemaNamespace" : "TPU-Mac",
-  "schemaDownload": {
-    "downloadMethod": {
-        "introspection": {
-            "endpointURL": "https://privateuploader.com/graphql",
-            "httpMethod": {
-                "POST": {}
-            },
-            "includeDeprecatedInputValues": false,
-            "outputFormat": "SDL"
-        }
-    },
-    "downloadTimeout": 60,
-    "headers": [],
-    "outputPath": "./graphql/"
-  },
+  "schemaNamespace" : "PrivateUploaderAPI",
   "input" : {
     "operationSearchPaths" : [
       "**/*.graphql"
@@ -29,10 +14,9 @@
       }
     },
     "schemaTypes" : {
-      "path" : "./TPU-Mac",
+      "path" : "./PrivateUploaderAPI",
       "moduleType" : {
-        "embeddedInTarget" : {
-          "name" : "TPU-Mac"
+        "swiftPackageManager" : {
         }
       }
     },
@@ -40,5 +24,20 @@
       "inSchemaModule" : {
       }
     }
+  },
+  "schemaDownloadConfiguration": {
+      "downloadMethod": {
+          "introspection": {
+              "endpointURL": "https://privateuploader.com/graphql",
+              "httpMethod": {
+                  "POST": {}
+              },
+              "includeDeprecatedInputValues": false,
+              "outputFormat": "SDL"
+          }
+      },
+      "downloadTimeout": 60,
+      "headers": [],
+      "outputPath": "./graphql/schema.graphqls"
   }
 }

@@ -3,9 +3,9 @@
 
 import ApolloAPI
 
-extension TPU-Mac.Objects {
-  static let Mutation = Object(
-    typename: "Mutation",
+public extension Objects {
+  static let LoginUser = Object(
+    typename: "LoginUser",
     implementedInterfaces: []
   )
 }
