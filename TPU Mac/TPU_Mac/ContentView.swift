@@ -9,12 +9,21 @@ import SwiftUI
 import Apollo
 import PrivateUploaderAPI
 
-let password = "password"
-let username = "username"
-let totp = "123456"
+func login(username:String,password:String,totp:String, completion: @escaping (Result<String, Error>) -> Void) {
+    Network.shared.apollo.perform(mutation: LoginMutation(input: LoginInput(username: username, password: password, totp: "123456"))) { result in
+        switch result {
+        case .success(let graphQLResult):
+            completion(.success(graphQLResult.errors?[0].message ?? "Success"))
+        case .failure(let error):
+            print("Failure! Error: \(error)")
+            completion(.failure(error))
+        }
+    }
+}
 
 struct TwoColumnSplitView: View {
     @AppStorage("tapCount") private var tapCount = 0
+    @State private var showingSheet = false
     
     var body: some View {
         NavigationSplitView {
@@ -41,10 +50,80 @@ struct TwoColumnSplitView: View {
                 .foregroundStyle(.tint)
             Text("TPU Mac")
             Button("Tap count: \(tapCount)") {
-                        tapCount += 1
-                    }
+                tapCount += 1
+            }
+            Button("Login") {
+                showingSheet.toggle()
+            }
+            .sheet(isPresented: $showingSheet) {
+                SheetView()
+            }
             
         }
+    }
+}
+
+struct SheetView: View {
+    @Environment(\.dismiss) var dismiss
+    @State private var username: String = ""
+    @State private var password: String = ""
+    @State private var totp: String = ""
+    @State private var errorMessage = ""
+    
+    func login () {
+        TPU_Mac.login(username: username, password: password, totp: totp) { result in
+            switch result {
+            case .success(let message):
+                print(message)
+                errorMessage = message
+            case .failure(let error):
+                errorMessage = error.localizedDescription
+            }}
+    }
+    
+    var body: some View {
+        VStack{
+            Text("Login")
+                .font(.title)
+            TextField(
+                "Username",
+                text: $username
+            )
+            .onSubmit {
+                login()
+            }
+            .frame(width: 200)
+            .textFieldStyle(RoundedBorderTextFieldStyle())
+            .fixedSize(horizontal: true, vertical: false)
+            SecureField (
+                "Password",
+                text: $password
+            )
+            .onSubmit {
+                login()
+            }
+            .frame(width: 200)
+            .textFieldStyle(RoundedBorderTextFieldStyle())
+            .fixedSize(horizontal: true, vertical: false)
+            TextField(
+                "2FA code",
+                text: $totp
+            )
+            .onSubmit {
+                login()
+            }
+            .frame(width: 200)
+            .textFieldStyle(RoundedBorderTextFieldStyle())
+            .fixedSize(horizontal: true, vertical: false)
+            Button("Login") {
+                login()
+            }
+            Text(errorMessage)
+                .foregroundColor(.red)
+                .multilineTextAlignment(.center)
+                .lineLimit(4)
+                .fixedSize(horizontal: false, vertical: true)
+        }.padding()
     }
 }
 
@@ -54,12 +133,12 @@ struct HomeView: View {
         Text("Home")
             .navigationTitle("Home")
         Button("Test") {
-            Network.shared.apollo.perform(mutation: LoginMutation(input: LoginInput(username: username, password: password, totp: nil))) { result in
+            login(username: "a", password: "a", totp: "a") { result in
                 switch result {
-                case .success(let graphQLResult):
-                    print("Success! Result: \(graphQLResult)")
+                case .success(let message):
+                    print("Login succeeded: \(message)")
                 case .failure(let error):
-                    print("Failure! Error: \(error)")
+                    print("Login failed: \(error)")
                 }
             }
         }
