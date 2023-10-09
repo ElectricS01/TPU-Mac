@@ -17,9 +17,11 @@
 		C4569DEA2AD170CF00F17C06 /* ApolloCodegenLib in Frameworks */ = {isa = PBXBuildFile; productRef = C4569DE92AD170CF00F17C06 /* ApolloCodegenLib */; };
 		C4569DEC2AD1787E00F17C06 /* graphql in Resources */ = {isa = PBXBuildFile; fileRef = C4569DEB2AD1787E00F17C06 /* graphql */; };
 		C4569DF12AD17A2A00F17C06 /* PrivateUploaderAPI in Frameworks */ = {isa = PBXBuildFile; productRef = C4569DF02AD17A2A00F17C06 /* PrivateUploaderAPI */; };
-		C4569DF52AD17CEC00F17C06 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4569DF42AD17CEC00F17C06 /* LoginViewModel.swift */; };
 		C4569DF72AD1828300F17C06 /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4569DF62AD1828300F17C06 /* Network.swift */; };
 		C48C2E9E2AD0417B0000A362 /* Apollo in Frameworks */ = {isa = PBXBuildFile; productRef = C48C2E9D2AD0417B0000A362 /* Apollo */; };
+		C4FE71542AD3F085003E4DC0 /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C4FE71532AD3F085003E4DC0 /* KeychainSwift */; };
+		C4FE71562AD3F41B003E4DC0 /* AuthorisationInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4FE71552AD3F41B003E4DC0 /* AuthorisationInterceptor.swift */; };
+		C4FE71582AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4FE71572AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,8 +54,9 @@
 		C45099302ACFFA8100FA9247 /* TPU_MacUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPU_MacUITests.swift; sourceTree = "<group>"; };
 		C45099322ACFFA8100FA9247 /* TPU_MacUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPU_MacUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		C4569DEB2AD1787E00F17C06 /* graphql */ = {isa = PBXFileReference; lastKnownFileType = folder; path = graphql; sourceTree = "<group>"; };
-		C4569DF42AD17CEC00F17C06 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		C4569DF62AD1828300F17C06 /* Network.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
+		C4FE71552AD3F41B003E4DC0 /* AuthorisationInterceptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorisationInterceptor.swift; sourceTree = "<group>"; };
+		C4FE71572AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkInterceptorProvider.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +66,7 @@
 			files = (
 				C4569DF12AD17A2A00F17C06 /* PrivateUploaderAPI in Frameworks */,
 				C48C2E9E2AD0417B0000A362 /* Apollo in Frameworks */,
+				C4FE71542AD3F085003E4DC0 /* KeychainSwift in Frameworks */,
 				C4569DEA2AD170CF00F17C06 /* ApolloCodegenLib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -110,12 +114,13 @@
 			isa = PBXGroup;
 			children = (
 				C4569DF62AD1828300F17C06 /* Network.swift */,
+				C4FE71552AD3F41B003E4DC0 /* AuthorisationInterceptor.swift */,
 				C45099142ACFFA7F00FA9247 /* TPU_MacApp.swift */,
 				C45099162ACFFA7F00FA9247 /* ContentView.swift */,
 				C45099182ACFFA8100FA9247 /* Assets.xcassets */,
 				C450991A2ACFFA8100FA9247 /* TPU_Mac.entitlements */,
 				C450991B2ACFFA8100FA9247 /* Preview Content */,
-				C4569DF42AD17CEC00F17C06 /* LoginViewModel.swift */,
+				C4FE71572AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift */,
 			);
 			path = TPU_Mac;
 			sourceTree = "<group>";
@@ -172,6 +177,7 @@
 				C48C2E9D2AD0417B0000A362 /* Apollo */,
 				C4569DE92AD170CF00F17C06 /* ApolloCodegenLib */,
 				C4569DF02AD17A2A00F17C06 /* PrivateUploaderAPI */,
+				C4FE71532AD3F085003E4DC0 /* KeychainSwift */,
 			);
 			productName = "TPU Mac";
 			productReference = C45099112ACFFA7F00FA9247 /* TPU Mac.app */;
@@ -248,6 +254,7 @@
 			packageReferences = (
 				C48C2E9C2AD0417B0000A362 /* XCRemoteSwiftPackageReference "apollo-ios" */,
 				C4569DEF2AD17A2A00F17C06 /* XCLocalSwiftPackageReference "PrivateUploaderAPI" */,
+				C4FE71522AD3F084003E4DC0 /* XCRemoteSwiftPackageReference "keychain-swift" */,
 			);
 			productRefGroup = C45099122ACFFA7F00FA9247 /* Products */;
 			projectDirPath = "";
@@ -293,8 +300,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				C4569DF72AD1828300F17C06 /* Network.swift in Sources */,
-				C4569DF52AD17CEC00F17C06 /* LoginViewModel.swift in Sources */,
 				C45099172ACFFA7F00FA9247 /* ContentView.swift in Sources */,
+				C4FE71582AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift in Sources */,
+				C4FE71562AD3F41B003E4DC0 /* AuthorisationInterceptor.swift in Sources */,
 				C45099152ACFFA7F00FA9247 /* TPU_MacApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -669,6 +677,14 @@
 				minimumVersion = 1.5.2;
 			};
 		};
+		C4FE71522AD3F084003E4DC0 /* XCRemoteSwiftPackageReference "keychain-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/evgenyneu/keychain-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 20.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -685,6 +701,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C48C2E9C2AD0417B0000A362 /* XCRemoteSwiftPackageReference "apollo-ios" */;
 			productName = Apollo;
+		};
+		C4FE71532AD3F085003E4DC0 /* KeychainSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C4FE71522AD3F084003E4DC0 /* XCRemoteSwiftPackageReference "keychain-swift" */;
+			productName = KeychainSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

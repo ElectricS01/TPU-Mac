@@ -25,6 +25,15 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "Mutation": return PrivateUploaderAPI.Objects.Mutation
     case "LoginResponse": return PrivateUploaderAPI.Objects.LoginResponse
     case "LoginUser": return PrivateUploaderAPI.Objects.LoginUser
+    case "Query": return PrivateUploaderAPI.Objects.Query
+    case "PaginatedUploadResponse": return PrivateUploaderAPI.Objects.PaginatedUploadResponse
+    case "Pager": return PrivateUploaderAPI.Objects.Pager
+    case "Upload": return PrivateUploaderAPI.Objects.Upload
+    case "AutoCollectApproval": return PrivateUploaderAPI.Objects.AutoCollectApproval
+    case "PartialUserBase": return PrivateUploaderAPI.Objects.PartialUserBase
+    case "Collection": return PrivateUploaderAPI.Objects.Collection
+    case "CollectionItem": return PrivateUploaderAPI.Objects.CollectionItem
+    case "Star": return PrivateUploaderAPI.Objects.Star
     default: return nil
     }
   }

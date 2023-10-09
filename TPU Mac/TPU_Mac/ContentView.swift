@@ -8,11 +8,28 @@
 import SwiftUI
 import Apollo
 import PrivateUploaderAPI
+import KeychainSwift
+
+let keychain = KeychainSwift()
 
 func login(username:String,password:String,totp:String, completion: @escaping (Result<String, Error>) -> Void) {
     Network.shared.apollo.perform(mutation: LoginMutation(input: LoginInput(username: username, password: password, totp: "123456"))) { result in
         switch result {
         case .success(let graphQLResult):
+            completion(.success(graphQLResult.errors?[0].message ?? "Success"))
+            keychain.set(graphQLResult.data?.login.token ?? "", forKey: "token")
+        case .failure(let error):
+            print("Failure! Error: \(error)")
+            completion(.failure(error))
+        }
+    }
+}
+
+func gallery(completion: @escaping (Result<String, Error>) -> Void) {
+    Network.shared.apollo.fetch(query: GalleryQuery(input: GalleryInput(InputDict()))) { result in
+        switch result {
+        case .success(let graphQLResult):
+            print(graphQLResult)
             completion(.success(graphQLResult.errors?[0].message ?? "Success"))
         case .failure(let error):
             print("Failure! Error: \(error)")
@@ -23,6 +40,7 @@ func login(username:String,password:String,totp:String, completion: @escaping (R
 
 struct TwoColumnSplitView: View {
     @AppStorage("tapCount") private var tapCount = 0
+    @AppStorage("token") var token = ""
     @State private var showingSheet = false
     
     var body: some View {
@@ -45,25 +63,18 @@ struct TwoColumnSplitView: View {
                 }
             }
         } detail: {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("TPU Mac")
-            Button("Tap count: \(tapCount)") {
-                tapCount += 1
-            }
-            Button("Login") {
-                showingSheet.toggle()
-            }
-            .sheet(isPresented: $showingSheet) {
-                SheetView()
-            }
-            
+            HomeView()
+                .sheet(isPresented: $showingSheet) {
+                    LoginSheet()
+                }
+        }
+        .onAppear {
+            showingSheet = keychain.get("token") == ""
         }
     }
 }
 
-struct SheetView: View {
+struct LoginSheet: View {
     @Environment(\.dismiss) var dismiss
     @State private var username: String = ""
     @State private var password: String = ""
@@ -74,8 +85,10 @@ struct SheetView: View {
         TPU_Mac.login(username: username, password: password, totp: totp) { result in
             switch result {
             case .success(let message):
-                print(message)
                 errorMessage = message
+                if errorMessage == "Success"{
+                    dismiss()
+                }
             case .failure(let error):
                 errorMessage = error.localizedDescription
             }}
@@ -130,15 +143,18 @@ struct SheetView: View {
 struct HomeView: View {
     @AppStorage("tapCount") private var tapCount = 0
     var body: some View {
-        Text("Home")
+        Text("Welcome to TPU Mac")
             .navigationTitle("Home")
-        Button("Test") {
-            login(username: "a", password: "a", totp: "a") { result in
+        Button("Tap count: \(tapCount)") {
+            tapCount += 1
+        }
+        Button("Req") {
+            gallery() { result in
                 switch result {
                 case .success(let message):
-                    print("Login succeeded: \(message)")
+                    print(message)
                 case .failure(let error):
-                    print("Login failed: \(error)")
+                    print(error.localizedDescription)
                 }
             }
         }
