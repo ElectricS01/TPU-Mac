@@ -7,13 +7,13 @@
 
 import Foundation
 import Apollo
-import ApolloAPI
 import KeychainSwift
+import ApolloAPI
 
-class AuthorisationInterceptor: ApolloInterceptor {
-    var id: String = ""
-    
-    
+class AuthorizationInterceptor: ApolloInterceptor {
+    // Any custom interceptors you use are required to be able to identify themselves through an id property.
+    public var id: String = UUID().uuidString
+
     func interceptAsync<Operation>(
         chain: RequestChain,
         request: HTTPRequest<Operation>,
@@ -26,8 +26,8 @@ class AuthorisationInterceptor: ApolloInterceptor {
         }
 
         chain.proceedAsync(request: request,
-                            response: response,
-                            completion: completion)
+                           response: response,
+                           interceptor: self,
+                           completion: completion)
     }
-    
 }

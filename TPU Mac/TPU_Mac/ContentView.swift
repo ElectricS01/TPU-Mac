@@ -25,15 +25,14 @@ func login(username:String,password:String,totp:String, completion: @escaping (R
     }
 }
 
-func gallery(completion: @escaping (Result<String, Error>) -> Void) {
-    Network.shared.apollo.fetch(query: GalleryQuery(input: GalleryInput(InputDict()))) { result in
+func gallery(completion: @escaping (Result<GraphQLResult<GalleryItemsQuery.Data>, Error>) -> Void) {
+    Network.shared.apollo.fetch(query: GalleryItemsQuery(input: GalleryInput(InputDict()))) { result in
         switch result {
         case .success(let graphQLResult):
-            print(graphQLResult)
-            completion(.success(graphQLResult.errors?[0].message ?? "Success"))
+            print(graphQLResult.data?.gallery)
         case .failure(let error):
             print("Failure! Error: \(error)")
-            completion(.failure(error))
+            completion(result)
         }
     }
 }
@@ -152,7 +151,9 @@ struct HomeView: View {
             gallery() { result in
                 switch result {
                 case .success(let message):
-                    print(message)
+                    print(message.data?.gallery.items.count ?? message)
+                    print("eee")
+                    print(message.errors?[0].message ?? message)
                 case .failure(let error):
                     print(error.localizedDescription)
                 }
@@ -169,9 +170,25 @@ struct SettingsView: View {
 }
 
 struct GalleryView: View {
+    @State private var galleryItems = {}
     var body: some View {
+//        ForEach(())
         Text("Gallery")
             .navigationTitle("Gallery")
+            .onAppear {
+                gallery { result in
+                    switch result {
+                    case .success(let graphQLResult):
+                        if let data = graphQLResult.data {
+                            print(graphQLResult.data?.gallery.items)
+//                            galleryItems = graphQLResult.data?.gallery.items
+                        }
+                    case .failure(let error):
+                        print(error)
+                    }
+                }
+
+            }
     }
 }
 
