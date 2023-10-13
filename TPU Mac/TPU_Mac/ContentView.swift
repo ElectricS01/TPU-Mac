@@ -28,8 +28,20 @@ func login(username:String,password:String,totp:String, completion: @escaping (R
 func gallery(completion: @escaping (Result<GraphQLResult<GalleryItemsQuery.Data>, Error>) -> Void) {
     Network.shared.apollo.fetch(query: GalleryItemsQuery(input: GalleryInput(InputDict()))) { result in
         switch result {
-        case .success(let graphQLResult):
-            print(graphQLResult.data?.gallery)
+        case .success:
+            completion(result)
+        case .failure(let error):
+            print("Failure! Error: \(error)")
+            completion(result)
+        }
+    }
+}
+
+func chats(completion: @escaping (Result<GraphQLResult<ChatsQuery.Data>, Error>) -> Void) {
+    Network.shared.apollo.fetch(query: ChatsQuery()) { result in
+        switch result {
+        case .success:
+            completion(result)
         case .failure(let error):
             print("Failure! Error: \(error)")
             completion(result)
@@ -170,18 +182,54 @@ struct SettingsView: View {
 }
 
 struct GalleryView: View {
-    @State private var galleryItems = {}
+    @State private var galleryItems: [GalleryItemsQuery.Data.Gallery.Item] = []
     var body: some View {
-//        ForEach(())
+        ForEach(0..<galleryItems.count, id: \.self) { result in
+//            Button(action: {print(galleryItems[result].id)}) {
+//                Text(galleryItems[result].name ?? "Image")
+//            }
+            AsyncImage(
+                url: URL(string: "https://i.electrics01.com/i/" + galleryItems[result].attachment)
+            ).frame(width: 44, height: 44)
+        }
         Text("Gallery")
             .navigationTitle("Gallery")
             .onAppear {
                 gallery { result in
                     switch result {
                     case .success(let graphQLResult):
-                        if let data = graphQLResult.data {
-                            print(graphQLResult.data?.gallery.items)
-//                            galleryItems = graphQLResult.data?.gallery.items
+                        if let unwrapped = graphQLResult.data {
+                            galleryItems = unwrapped.gallery.items
+                        }
+                    case .failure(let error):
+                        print(error)
+                    }
+                }
+                
+            }
+        
+    }
+}
+
+struct CommsView: View {
+    @State private var chatsList: [ChatsQuery.Data.Chat] = []
+    var body: some View {
+        List {
+            ForEach(0..<chatsList.count, id: \.self) { result in
+                Button(chatsList[result].recipient?.username ?? chatsList[result].name) {
+                    print(chatsList[result].id)
+                }
+                
+            }
+        }
+        Text("Comms")
+            .navigationTitle("Comms")
+            .onAppear {
+                chats { result in
+                    switch result {
+                    case .success(let graphQLResult):
+                        if let unwrapped = graphQLResult.data {
+                            chatsList = unwrapped.chats
                         }
                     case .failure(let error):
                         print(error)
@@ -189,13 +237,6 @@ struct GalleryView: View {
                 }
 
             }
-    }
-}
-
-struct CommsView: View {
-    var body: some View {
-        Text("Comms")
-            .navigationTitle("Comms")
     }
 }
 
@@ -215,3 +256,4 @@ struct ContentView: View {
 #Preview {
     ContentView()
 }
+
