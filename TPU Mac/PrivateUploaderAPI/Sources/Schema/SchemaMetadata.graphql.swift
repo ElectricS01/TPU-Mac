@@ -31,6 +31,11 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "Chat": return PrivateUploaderAPI.Objects.Chat
     case "ChatAssociation": return PrivateUploaderAPI.Objects.ChatAssociation
     case "PartialUserBase": return PrivateUploaderAPI.Objects.PartialUserBase
+    case "Message": return PrivateUploaderAPI.Objects.Message
+    case "ChatEmoji": return PrivateUploaderAPI.Objects.ChatEmoji
+    case "Embed": return PrivateUploaderAPI.Objects.Embed
+    case "PaginatedMessageResponse": return PrivateUploaderAPI.Objects.PaginatedMessageResponse
+    case "Pager": return PrivateUploaderAPI.Objects.Pager
     default: return nil
     }
   }

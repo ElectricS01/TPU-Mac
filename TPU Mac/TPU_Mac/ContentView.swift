@@ -49,6 +49,18 @@ func chats(completion: @escaping (Result<GraphQLResult<ChatsQuery.Data>, Error>)
     }
 }
 
+func messages(chat: Int, completion: @escaping (Result<GraphQLResult<MessagesQuery.Data>, Error>) -> Void) {
+    Network.shared.apollo.fetch(query: MessagesQuery(input: InfiniteMessagesInput(associationId: chat, limit: 50))) { result in
+        switch result {
+        case .success:
+            completion(result)
+        case .failure(let error):
+            print("Failure! Error: \(error)")
+            completion(result)
+        }
+    }
+}
+
 struct TwoColumnSplitView: View {
     @AppStorage("tapCount") private var tapCount = 0
     @AppStorage("token") var token = ""
@@ -184,13 +196,23 @@ struct SettingsView: View {
 struct GalleryView: View {
     @State private var galleryItems: [GalleryItemsQuery.Data.Gallery.Item] = []
     var body: some View {
-        ForEach(0..<galleryItems.count, id: \.self) { result in
-//            Button(action: {print(galleryItems[result].id)}) {
-//                Text(galleryItems[result].name ?? "Image")
-//            }
-            AsyncImage(
-                url: URL(string: "https://i.electrics01.com/i/" + galleryItems[result].attachment)
-            ).frame(width: 44, height: 44)
+        ScrollView {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 216))], spacing: 20) {
+                ForEach(0..<galleryItems.count, id: \.self) { result in
+                    //            Button(action: {print(galleryItems[result].id)}) {
+                    //                Text(galleryItems[result].name ?? "Image")
+                    //            }
+                    AsyncImage(
+                        url: URL(string: "https://i.electrics01.com/i/" + galleryItems[result].attachment)
+                    ) { image in
+                        image.resizable()
+                    } placeholder: {
+                        ProgressView()
+                    }
+                    .frame(width: 200, height: 200)
+                    .cornerRadius(8)
+                }
+            }
         }
         Text("Gallery")
             .navigationTitle("Gallery")
@@ -214,29 +236,31 @@ struct GalleryView: View {
 struct CommsView: View {
     @State private var chatsList: [ChatsQuery.Data.Chat] = []
     var body: some View {
-        List {
-            ForEach(0..<chatsList.count, id: \.self) { result in
-                Button(chatsList[result].recipient?.username ?? chatsList[result].name) {
-                    print(chatsList[result].id)
+        NavigationSplitView {
+            List {
+                ForEach(0..<chatsList.count, id: \.self) { result in
+                    Button(chatsList[result].recipient?.username ?? chatsList[result].name) {
+                        print(chatsList[result].id)
+                    }
+                    
                 }
-                
+            }
+        } detail: {
+            Text("Comms")
+                .navigationTitle("Comms")
+        }
+        .onAppear {
+            chats { result in
+                switch result {
+                case .success(let graphQLResult):
+                    if let unwrapped = graphQLResult.data {
+                        chatsList = unwrapped.chats
+                    }
+                case .failure(let error):
+                    print(error)
+                }
             }
         }
-        Text("Comms")
-            .navigationTitle("Comms")
-            .onAppear {
-                chats { result in
-                    switch result {
-                    case .success(let graphQLResult):
-                        if let unwrapped = graphQLResult.data {
-                            chatsList = unwrapped.chats
-                        }
-                    case .failure(let error):
-                        print(error)
-                    }
-                }
-
-            }
     }
 }
 
