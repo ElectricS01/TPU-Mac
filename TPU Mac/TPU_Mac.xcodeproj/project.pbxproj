@@ -14,7 +14,6 @@
 		C45099272ACFFA8100FA9247 /* TPU_MacTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45099262ACFFA8100FA9247 /* TPU_MacTests.swift */; };
 		C45099312ACFFA8100FA9247 /* TPU_MacUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45099302ACFFA8100FA9247 /* TPU_MacUITests.swift */; };
 		C45099332ACFFA8100FA9247 /* TPU_MacUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45099322ACFFA8100FA9247 /* TPU_MacUITestsLaunchTests.swift */; };
-		C4569DEA2AD170CF00F17C06 /* ApolloCodegenLib in Frameworks */ = {isa = PBXBuildFile; productRef = C4569DE92AD170CF00F17C06 /* ApolloCodegenLib */; };
 		C4569DEC2AD1787E00F17C06 /* graphql in Resources */ = {isa = PBXBuildFile; fileRef = C4569DEB2AD1787E00F17C06 /* graphql */; };
 		C4569DF12AD17A2A00F17C06 /* PrivateUploaderAPI in Frameworks */ = {isa = PBXBuildFile; productRef = C4569DF02AD17A2A00F17C06 /* PrivateUploaderAPI */; };
 		C4569DF72AD1828300F17C06 /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4569DF62AD1828300F17C06 /* Network.swift */; };
@@ -67,7 +66,6 @@
 				C4569DF12AD17A2A00F17C06 /* PrivateUploaderAPI in Frameworks */,
 				C48C2E9E2AD0417B0000A362 /* Apollo in Frameworks */,
 				C4FE71542AD3F085003E4DC0 /* KeychainSwift in Frameworks */,
-				C4569DEA2AD170CF00F17C06 /* ApolloCodegenLib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -175,7 +173,6 @@
 			name = "TPU Mac";
 			packageProductDependencies = (
 				C48C2E9D2AD0417B0000A362 /* Apollo */,
-				C4569DE92AD170CF00F17C06 /* ApolloCodegenLib */,
 				C4569DF02AD17A2A00F17C06 /* PrivateUploaderAPI */,
 				C4FE71532AD3F085003E4DC0 /* KeychainSwift */,
 			);
@@ -674,7 +671,7 @@
 			repositoryURL = "https://github.com/apollographql/apollo-ios.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.5.2;
+				minimumVersion = 1.6.1;
 			};
 		};
 		C4FE71522AD3F084003E4DC0 /* XCRemoteSwiftPackageReference "keychain-swift" */ = {
@@ -688,11 +685,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		C4569DE92AD170CF00F17C06 /* ApolloCodegenLib */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C48C2E9C2AD0417B0000A362 /* XCRemoteSwiftPackageReference "apollo-ios" */;
-			productName = ApolloCodegenLib;
-		};
 		C4569DF02AD17A2A00F17C06 /* PrivateUploaderAPI */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PrivateUploaderAPI;
