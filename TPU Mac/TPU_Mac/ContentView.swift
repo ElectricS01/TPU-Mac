@@ -235,20 +235,78 @@ struct GalleryView: View {
 
 struct CommsView: View {
     @State private var chatsList: [ChatsQuery.Data.Chat] = []
+    @State private var chatMessages: [MessagesQuery.Data.Message] = []
+    @State private var chatOpen: Int = 0
+    
+    func openChat (chatId: Int?) {
+        messages(chat: chatId ?? 0) { result in
+            switch result {
+            case .success(let graphQLResult):
+                if let unwrapped = graphQLResult.data {
+                    chatMessages = unwrapped.messages
+                    chatOpen = chatId ?? 0
+                }
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+    
     var body: some View {
         NavigationSplitView {
             List {
                 ForEach(0..<chatsList.count, id: \.self) { result in
                     Button(chatsList[result].recipient?.username ?? chatsList[result].name) {
-                        print(chatsList[result].id)
+                        openChat(chatId: chatsList[result].association?.id)
                     }
-                    
                 }
             }
         } detail: {
-            Text("Comms")
-                .navigationTitle("Comms")
+            if chatOpen != 0 {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 6) {
+                        ForEach(0..<chatMessages.count, id: \.self) { result in
+                            HStack {
+                                AsyncImage(
+                                    url: URL(string: "https://i.electrics01.com/i/" + (chatMessages[result].user?.avatar ?? ""))
+                                ) { image in
+                                    image.resizable()
+                                } placeholder: {
+                                    ProgressView()
+                                }
+                                .frame(width: 32, height: 32)
+                                .cornerRadius(16)
+                                VStack {
+                                    HStack {
+                                        Text(chatMessages[result].user?.username ?? "Error")
+                                        Text(chatMessages[result].createdAt )
+                                    }.frame(minWidth: 0,
+                                            maxWidth: .infinity,
+                                            minHeight: 0,
+                                            maxHeight: .infinity,
+                                            alignment: .topLeading)
+                                    Text(chatMessages[result].content ?? "Error")
+                                        .frame(minWidth: 0,
+                                               maxWidth: .infinity,
+                                               minHeight: 0,
+                                               maxHeight: .infinity,
+                                               alignment: .topLeading)
+                                }
+                            }
+                        }
+                    }.frame(
+                        minWidth: 0,
+                        maxWidth: .infinity,
+                        minHeight: 0,
+                        maxHeight: .infinity,
+                        alignment: .topLeading
+                    )
+                }
+            } else {
+                Text("Comms")
+            }
         }
+        .navigationTitle("Comms")
         .onAppear {
             chats { result in
                 switch result {
