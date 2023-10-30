@@ -51,7 +51,6 @@ public class MessagesQuery: GraphQLQuery {
       public var content: String? { __data["content"] }
       public var type: GraphQLEnum<PrivateUploaderAPI.MessageType>? { __data["type"] }
       public var emoji: [StandardMessage.Emoji]? { __data["emoji"] }
-      public var embeds: [StandardMessage.Embed] { __data["embeds"] }
       public var reply: StandardMessage.Reply? { __data["reply"] }
       public var legacyUser: StandardMessage.LegacyUser? { __data["legacyUser"] }
       public var user: StandardMessage.User? { __data["user"] }
