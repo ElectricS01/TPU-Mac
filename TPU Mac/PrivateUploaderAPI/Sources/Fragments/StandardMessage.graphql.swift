@@ -5,7 +5,7 @@
 
 public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
   public static var fragmentDefinition: StaticString {
-    #"fragment StandardMessage on Message { __typename id createdAt updatedAt chatId userId content type emoji { __typename name icon id chatId } embeds { __typename type data } reply { __typename readReceipts { __typename id userId lastRead legacyUserId } content userId id legacyUserId embeds { __typename type } legacyUser { __typename username id avatar } user { __typename username id avatar } } legacyUser { __typename username id avatar } user { __typename username id avatar } edited editedAt replyId legacyUserId pinned readReceipts { __typename id userId lastRead legacyUserId } }"#
+    #"fragment StandardMessage on Message { __typename id createdAt updatedAt chatId userId content type emoji { __typename name icon id chatId } reply { __typename readReceipts { __typename id userId lastRead legacyUserId } content userId id legacyUserId embeds { __typename type } legacyUser { __typename username id avatar } user { __typename username id avatar } } legacyUser { __typename username id avatar } user { __typename username id avatar } edited editedAt replyId legacyUserId pinned readReceipts { __typename id userId lastRead legacyUserId } }"#
   }
 
   public let __data: DataDict
@@ -22,7 +22,6 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
     .field("content", String?.self),
     .field("type", GraphQLEnum<PrivateUploaderAPI.MessageType>?.self),
     .field("emoji", [Emoji]?.self),
-    .field("embeds", [Embed].self),
     .field("reply", Reply?.self),
     .field("legacyUser", LegacyUser?.self),
     .field("user", User?.self),
@@ -42,7 +41,6 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
   public var content: String? { __data["content"] }
   public var type: GraphQLEnum<PrivateUploaderAPI.MessageType>? { __data["type"] }
   public var emoji: [Emoji]? { __data["emoji"] }
-  public var embeds: [Embed] { __data["embeds"] }
   public var reply: Reply? { __data["reply"] }
   public var legacyUser: LegacyUser? { __data["legacyUser"] }
   public var user: User? { __data["user"] }
@@ -73,24 +71,6 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
     public var icon: String? { __data["icon"] }
     public var id: String { __data["id"] }
     public var chatId: Int { __data["chatId"] }
-  }
-
-  /// Embed
-  ///
-  /// Parent Type: `Embed`
-  public struct Embed: PrivateUploaderAPI.SelectionSet {
-    public let __data: DataDict
-    public init(_dataDict: DataDict) { __data = _dataDict }
-
-    public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Embed }
-    public static var __selections: [ApolloAPI.Selection] { [
-      .field("__typename", String.self),
-      .field("type", String.self),
-      .field("data", PrivateUploaderAPI.JSON?.self),
-    ] }
-
-    public var type: String { __data["type"] }
-    public var data: PrivateUploaderAPI.JSON? { __data["data"] }
   }
 
   /// Reply

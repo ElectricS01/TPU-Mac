@@ -13,7 +13,7 @@ import KeychainSwift
 let keychain = KeychainSwift()
 
 func login(username:String,password:String,totp:String, completion: @escaping (Result<String, Error>) -> Void) {
-    Network.shared.apollo.perform(mutation: LoginMutation(input: LoginInput(username: username, password: password, totp: "123456"))) { result in
+    Network.shared.apollo.perform(mutation: LoginMutation(input: LoginInput(username: username, password: password, totp: GraphQLNullable(stringLiteral: totp)))) { result in
         switch result {
         case .success(let graphQLResult):
             completion(.success(graphQLResult.errors?[0].message ?? "Success"))
@@ -50,7 +50,8 @@ func chats(completion: @escaping (Result<GraphQLResult<ChatsQuery.Data>, Error>)
 }
 
 func messages(chat: Int, completion: @escaping (Result<GraphQLResult<MessagesQuery.Data>, Error>) -> Void) {
-    Network.shared.apollo.fetch(query: MessagesQuery(input: InfiniteMessagesInput(associationId: chat, limit: 50))) { result in
+    Network.shared.apollo.fetch(query: MessagesQuery(input: InfiniteMessagesInput(associationId: chat, position: GraphQLNullable(ScrollPosition.top), limit: 50
+))) { result in
         switch result {
         case .success:
             completion(result)
@@ -265,10 +266,10 @@ struct CommsView: View {
             if chatOpen != 0 {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 6) {
-                        ForEach(0..<chatMessages.count, id: \.self) { result in
+                        ForEach(chatMessages.reversed(), id: \.self) { result in
                             HStack {
                                 AsyncImage(
-                                    url: URL(string: "https://i.electrics01.com/i/" + (chatMessages[result].user?.avatar ?? ""))
+                                    url: URL(string: "https://i.electrics01.com/i/" + (result.user?.avatar ?? ""))
                                 ) { image in
                                     image.resizable()
                                 } placeholder: {
@@ -278,14 +279,14 @@ struct CommsView: View {
                                 .cornerRadius(16)
                                 VStack {
                                     HStack {
-                                        Text(chatMessages[result].user?.username ?? "Error")
-                                        Text(chatMessages[result].createdAt )
+                                        Text(result.user?.username ?? "Error")
+                                        Text(result.createdAt )
                                     }.frame(minWidth: 0,
                                             maxWidth: .infinity,
                                             minHeight: 0,
                                             maxHeight: .infinity,
                                             alignment: .topLeading)
-                                    Text(chatMessages[result].content ?? "Error")
+                                    Text(result.content ?? "Error")
                                         .frame(minWidth: 0,
                                                maxWidth: .infinity,
                                                minHeight: 0,

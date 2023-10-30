@@ -13,10 +13,6 @@
       id
       chatId
     }
-    embeds {
-      type
-      data
-    }
     reply {
       readReceipts {
         id
