@@ -93,7 +93,7 @@ struct TwoColumnSplitView: View {
         }
     }
     .onAppear {
-      showingSheet = keychain.get("token") == ""
+      showingSheet = keychain.get("token") == nil
     }
   }
 }
