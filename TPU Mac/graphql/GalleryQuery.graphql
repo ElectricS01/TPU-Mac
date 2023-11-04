@@ -3,8 +3,11 @@ query GalleryItems($input: GalleryInput!) {
     items {
       id
       attachment
+      type
+      fileSize
       name
       textMetadata
+      createdAt
     }
   }
 }
