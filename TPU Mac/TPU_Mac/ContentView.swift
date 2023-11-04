@@ -9,8 +9,21 @@ import SwiftUI
 import Apollo
 import PrivateUploaderAPI
 import KeychainSwift
+import AVKit
 
 let keychain = KeychainSwift()
+
+let inputDateFormatter: DateFormatter = {
+  let formatter = DateFormatter()
+  formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
+  return formatter
+}()
+
+let outputDateFormatter: DateFormatter = {
+  let formatter = DateFormatter()
+  formatter.dateFormat = "dd/MM/yyyy HH:mm:ss"
+  return formatter
+}()
 
 func login(username:String,password:String,totp:String, completion: @escaping (Result<String, Error>) -> Void) {
   Network.shared.apollo.perform(mutation: LoginMutation(input: LoginInput(username: username, password: password, totp: GraphQLNullable(stringLiteral: totp)))) { result in
@@ -37,40 +50,15 @@ func gallery(completion: @escaping (Result<GraphQLResult<GalleryItemsQuery.Data>
   }
 }
 
-func chats(completion: @escaping (Result<GraphQLResult<ChatsQuery.Data>, Error>) -> Void) {
-  Network.shared.apollo.fetch(query: ChatsQuery()) { result in
-    switch result {
-    case .success:
-      completion(result)
-    case .failure(let error):
-      print("Failure! Error: \(error)")
-      completion(result)
-    }
-  }
-}
-
-func messages(chat: Int, completion: @escaping (Result<GraphQLResult<MessagesQuery.Data>, Error>) -> Void) {
-  Network.shared.apollo.fetch(query: MessagesQuery(input: InfiniteMessagesInput(associationId: chat, position: GraphQLNullable(ScrollPosition.top), limit: 50
-                                                                               ))) { result in
-    switch result {
-    case .success:
-      completion(result)
-    case .failure(let error):
-      print("Failure! Error: \(error)")
-      completion(result)
-    }
-  }
-}
-
 struct TwoColumnSplitView: View {
   @AppStorage("tapCount") private var tapCount = 0
   @AppStorage("token") var token = ""
-  @State private var showingSheet = false
+  @State var showingLogin = false
   
   var body: some View {
     NavigationSplitView {
       List {
-        NavigationLink(destination: HomeView()) {
+        NavigationLink(destination: HomeView(showingLogin: $showingLogin)) {
           Label("Home", systemImage: "house")
         }
         NavigationLink(destination: SettingsView()) {
@@ -87,13 +75,13 @@ struct TwoColumnSplitView: View {
         }
       }
     } detail: {
-      HomeView()
-        .sheet(isPresented: $showingSheet) {
+      HomeView(showingLogin: $showingLogin)
+        .sheet(isPresented: $showingLogin) {
           LoginSheet()
         }
     }
     .onAppear {
-      showingSheet = keychain.get("token") == nil
+      showingLogin = (keychain.get("token") == nil || keychain.get("token") == "")
     }
   }
 }
@@ -166,11 +154,16 @@ struct LoginSheet: View {
 
 struct HomeView: View {
   @AppStorage("tapCount") private var tapCount = 0
+  @Binding var showingLogin: Bool
+  
   var body: some View {
     Text("Welcome to TPU Mac")
       .navigationTitle("Home")
     Button("Tap count: \(tapCount)") {
       tapCount += 1
+    }
+    Button("Login") {
+      showingLogin = true
     }
     Button("Req") {
       gallery() { result in
@@ -196,22 +189,55 @@ struct SettingsView: View {
 
 struct GalleryView: View {
   @State private var galleryItems: [GalleryItemsQuery.Data.Gallery.Item] = []
+  @State private var isPlaying: Int = -1
+  
   var body: some View {
     ScrollView {
-      LazyVGrid(columns: [GridItem(.adaptive(minimum: 216))], spacing: 20) {
-        ForEach(0..<galleryItems.count, id: \.self) { result in
-          //            Button(action: {print(galleryItems[result].id)}) {
-          //                Text(galleryItems[result].name ?? "Image")
-          //            }
-          AsyncImage(
-            url: URL(string: "https://i.electrics01.com/i/" + galleryItems[result].attachment)
-          ) { image in
-            image.resizable()
-          } placeholder: {
-            ProgressView()
+      LazyVGrid(columns: [GridItem(.adaptive(minimum: 316))], spacing: 20) {
+        ForEach(galleryItems, id: \.self) { galleryItem in
+          VStack (alignment: .leading) {
+            Text(galleryItem.name ?? "Unknown").font(.title2)
+            if (galleryItem.type == "image") {
+              AsyncImage(
+                url: URL(string: "https://i.electrics01.com/i/" + galleryItem.attachment)
+              ) { image in
+                image.resizable()
+              } placeholder: {
+                ProgressView()
+              }
+            } else if (galleryItem.type == "video") {
+              Button(action: {
+                if (isPlaying == galleryItem.id) {
+                  isPlaying = -1
+                } else {
+                  isPlaying = galleryItem.id
+                }
+              }) {
+                if isPlaying == galleryItem.id {
+                  VideoPlayer(player: AVPlayer(url: URL(string: "https://i.electrics01.com/i/" + galleryItem.attachment)!))
+                } else {
+                  Image(systemName: "play.circle.fill")
+                    .resizable()
+                    .frame(width: 140, height: 140)
+                    .foregroundColor(.white)
+                }
+              }
+            }
+            Text("Type: " + (galleryItem.type ))
+            Text("Upload name: " + (galleryItem.attachment ))
+            Text("Creacted at: ")
+            if let date = inputDateFormatter.date(from: galleryItem.createdAt) {
+              let formattedDate = outputDateFormatter.string(from: date)
+              Text("Created at: " + formattedDate)
+            } else {
+              Text("Created at: Invalid Date")
+            }
+            Text("Size: " + (String(galleryItem.fileSize )))
           }
-          .frame(width: 200, height: 200)
-          .cornerRadius(8)
+          .padding()
+          .frame(width: 300, height: 300)
+          .background()
+          .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
         }
       }
     }
@@ -231,127 +257,6 @@ struct GalleryView: View {
         
       }
     
-  }
-}
-
-struct CommsView: View {
-  @State private var chatsList: [ChatsQuery.Data.Chat] = []
-  @State private var chatMessages: [MessagesQuery.Data.Message] = []
-  @State private var chatOpen: Int = 0
-  
-  let inputDateFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
-    return formatter
-  }()
-  
-  let outputDateFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.dateFormat = "dd/MM/yyyy HH:mm:ss"
-    return formatter
-  }()
-  
-  func openChat (chatId: Int?) {
-    messages(chat: chatId ?? 0) { result in
-      switch result {
-      case .success(let graphQLResult):
-        if let unwrapped = graphQLResult.data {
-          chatMessages = unwrapped.messages
-          chatOpen = chatId ?? 0
-        }
-      case .failure(let error):
-        print(error)
-      }
-    }
-  }
-  
-  var body: some View {
-    NavigationSplitView {
-      List {
-        ForEach(0..<chatsList.count, id: \.self) { result in
-          Button(chatsList[result].recipient?.username ?? chatsList[result].name) {
-            openChat(chatId: chatsList[result].association?.id)
-          }
-        }
-      }
-    } detail: {
-      if chatOpen != 0 {
-        ScrollViewReader { proxy in
-          ScrollView {
-            VStack(alignment: .leading, spacing: 6) {
-              ForEach(chatMessages.reversed(), id: \.self) { message in
-                HStack (alignment: .top, spacing: 6) {
-                  if ((message.user?.avatar) != nil) {
-                    AsyncImage(
-                      url: URL(string: "https://i.electrics01.com/i/" + (message.user?.avatar ?? ""))
-                    ) { image in
-                      image.resizable()
-                    } placeholder: {
-                      ProgressView()
-                    }
-                    .frame(width: 32, height: 32)
-                    .cornerRadius(16)
-                  } else {
-                    Image(systemName: "person.crop.circle").frame(width: 32, height: 32).font(.largeTitle)
-                  }
-                  VStack {
-                    HStack {
-                      Text(message.user?.username ?? "Error")
-                      if let date = inputDateFormatter.date(from: message.createdAt) {
-                        let formattedDate = outputDateFormatter.string(from: date)
-                        Text(formattedDate)
-                      } else {
-                        Text("Invalid Date")
-                      }
-                    }.frame(minWidth: 0,
-                            maxWidth: .infinity,
-                            minHeight: 0,
-                            maxHeight: 6,
-                            alignment: .topLeading)
-                    Text(message.content ?? "Error")
-                      .frame(minWidth: 0,
-                             maxWidth: .infinity,
-                             minHeight: 0,
-                             maxHeight: .infinity,
-                             alignment: .topLeading)
-                  }
-                }.padding(4)
-                  .id(message.id)
-              }
-            }.frame(
-              minWidth: 0,
-              maxWidth: .infinity,
-              minHeight: 0,
-              maxHeight: .infinity,
-              alignment: .topLeading
-            )
-            .onAppear {
-              if (chatMessages.count != 0) {
-                proxy.scrollTo(chatMessages.first?.id)
-              }
-            }
-            .onChange(of: chatMessages) {
-              proxy.scrollTo(chatMessages.first?.id)
-            }
-          }
-        }
-      } else {
-        Text("Comms")
-      }
-    }
-    .navigationTitle("Comms")
-    .onAppear {
-      chats { result in
-        switch result {
-        case .success(let graphQLResult):
-          if let unwrapped = graphQLResult.data {
-            chatsList = unwrapped.chats
-          }
-        case .failure(let error):
-          print(error)
-        }
-      }
-    }
   }
 }
 

@@ -17,6 +17,7 @@
 		C4569DF12AD17A2A00F17C06 /* PrivateUploaderAPI in Frameworks */ = {isa = PBXBuildFile; productRef = C4569DF02AD17A2A00F17C06 /* PrivateUploaderAPI */; };
 		C4569DF72AD1828300F17C06 /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4569DF62AD1828300F17C06 /* Network.swift */; };
 		C48C2E9E2AD0417B0000A362 /* Apollo in Frameworks */ = {isa = PBXBuildFile; productRef = C48C2E9D2AD0417B0000A362 /* Apollo */; };
+		C4D7E5062AF4D4FC008308CA /* CommsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D7E5052AF4D4FC008308CA /* CommsView.swift */; };
 		C4FE71542AD3F085003E4DC0 /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C4FE71532AD3F085003E4DC0 /* KeychainSwift */; };
 		C4FE71562AD3F41B003E4DC0 /* AuthorisationInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4FE71552AD3F41B003E4DC0 /* AuthorisationInterceptor.swift */; };
 		C4FE71582AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4FE71572AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift */; };
@@ -53,6 +54,7 @@
 		C45099322ACFFA8100FA9247 /* TPU_MacUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPU_MacUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		C4569DF62AD1828300F17C06 /* Network.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
 		C48D5DB72AF4D2DB00067554 /* graphql */ = {isa = PBXFileReference; lastKnownFileType = folder; path = graphql; sourceTree = "<group>"; };
+		C4D7E5052AF4D4FC008308CA /* CommsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommsView.swift; sourceTree = "<group>"; };
 		C4FE71552AD3F41B003E4DC0 /* AuthorisationInterceptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorisationInterceptor.swift; sourceTree = "<group>"; };
 		C4FE71572AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkInterceptorProvider.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -118,6 +120,7 @@
 				C450991A2ACFFA8100FA9247 /* TPU_Mac.entitlements */,
 				C450991B2ACFFA8100FA9247 /* Preview Content */,
 				C4FE71572AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift */,
+				C4D7E5052AF4D4FC008308CA /* CommsView.swift */,
 			);
 			path = TPU_Mac;
 			sourceTree = "<group>";
@@ -298,6 +301,7 @@
 				C45099172ACFFA7F00FA9247 /* ContentView.swift in Sources */,
 				C4FE71582AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift in Sources */,
 				C4FE71562AD3F41B003E4DC0 /* AuthorisationInterceptor.swift in Sources */,
+				C4D7E5062AF4D4FC008308CA /* CommsView.swift in Sources */,
 				C45099152ACFFA7F00FA9247 /* TPU_MacApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

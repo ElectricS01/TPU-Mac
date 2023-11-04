@@ -7,7 +7,7 @@ public class GalleryItemsQuery: GraphQLQuery {
   public static let operationName: String = "GalleryItems"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GalleryItems($input: GalleryInput!) { gallery(input: $input) { __typename items { __typename id attachment name textMetadata } } }"#
+      #"query GalleryItems($input: GalleryInput!) { gallery(input: $input) { __typename items { __typename id attachment type fileSize name textMetadata createdAt } } }"#
     ))
 
   public var input: GalleryInput
@@ -56,15 +56,21 @@ public class GalleryItemsQuery: GraphQLQuery {
           .field("__typename", String.self),
           .field("id", Int.self),
           .field("attachment", String.self),
+          .field("type", String.self),
+          .field("fileSize", Double.self),
           .field("name", String?.self),
           .field("textMetadata", String?.self),
+          .field("createdAt", PrivateUploaderAPI.Date.self),
         ] }
 
         public var id: Int { __data["id"] }
         public var attachment: String { __data["attachment"] }
+        public var type: String { __data["type"] }
+        public var fileSize: Double { __data["fileSize"] }
         public var name: String? { __data["name"] }
         /// This is used for OCR scanned text from images.
         public var textMetadata: String? { __data["textMetadata"] }
+        public var createdAt: PrivateUploaderAPI.Date { __data["createdAt"] }
       }
     }
   }
