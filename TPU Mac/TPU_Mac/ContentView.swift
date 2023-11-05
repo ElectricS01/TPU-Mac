@@ -197,32 +197,43 @@ struct GalleryView: View {
         ForEach(galleryItems, id: \.self) { galleryItem in
           VStack (alignment: .leading) {
             Text(galleryItem.name ?? "Unknown").font(.title2)
-            if (galleryItem.type == "image") {
-              AsyncImage(
-                url: URL(string: "https://i.electrics01.com/i/" + galleryItem.attachment)
-              ) { image in
-                image.resizable()
-              } placeholder: {
-                ProgressView()
-              }
-            } else if (galleryItem.type == "video") {
-              Button(action: {
-                if (isPlaying == galleryItem.id) {
-                  isPlaying = -1
-                } else {
-                  isPlaying = galleryItem.id
+            HStack (alignment: .center) {
+              if (galleryItem.type == "image") {
+                AsyncImage(
+                  url: URL(string: "https://i.electrics01.com/i/" + galleryItem.attachment)
+                ) { image in
+                  image.resizable()
+                } placeholder: {
+                  ProgressView()
                 }
-              }) {
+              } else if (galleryItem.type == "video") {
+                if isPlaying != galleryItem.id {
+                  Button(action: {
+                    if isPlaying == galleryItem.id {
+                      isPlaying = -1
+                    } else {
+                      isPlaying = galleryItem.id
+                    }
+                  }) {
+                    Image(systemName: "play.circle.fill")
+                      .resizable()
+                      .frame(width: 140, height: 140)
+                      .foregroundColor(.white)
+                  }
+                }
                 if isPlaying == galleryItem.id {
-                  VideoPlayer(player: AVPlayer(url: URL(string: "https://i.electrics01.com/i/" + galleryItem.attachment)!))
-                } else {
-                  Image(systemName: "play.circle.fill")
-                    .resizable()
-                    .frame(width: 140, height: 140)
-                    .foregroundColor(.white)
+                  let player = AVPlayer(url: URL(string: "https://i.electrics01.com/i/" + galleryItem.attachment)!)
+                  VideoPlayer(player: player)
+                    .onAppear() {
+                      player.play()
+                    }
                 }
               }
             }
+            .frame(
+              minWidth: 0,
+              maxWidth: .infinity
+            )
             Text("Type: " + (galleryItem.type ))
             Text("Upload name: " + (galleryItem.attachment ))
             Text("Creacted at: ")
