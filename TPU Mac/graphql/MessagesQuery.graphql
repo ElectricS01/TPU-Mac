@@ -1,42 +1,30 @@
-
-  fragment StandardMessage on Message {
+fragment StandardMessage on Message {
+  id
+  createdAt
+  updatedAt
+  chatId
+  userId
+  content
+  type
+  emoji {
+    name
+    icon
     id
-    createdAt
-    updatedAt
     chatId
-    userId
-    content
-    type
-    emoji {
-      name
-      icon
+  }
+  reply {
+    readReceipts {
       id
-      chatId
-    }
-    reply {
-      readReceipts {
-        id
-        userId
-        lastRead
-        legacyUserId
-      }
-      content
       userId
-      id
+      lastRead
       legacyUserId
-      embeds {
-        type
-      }
-      legacyUser {
-        username
-        id
-        avatar
-      }
-      user {
-        username
-        id
-        avatar
-      }
+    }
+    content
+    userId
+    id
+    legacyUserId
+    embeds {
+      type
     }
     legacyUser {
       username
@@ -48,35 +36,45 @@
       id
       avatar
     }
-    edited
-    editedAt
-    replyId
-    legacyUserId
-    pinned
-    readReceipts {
-      id
-      userId
-      lastRead
-      legacyUserId
-    }
   }
+  legacyUser {
+    username
+    id
+    avatar
+  }
+  user {
+    username
+    id
+    avatar
+  }
+  edited
+  editedAt
+  replyId
+  legacyUserId
+  pinned
+  readReceipts {
+    id
+    userId
+    lastRead
+    legacyUserId
+  }
+}
 
 
-  query Messages($input: InfiniteMessagesInput!) {
-    messages(input: $input) {
+query Messages($input: InfiniteMessagesInput!) {
+  messages(input: $input) {
+    ...StandardMessage
+  }
+}
+
+
+query PagedMessages($input: PagedMessagesInput!) {
+  messagesPaged(input: $input) {
+    items {
       ...StandardMessage
     }
-  }
-
-
-  query PagedMessages($input: PagedMessagesInput!) {
-    messagesPaged(input: $input) {
-      items {
-        ...StandardMessage
-      }
-      pager {
-        ...PagerFragment
-      }
+    pager {
+      ...PagerFragment
     }
   }
-
+}

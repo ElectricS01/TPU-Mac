@@ -1,52 +1,25 @@
-  query ChatsQuery {
-    chats {
+query ChatsQuery {
+  chats {
+    id
+    background
+    description
+    type
+    name
+    unread
+    userId
+    icon
+    createdAt
+    updatedAt
+    legacyUserId
+    association {
       id
-      background
-      description
-      type
-      name
-      unread
+      chatId
       userId
-      icon
-      createdAt
-      updatedAt
+      rank
+      lastRead
+      notifications
       legacyUserId
-      association {
-        id
-        chatId
-        userId
-        rank
-        lastRead
-        notifications
-        legacyUserId
-        user {
-          username
-          id
-          createdAt
-          administrator
-          moderator
-          avatar
-        }
-      }
-      users {
-        id
-        chatId
-        userId
-        rank
-        lastRead
-        notifications
-        legacyUserId
-        user {
-          username
-          id
-          createdAt
-          administrator
-          moderator
-          avatar
-        }
-      }
-      _redisSortDate
-      recipient {
+      user {
         username
         id
         createdAt
@@ -55,5 +28,31 @@
         avatar
       }
     }
+    users {
+      id
+      chatId
+      userId
+      rank
+      lastRead
+      notifications
+      legacyUserId
+      user {
+        username
+        id
+        createdAt
+        administrator
+        moderator
+        avatar
+      }
+    }
+    _redisSortDate
+    recipient {
+      username
+      id
+      createdAt
+      administrator
+      moderator
+      avatar
+    }
   }
-
+}
