@@ -5,15 +5,15 @@
 //  Created by ElectricS01  on 3/11/2023.
 //
 
-import Foundation
 import SwiftUI
-import PrivateUploaderAPI
 import Apollo
+import PrivateUploaderAPI
 
 struct CommsView: View {
   @State private var chatsList: [ChatsQuery.Data.Chat] = []
   @State private var chatMessages: [MessagesQuery.Data.Message] = []
   @State private var chatOpen: Int = 0
+  @State private var inputMessage: String = ""
   
   func messages(chat: Int, completion: @escaping (Result<GraphQLResult<MessagesQuery.Data>, Error>) -> Void) {
     Network.shared.apollo.fetch(query: MessagesQuery(input: InfiniteMessagesInput(associationId: chat, position: GraphQLNullable(ScrollPosition.top), limit: 50
@@ -50,6 +50,18 @@ struct CommsView: View {
       case .failure(let error):
         print("Failure! Error: \(error)")
         completion(result)
+      }
+    }
+  }
+  
+  func sendMessage() {
+    Network.shared.apollo.perform(mutation: SendMessageMutation(input: SendMessageInput( content: inputMessage, associationId: Double(chatOpen), attachments: [] ))) { result in
+      switch result {
+      case .success(let graphQLResult):
+        print(graphQLResult)
+        inputMessage = ""
+      case .failure(let error):
+        print("Failure! Error: \(error)")
       }
     }
   }
@@ -123,6 +135,11 @@ struct CommsView: View {
               proxy.scrollTo(chatMessages.first?.id)
             }
           }
+          TextField("Keep it civil!", text: $inputMessage)
+            .onSubmit {
+              sendMessage()
+            }
+            .textFieldStyle(RoundedBorderTextFieldStyle())
         }
       } else {
         Text("Comms")
