@@ -25,6 +25,14 @@ let outputDateFormatter: DateFormatter = {
   return formatter
 }()
 
+func formatFileSize(_ size: Double) -> String {
+  print(size)
+  let byteCountFormatter = ByteCountFormatter()
+  byteCountFormatter.allowedUnits = [.useKB, .useMB, .useGB]
+  byteCountFormatter.countStyle = .file
+  return byteCountFormatter.string(fromByteCount: Int64(size)) 
+}
+
 func login(username:String,password:String,totp:String, completion: @escaping (Result<String, Error>) -> Void) {
   Network.shared.apollo.perform(mutation: LoginMutation(input: LoginInput(username: username, password: password, totp: GraphQLNullable(stringLiteral: totp)))) { result in
     switch result {
@@ -236,14 +244,13 @@ struct GalleryView: View {
             )
             Text("Type: " + (galleryItem.type ))
             Text("Upload name: " + (galleryItem.attachment ))
-            Text("Creacted at: ")
             if let date = inputDateFormatter.date(from: galleryItem.createdAt) {
               let formattedDate = outputDateFormatter.string(from: date)
               Text("Created at: " + formattedDate)
             } else {
               Text("Created at: Invalid Date")
             }
-            Text("Size: " + (String(galleryItem.fileSize )))
+            Text("Size: " + (formatFileSize(galleryItem.fileSize )))
           }
           .padding()
           .frame(width: 300, height: 300)
@@ -275,7 +282,7 @@ struct AboutView: View {
   var body: some View {
     Text("About")
       .navigationTitle("About")
-    Text("TPU Mac version 0.0.0 (31/12/2023)")
+    Text("TPU Mac version 0.0.1 (31/12/2023)")
   }
 }
 
