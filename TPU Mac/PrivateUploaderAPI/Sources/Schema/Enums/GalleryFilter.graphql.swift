@@ -17,5 +17,6 @@ public enum GalleryFilter: String, EnumType {
   case other = "OTHER"
   case paste = "PASTE"
   case includeMetadata = "INCLUDE_METADATA"
-  case includeDeletable = "INCLUDE_DELETABLE"
+  case includeUndeletable = "INCLUDE_UNDELETABLE"
+  case onlyUndeletable = "ONLY_UNDELETABLE"
 }

@@ -12,9 +12,9 @@ public struct SendMessageInput: InputObject {
 
   public init(
     content: String,
-    associationId: Double,
+    associationId: Int,
     attachments: [String]?,
-    replyId: GraphQLNullable<Double> = nil,
+    replyId: GraphQLNullable<Int> = nil,
     embeds: GraphQLNullable<[EmbedInput]> = nil
   ) {
     __data = InputDict([
@@ -31,7 +31,7 @@ public struct SendMessageInput: InputObject {
     set { __data["content"] = newValue }
   }
 
-  public var associationId: Double {
+  public var associationId: Int {
     get { __data["associationId"] }
     set { __data["associationId"] = newValue }
   }
@@ -41,7 +41,7 @@ public struct SendMessageInput: InputObject {
     set { __data["attachments"] = newValue }
   }
 
-  public var replyId: GraphQLNullable<Double> {
+  public var replyId: GraphQLNullable<Int> {
     get { __data["replyId"] }
     set { __data["replyId"] = newValue }
   }

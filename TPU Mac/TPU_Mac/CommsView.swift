@@ -16,8 +16,7 @@ struct CommsView: View {
   @State private var inputMessage: String = ""
   
   func messages(chat: Int, completion: @escaping (Result<GraphQLResult<MessagesQuery.Data>, Error>) -> Void) {
-    Network.shared.apollo.fetch(query: MessagesQuery(input: InfiniteMessagesInput(associationId: chat, position: GraphQLNullable(ScrollPosition.top), limit: 50
-                                                                                 ))) { result in
+    Network.shared.apollo.fetch(query: MessagesQuery(input: InfiniteMessagesInput(associationId: chat, position: GraphQLNullable(ScrollPosition.top), limit: 50 ))) { result in
       switch result {
       case .success:
         completion(result)
@@ -32,6 +31,7 @@ struct CommsView: View {
     messages(chat: chatId ?? 0) { result in
       switch result {
       case .success(let graphQLResult):
+        print(graphQLResult)
         if let unwrapped = graphQLResult.data {
           chatMessages = unwrapped.messages
           chatOpen = chatId ?? 0
@@ -55,7 +55,7 @@ struct CommsView: View {
   }
   
   func sendMessage() {
-    Network.shared.apollo.perform(mutation: SendMessageMutation(input: SendMessageInput( content: inputMessage, associationId: Double(chatOpen), attachments: [] ))) { result in
+    Network.shared.apollo.perform(mutation: SendMessageMutation(input: SendMessageInput( content: inputMessage, associationId: chatOpen, attachments: [] ))) { result in
       switch result {
       case .success(let graphQLResult):
         print(graphQLResult)

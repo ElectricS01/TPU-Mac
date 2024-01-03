@@ -26,7 +26,6 @@ let outputDateFormatter: DateFormatter = {
 }()
 
 func formatFileSize(_ size: Double) -> String {
-  print(size)
   let byteCountFormatter = ByteCountFormatter()
   byteCountFormatter.allowedUnits = [.useKB, .useMB, .useGB]
   byteCountFormatter.countStyle = .file
@@ -211,6 +210,8 @@ struct GalleryView: View {
                   url: URL(string: "https://i.electrics01.com/i/" + galleryItem.attachment)
                 ) { image in
                   image.resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 268, height: 168)
                 } placeholder: {
                   ProgressView()
                 }
@@ -282,7 +283,7 @@ struct AboutView: View {
   var body: some View {
     Text("About")
       .navigationTitle("About")
-    Text("TPU Mac version 0.0.1 (31/12/2023)")
+    Text("TPU Mac version 0.0.2 (3/1/2024)")
   }
 }
 

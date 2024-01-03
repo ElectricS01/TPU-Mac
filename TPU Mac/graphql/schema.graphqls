@@ -1,8 +1,3 @@
-"""
-A directive used by the Apollo iOS client to annotate operations or fragments that should be used exclusively for generating local cache mutations instead of as standard operations.
-"""
-directive @apollo_client_ios_localCacheMutation on QUERY | MUTATION | SUBSCRIPTION | FRAGMENT_DEFINITION
-
 type Query {
   currentUser: User
   user(input: UserProfileInput!): PartialUserPublic
@@ -14,6 +9,11 @@ type Query {
   weather: Weather!
   collections(input: UserCollectionsInput): PaginatedCollectionResponse
   collection(input: CollectionInput!): Collection
+
+  """
+  Return the number of pending invitations for collections for the current user
+  """
+  collectionInvitesCount: Int!
   domains: [Domain!]!
   gallery(input: GalleryInput!): PaginatedUploadResponse!
   chats(input: ChatsInput): [Chat!]!
@@ -37,6 +37,8 @@ type Query {
   getAuthorizedApps: [OauthApp!]!
   userEmoji: [ChatEmoji!]!
   chatAuditLog(input: AuditLogInput!): PaginatedChatAuditLogResponse!
+  autoCollectRules: [AutoCollectRule!]!
+  autoCollectRule(input: AutoCollectRuleQueryInput!): AutoCollectRule!
 }
 
 type User {
@@ -87,7 +89,7 @@ type User {
   weatherUnit: String!
   themeEngine: JSON
   insights: UserInsights!
-  profileLayout: JSON!
+  profileLayout: JSON
 
   """Collections that are excluded from the Collections filter in Gallery."""
   excludedCollections: [Float!]
@@ -114,6 +116,7 @@ type User {
 
   """Whether the user is a bot user."""
   bot: Boolean!
+  homeWidgets: HomeWidgets
   plan: Plan
   domain: Domain
   subscription: TPUSubscription
@@ -130,11 +133,13 @@ type User {
   nickname: [FriendNickname!]
   integrations: [Integration!]!
   notifications: [Notification!]!
-  sessions: [Session!]!
+  sessions(input: SessionInput): [Session!]!
 
   """How many AutoCollect approvals the user needs to approve/reject."""
   pendingAutoCollects: Float
+  legacy: Boolean!
   friends: [Friend!]!
+  mutualCollections: [Collection!]!
   friend: FriendStatus!
 }
 
@@ -189,6 +194,40 @@ enum UserFriendRequestPrivacy {
   NOBODY
 }
 
+type HomeWidgets {
+  rows: [HomeRow!]!
+  default: Boolean
+}
+
+type HomeRow {
+  widgets: [HomeWidget!]!
+
+  """In UUID format."""
+  id: String!
+}
+
+type HomeWidget {
+  type: HomeWidgetType!
+  props: JSON
+
+  """In UUID format."""
+  id: String!
+}
+
+"""The type of home widget"""
+enum HomeWidgetType {
+  SITE_STATS
+  RECENT_NOTES
+  RECENT_COLLECTIONS
+  RECENT_UPLOADS
+  RECENT_CHATS
+  AT_A_GLANCE
+  SITE_STATS_GRAPH
+  USER_STATS_GRAPH
+  USER_STATS
+  ANNOUNCEMENTS
+}
+
 type Plan {
   id: Int!
   name: String!
@@ -203,9 +242,9 @@ type Plan {
 }
 
 type Domain {
-  id: Float!
+  id: Int!
   domain: String!
-  userId: Float!
+  userId: Int!
   DNSProvisioned: Boolean! @deprecated(reason: "Use `active` instead.")
   active: Boolean!
   zone: String @deprecated(reason: "Cloudflare integration was removed in TPUv2.")
@@ -222,40 +261,24 @@ type Domain {
 
 type PartialUserBase {
   username: String!
-  id: Float!
+  id: Int!
   createdAt: Date!
   administrator: Boolean!
   moderator: Boolean!
   avatar: String
   bot: Boolean!
-}
-
-type TPUSubscription {
-  planId: Float!
-  userId: Float!
-  price: Float!
-  cancelled: Boolean!
-  paymentId: Float!
-  expiredAt: DateTimeISO!
-  cancelledAt: DateTimeISO!
-  metadata: SubscriptionMetadata!
-  user: PartialUserBase!
-}
-
-"""
-A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.This scalar is serialized to a string in ISO 8601 format and parsed from a string in ISO 8601 format.
-"""
-scalar DateTimeISO
-
-type SubscriptionMetadata {
-  hours: Float!
-}
-
-type Experiment {
-  key: String!
-  value: String!
-  userId: Float!
-  user: PartialUserBase!
+  legacy: Boolean!
+  badges: [Badge!]!
+  notifications: [Notification!]!
+  integrations: [Integration!]!
+  domain: [Domain!]!
+  subscription: [TPUSubscription!]!
+  plan: Plan!
+  autoCollectRules: AutoCollectRule!
+  stats: Stats!
+  friends: [Friend!]!
+  mutualCollections: [Collection!]!
+  friend: FriendStatus!
 }
 
 type Badge {
@@ -270,6 +293,52 @@ type Badge {
   priority: Float
   plan: Plan!
   users: [PartialUserBase!]!
+}
+
+type Notification {
+  id: Int!
+  message: String!
+  userId: Float!
+  dismissed: Boolean!
+  route: String
+  createdAt: Date!
+  updatedAt: Date!
+  user: PartialUserBase
+}
+
+type Integration {
+  id: Int!
+  userId: Float!
+  type: String!
+  expiresAt: DateTimeISO
+  createdAt: Date!
+  updatedAt: Date!
+  providerUserId: Float
+  providerUsername: String
+  providerUserCache: JSON
+  error: String
+  user: PartialUserBase!
+}
+
+"""
+A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.This scalar is serialized to a string in ISO 8601 format and parsed from a string in ISO 8601 format.
+"""
+scalar DateTimeISO
+
+type TPUSubscription {
+  planId: Float!
+  userId: Float!
+  price: Float!
+  cancelled: Boolean!
+  paymentId: Float!
+  expiredAt: DateTimeISO!
+  cancelledAt: DateTimeISO!
+  metadata: SubscriptionMetadata!
+  user: PartialUserBase!
+}
+
+type SubscriptionMetadata {
+  hours: Float!
 }
 
 type AutoCollectRule {
@@ -296,81 +365,23 @@ type SubRule {
 type Stats {
   users: Float!
   announcements: Float!
-  usage: Float!
+  usage: Float
   collections: Float!
   collectionItems: Float!
-  uploadGraph: DataLabelsGraph!
-  messageGraph: DataLabelsGraph!
-  pulseGraph: DataLabelsGraph!
+  uploadGraph: DataLabelsGraph
+  messageGraph: DataLabelsGraph
+  pulseGraph: DataLabelsGraph
   uploads: Float!
   pulse: Float!
   pulses: Float!
   docs: Float!
+  hours: JSON
+  messages: Float!
 }
 
 type DataLabelsGraph {
   data: [Float!]!
   labels: [String!]!
-}
-
-type FriendNickname {
-  id: Int!
-  userId: Float!
-  createdAt: Date!
-  updatedAt: Date!
-  friendId: Float!
-  nickname: String!
-  user: PartialUserBase!
-  friend: PartialUserBase!
-}
-
-type Integration {
-  id: Int!
-  userId: Float!
-  type: String!
-  expiresAt: DateTimeISO
-  createdAt: Date!
-  updatedAt: Date!
-  providerUserId: Float
-  providerUsername: String
-  providerUserCache: JSON
-  error: String
-  user: PartialUserBase!
-}
-
-type Notification {
-  id: Int!
-  message: String!
-  userId: Float!
-  dismissed: Boolean!
-  route: String
-  createdAt: Date!
-  updatedAt: Date!
-  user: PartialUserBase
-}
-
-type Session {
-  id: Int!
-  userId: Float!
-  scopes: String!
-  type: String!
-  expiredAt: DateTimeISO
-  name: String
-  info: SessionInfo
-  oauthAppId: String
-}
-
-type SessionInfo {
-  accessedFrom: [AccessedFrom!]!
-}
-
-type AccessedFrom {
-  ip: String!
-  userAgent: String
-  isp: String
-  location: String
-  date: String!
-  asn: Float
 }
 
 type Friend {
@@ -394,22 +405,229 @@ enum FriendStatus {
 
 type PartialUserFriend {
   username: String!
-  id: Float!
+  id: Int!
   createdAt: Date!
   administrator: Boolean!
   moderator: Boolean!
   avatar: String
   bot: Boolean!
+  legacy: Boolean!
+  badges: [Badge!]!
+  notifications: [Notification!]!
+  integrations: [Integration!]!
+  domain: [Domain!]!
+  subscription: [TPUSubscription!]!
+  plan: Plan!
+  autoCollectRules: AutoCollectRule!
+  stats: Stats!
+  friends: [Friend!]!
+  mutualCollections: [Collection!]!
+  friend: FriendStatus!
   status: UserStatus!
   nameColor: String
   nickname: FriendNickname
   blocked: Boolean
+  platforms: [Platform!]
+}
+
+type Collection {
+  id: Int!
+  createdAt: Date!
+  updatedAt: Date!
+  name: String!
+
+  """
+  Please use field `banner` instead if you want to obtain the banner for a collection.
+  """
+  image: String
+  userId: Float!
+  shareLink: String
+  avatar: String
+
+  """
+  The recommended way to obtain the banner for a collection, it uses field `image`, and if null, falls back to the last added image preview.
+  """
+  banner: String
+  user: PartialUserBase!
+  preview: CollectionItem
+  users: [CollectionUser!]!
+  recipient: CollectionUser
+  autoCollectApprovals: [AutoCollectApproval!]!
+  shared: Boolean
+  itemCount: Int
+  attachments: [Upload!]!
+  permissionsMetadata: PermissionsMetadata!
+
+  """Used for the frontend for new collections on WebSocket event."""
+  new: Boolean
+}
+
+type CollectionItem {
+  id: Int!
+  collectionId: Float!
+  attachmentId: Float!
+  userId: Float!
+
+  """
+  Used to prevent duplicates by forming `uploadId-collectionId`. Can be null for items created before October 2022.
+  """
+  identifier: String
+  createdAt: Date!
+  updatedAt: Date!
+  pinned: Boolean!
+  user: PartialUserBase!
+  collection: Collection!
+  attachment: Upload!
+}
+
+type Upload {
+  id: Int!
+  createdAt: Date!
+  updatedAt: Date!
+  attachment: String!
+  userId: Float!
+  name: String
+  originalFilename: String
+  type: String!
+  urlRedirect: String @deprecated(reason: "URL redirects were removed in TPUv2/NEXT.")
+  fileSize: Float!
+
+  """
+  Non-deletable items are used for profile pictures, banners, etc and are not visible in the Gallery page by default, and cannot be deleted.
+  """
+  deletable: Boolean!
+
+  """This is used for OCR scanned text from images."""
+  textMetadata: String
+  user: PartialUserBase
+  item: CollectionItem
+  collections: [Collection!]!
+  items: [CollectionItem!]!
+  starred: Star
+  autoCollectApproval: AutoCollectApproval
+}
+
+type Star {
+  id: Int!
+  userId: Float!
+  attachmentId: Float!
+  createdAt: Date!
+  updatedAt: Date!
+  user: PartialUserBase!
+  attachment: Upload!
+}
+
+type AutoCollectApproval {
+  id: Int!
+  autoCollectRuleId: Int!
+  uploadId: Float!
+  collectionId: Int!
+  userId: Int!
+  approved: Boolean!
+  user: PartialUserBase
+  collection: Collection
+  autoCollectRule: AutoCollectRule
+  attachment: Upload
+}
+
+type CollectionUser {
+  id: Int!
+  createdAt: Date!
+  updatedAt: Date!
+  collectionId: Float!
+  read: Boolean!
+  write: Boolean!
+  configure: Boolean!
+  accepted: Boolean!
+  recipientId: Float
+  senderId: Float
+  identifier: String
+  collection: Collection
+  user: PartialUserBase
+  sender: PartialUserBase
+}
+
+type PermissionsMetadata {
+  write: Boolean!
+  read: Boolean!
+  configure: Boolean!
+}
+
+type FriendNickname {
+  id: Int!
+  userId: Float!
+  createdAt: Date!
+  updatedAt: Date!
+  friendId: Float!
+  nickname: String!
+  user: PartialUserBase!
+  friend: PartialUserBase!
+}
+
+type Platform {
+  platform: PlatformType!
+  id: String!
+  lastSeen: String!
+  status: UserStatus!
+}
+
+"""Platform type of user device."""
+enum PlatformType {
+  DESKTOP
+  WEB
+  MOBILE
+}
+
+type Experiment {
+  key: String!
+  value: String!
+  userId: Float!
+  user: PartialUserBase!
+}
+
+type Session {
+  id: Int!
+
+  """Only populated for `API` type sessions on `currentUser`."""
+  token: String
+  createdAt: Date
+  updatedAt: Date
+  userId: Float!
+  scopes: String!
+  type: SessionType!
+  expiredAt: DateTimeISO
+  name: String
+  info: SessionInfo
+  oauthAppId: String
+}
+
+enum SessionType {
+  API
+  WEB_SESSION
+  OAUTH
+}
+
+type SessionInfo {
+  accessedFrom: [AccessedFrom!]!
+}
+
+type AccessedFrom {
+  ip: String!
+  userAgent: String
+  isp: String
+  location: String
+  date: String!
+  asn: Float
+}
+
+input SessionInput {
+  type: SessionType!
 }
 
 type PartialUserPublic {
   bot: Boolean!
   username: String!
-  id: Float!
+  id: Int!
   createdAt: Date!
   administrator: Boolean!
   moderator: Boolean!
@@ -427,20 +645,14 @@ type PartialUserPublic {
   publicProfile: Boolean!
   quota: Float!
   stats: Stats
-  themeEngine: ThemeEngine
+  themeEngine: JSON
   xp: Float
+  mutualCollections: [Collection!]!
   notifications: [Notification!]!
   integrations: [Integration!]!
   domain: [Domain!]!
   subscription: [TPUSubscription!]!
   autoCollectRules: AutoCollectRule!
-}
-
-type Platform {
-  platform: String!
-  id: String!
-  lastSeen: String!
-  status: String!
 }
 
 type ProfileLayout {
@@ -481,49 +693,6 @@ type ProfileLayoutPropLink {
 type ProfileLayoutConfig {
   containerMargin: Float
   showStatsSidebar: Boolean!
-}
-
-type ThemeEngine {
-  theme: ThemeEngineThemes!
-  fluidGradient: Boolean!
-  gradientOffset: String!
-  defaults: ThemeEngineThemes
-  version: Float!
-  deviceSync: Boolean!
-  showOnProfile: Boolean!
-  baseTheme: String!
-  customCSS: String
-}
-
-type ThemeEngineThemes {
-  dark: ThemeEngineTheme!
-  light: ThemeEngineTheme!
-  amoled: ThemeEngineTheme!
-}
-
-type ThemeEngineTheme {
-  colors: ThemeEngineColors!
-  dark: Boolean
-}
-
-type ThemeEngineColors {
-  primary: String!
-  logo1: String!
-  logo2: String!
-  secondary: String!
-  accent: String!
-  error: String!
-  info: String!
-  success: String!
-  warning: String!
-  card: String!
-  toolbar: String!
-  sheet: String!
-  text: String!
-  dark: String!
-  gold: String!
-  background: String!
-  background2: String!
 }
 
 input UserProfileInput {
@@ -597,21 +766,21 @@ type Announcement {
 type CoreStats {
   users: Float!
   announcements: Float!
-  usage: Float!
+  usage: Float
   collections: Float!
   collectionItems: Float!
-  uploadGraph: DataLabelsGraph!
-  messageGraph: DataLabelsGraph!
-  pulseGraph: DataLabelsGraph!
+  uploadGraph: DataLabelsGraph
+  messageGraph: DataLabelsGraph
+  pulseGraph: DataLabelsGraph
   uploads: Float!
   pulse: Float!
   pulses: Float!
   docs: Float!
+  hours: JSON
+  messages: Float!
   invites: Float!
   inviteMilestone: Float!
-  messages: Float!
   chats: Float!
-  hours: [String!]
 }
 
 type Maintenance {
@@ -651,6 +820,7 @@ type Weather {
   description: String
   main: String
   location: String
+  name: String
 }
 
 type ExperimentType {
@@ -664,110 +834,6 @@ type ExperimentType {
 type PaginatedCollectionResponse {
   items: [Collection!]!
   pager: Pager!
-}
-
-type Collection {
-  id: Int!
-  name: String!
-  image: String
-  userId: Float!
-  shareLink: String
-  user: PartialUserBase!
-  preview: CollectionItem
-  users: [CollectionUser!]!
-  recipient: CollectionUser
-  autoCollectApprovals: [AutoCollectApproval!]!
-  shared: Boolean
-  itemCount: Int
-  attachments: [Upload!]!
-  permissionsMetadata: PermissionsMetadata!
-}
-
-type CollectionItem {
-  id: Int!
-  collectionId: Float!
-  attachmentId: Float!
-  userId: Float!
-
-  """
-  Used to prevent duplicates by forming `uploadId-collectionId`. Can be null for items created before October 2022.
-  """
-  identifier: String
-  pinned: Boolean!
-  user: PartialUserBase!
-  collection: Collection!
-  attachment: Upload!
-}
-
-type Upload {
-  id: Int!
-  createdAt: Date!
-  updatedAt: Date!
-  attachment: String!
-  userId: Float!
-  name: String
-  originalFilename: String
-  type: String!
-  urlRedirect: String @deprecated(reason: "URL redirects were removed in TPUv2/NEXT.")
-  fileSize: Float!
-
-  """
-  Non-deletable items are used for profile pictures, banners, etc and are not visible in the Gallery page.
-  """
-  deletable: Boolean!
-
-  """This is used for OCR scanned text from images."""
-  textMetadata: String
-  user: PartialUserBase
-  item: CollectionItem
-  collections: [Collection!]!
-  items: [CollectionItem!]!
-  starred: Star
-  autoCollectApproval: AutoCollectApproval
-}
-
-type Star {
-  id: Int!
-  userId: Float!
-  attachmentId: Float!
-  user: PartialUserBase!
-  attachment: Upload!
-}
-
-type AutoCollectApproval {
-  id: Int!
-  autoCollectRuleId: Float!
-  uploadId: Float!
-  collectionId: Float!
-  userId: Float!
-  approved: Boolean!
-  user: PartialUserBase
-  collection: Collection
-  autoCollectRule: AutoCollectRule
-  attachment: Upload
-}
-
-type CollectionUser {
-  id: Int!
-  createdAt: Date!
-  updatedAt: Date!
-  collectionId: Float!
-  read: Boolean!
-  write: Boolean!
-  configure: Boolean!
-  accepted: Boolean!
-  recipientId: Float
-  senderId: Float
-  identifier: String
-  collection: Collection
-  user: PartialUserBase
-  sender: PartialUserBase
-}
-
-type PermissionsMetadata {
-  write: Boolean!
-  read: Boolean!
-  configure: Boolean!
 }
 
 type Pager {
@@ -787,6 +853,7 @@ input UserCollectionsInput {
   search: String
   limit: Float
   page: Float! = 1
+  onlyInvited: Boolean! = false
 }
 
 """The type of collection"""
@@ -840,13 +907,15 @@ enum GalleryFilter {
   OTHER
   PASTE
   INCLUDE_METADATA
-  INCLUDE_DELETABLE
+  INCLUDE_UNDELETABLE
+  ONLY_UNDELETABLE
 }
 
 """The sort to apply to the gallery request"""
 enum GallerySort {
   CREATED_AT
   UPDATED_AT
+  ADDED_AT
   NAME
   SIZE
 }
@@ -1017,7 +1086,7 @@ type Message {
   userId: Int
   content: String
   type: MessageType
-  embeds: [Embed!]!
+  embeds: [EmbedDataV2!]!
   edited: Boolean!
   editedAt: Date
   replyId: Int
@@ -1027,7 +1096,9 @@ type Message {
   reply: Message
   legacyUser: PartialUserBase
   user: PartialUserBase
-  readReceipts: [ChatAssociation!]!
+  pending: Boolean!
+  error: Boolean!
+  readReceipts: [ReadReceipt!]!
   chat: Chat!
   emoji: [ChatEmoji!]
 }
@@ -1045,9 +1116,67 @@ enum MessageType {
   SYSTEM
 }
 
-type Embed {
-  type: String!
-  data: JSON
+type EmbedDataV2 {
+  media: [EmbedMedia!]
+  text: [EmbedText!]
+  metadata: EmbedMetadata!
+  version: EmbedVersion!
+}
+
+type EmbedMedia {
+  url: String
+  proxyUrl: String
+  attachment: String
+  width: Float
+  height: Float
+  isInternal: Boolean!
+  upload: Upload
+  mimeType: String
+  type: EmbedMediaType!
+
+  """Used for trusted video embed sources, such as YouTube."""
+  videoEmbedUrl: String
+}
+
+enum EmbedMediaType {
+  IMAGE
+  VIDEO
+  AUDIO
+  FILE
+}
+
+type EmbedText {
+  imageProxyUrl: String
+  text: String!
+  heading: Boolean
+  imageUrl: String
+}
+
+type EmbedMetadata {
+  url: String
+  siteName: String
+  siteIcon: String
+  footer: String
+  type: Float!
+
+  """Used for chat invites, and other embeds."""
+  id: String
+
+  """Used for NSFW embeds and content."""
+  restricted: Boolean
+}
+
+enum EmbedVersion {
+  COLUBRINA
+  V1
+  V2
+}
+
+type ReadReceipt {
+  chatId: Int!
+  associationId: Int!
+  messageId: Int!
+  user: PartialUserBase!
 }
 
 type ChatEmoji {
@@ -1082,7 +1211,7 @@ type LookupPrefix {
 }
 
 input LookupPrefixInput {
-  chatAssociationId: Float!
+  chatAssociationId: Int!
   prefix: String!
 }
 
@@ -1333,30 +1462,51 @@ enum AuditLogActionType {
 }
 
 input AuditLogInput {
-  associationId: Float!
+  associationId: Int!
   page: Float! = 1
   limit: Float! = 24
 }
 
+input AutoCollectRuleQueryInput {
+  id: Int!
+}
+
 type Mutation {
   updateUser(input: UpdateUserInput!): Boolean!
+  updateStatus(input: UpdateUserStatusInput!): UserStoredStatus!
   changeUserPassword(input: ChangePasswordInput!): Boolean!
   changeUsername(input: ChangeUsernameInput!): Boolean!
   changeUserEmail(input: ChangeEmailInput!): Boolean!
+  verifyEmail(token: String!): Boolean!
+  resendVerificationEmail: Boolean!
   login(input: LoginInput!): LoginResponse!
   logout: Boolean!
   register(input: RegisterInput!): LoginResponse!
   setExperiment(input: SetExperimentInput!): Experiment!
-  upload(file: File!): Upload!
+  createCollection(input: CreateCollectionInput!): Collection!
+  updateCollection(input: UpdateCollectionInput!): Collection!
+  updateCollectionUserPermissions(input: UpdateCollectionUserPermissionsInput!): CollectionUser!
+  addCollectionUser(input: UpdateCollectionUserPermissionsInput!): CollectionUser!
+  removeCollectionUser(input: RemoveCollectionUserInput!): GenericSuccessObject!
+  transferCollectionOwnership(input: TransferCollectionOwnershipInput!): GenericSuccessObject!
+  actOnCollectionInvite(input: AcceptCollectionInviteInput!): GenericSuccessObject!
+  leaveCollection(input: LeaveCollectionInput!): GenericSuccessObject!
+  applyDomain(domainId: Int!): Domain!
+  deleteUploads(input: DeleteUploadInput!): GenericSuccessObject!
+  updateUpload(input: UpdateUploadInput!): Upload!
+  onStarUpload(input: StarUploadInput!): StarUploadResponse!
   createChat(input: CreateChatInput!): Chat!
   updateChat(input: UpdateChatInput!): Chat!
   deleteGroup(input: DangerZoneChatInput!): GenericSuccessObject!
   transferGroupOwnership(input: TransferOwnershipInput!): Chat!
+  typing(input: Float!): Boolean!
+  cancelTyping(input: Float!): Boolean!
   addChatUsers(input: AddChatUser!): GenericSuccessObject!
   toggleUserRank(input: AddRank!): GenericSuccessObject!
   leaveChat(input: LeaveChatInput!): GenericSuccessObject!
   joinChatFromInvite(input: JoinChatFromInviteInput!): ChatAssociation!
   addBotToChat(input: AddBotToChatInput!): ChatAssociation!
+  readChat(input: ReadChatInput!): GenericSuccessObject!
 
   """Create a new Workspace Folder."""
   createWorkspaceFolder(input: CreateWorkspaceFolderInput!): WorkspaceFolder!
@@ -1377,12 +1527,21 @@ type Mutation {
     """ID of Note"""
     input: Int!
   ): Note!
+  friend(input: AddFriendInput!): Boolean!
   sendMessage(input: SendMessageInput!): Message!
+  editMessage(input: EditMessageInput!): Message
+  deleteMessage(input: DeleteMessageInput!): Boolean!
   updateChatRank(input: UpdateRank!): ChatRank!
   addChatRank(input: CreateRank!): ChatRank!
   updateChatRankOrder(input: UpdateRankOrder!): [ChatRank!]!
   deleteChatRank(input: DeleteRank!): GenericSuccessObject!
+  actOnAutoCollects(input: ActOnAutoCollectsInput!): GenericSuccessObject!
+  addToCollection(input: AddToCollectionInput!): [CollectionItem!]!
+  removeFromCollection(input: AddToCollectionInput!): Int!
   adminMigrateLegacyRanksForChat: GenericSuccessObject!
+  adminSendEmailForUnverifiedUsers: GenericSuccessObject!
+  adminClearCache(input: ClearCacheInput!): GenericSuccessObject!
+  adminDebugBatch: GenericSuccessObject!
   blockUser(input: BlockUserInput!): GenericSuccessObject!
   createChatInvite(input: CreateInviteInput!): ChatInvite!
   invalidateChatInvite(input: InvalidateInviteInput!): GenericSuccessObject!
@@ -1399,6 +1558,10 @@ type Mutation {
   registerBotCommands(input: RegisterCommands!): GenericSuccessObject!
   updateEmoji(input: UpdateEmojiInput!): ChatEmoji!
   deleteEmoji(input: DeleteEmojiInput!): GenericSuccessObject!
+  createPulse(input: PulseInput!): String!
+  createSinglePulse(input: SinglePulseInput!): String!
+  updatePulse(input: PulseUpdateInput!): String!
+  embedResolutionPrecache(input: EmbedPrecacheInput!): EmbedDataV2
 }
 
 input UpdateUserInput {
@@ -1421,6 +1584,10 @@ input UpdateUserInput {
   groupPrivacy: UserGroupPrivacy
   pulse: Boolean
   friendRequests: UserFriendRequestPrivacy
+}
+
+input UpdateUserStatusInput {
+  storedStatus: UserStoredStatus!
 }
 
 input ChangePasswordInput {
@@ -1486,8 +1653,72 @@ input SetExperimentInput {
   userId: Int
 }
 
-"""File custom scalar type"""
-scalar File
+input CreateCollectionInput {
+  name: String!
+}
+
+input UpdateCollectionInput {
+  collectionId: Int!
+  name: String
+  shareLink: Boolean
+}
+
+input UpdateCollectionUserPermissionsInput {
+  userId: Int!
+  collectionId: Int!
+  read: Boolean!
+  write: Boolean!
+  configure: Boolean!
+}
+
+type GenericSuccessObject {
+  success: Boolean!
+}
+
+input RemoveCollectionUserInput {
+  userId: Int!
+  collectionId: Int!
+}
+
+input TransferCollectionOwnershipInput {
+  """You may use either 2FA token or password to delete the chat."""
+  password: String
+
+  """
+  TOTP/2FA code if enabled. You may use either 2FA token or password to delete the chat.
+  """
+  totp: String
+  userId: Int!
+  collectionId: Int!
+}
+
+input AcceptCollectionInviteInput {
+  collectionId: Int!
+  accept: Boolean!
+}
+
+input LeaveCollectionInput {
+  collectionId: Int!
+}
+
+input DeleteUploadInput {
+  items: [Float!]!
+}
+
+input UpdateUploadInput {
+  uploadId: Int!
+  name: String!
+}
+
+type StarUploadResponse {
+  status: Boolean!
+  star: Star
+}
+
+input StarUploadInput {
+  """The upload's attachment ID, not numerical ID, such as 1d7fe21g3jd1.png"""
+  attachment: String!
+}
 
 input CreateChatInput {
   users: [Float!]!
@@ -1508,10 +1739,6 @@ input UpdateChatInput {
   """
   background: String
   description: String
-}
-
-type GenericSuccessObject {
-  success: Boolean!
 }
 
 """Used for deleting chats and transferring ownership."""
@@ -1567,9 +1794,13 @@ input JoinChatFromInviteInput {
 }
 
 input AddBotToChatInput {
-  associationId: Float!
+  associationId: Int!
   botAppId: String!
   permissions: [String!]!
+}
+
+input ReadChatInput {
+  associationId: Int!
 }
 
 input CreateWorkspaceFolderInput {
@@ -1607,11 +1838,28 @@ input CreateNoteInput {
   name: String!
 }
 
+input AddFriendInput {
+  """Can use `userId` or `username`"""
+  userId: Int
+
+  """Can use `userId` or `username`"""
+  username: String
+
+  """If null, it works as a toggle. This is for explicit actions."""
+  action: FriendAction
+}
+
+enum FriendAction {
+  SEND
+  REMOVE
+  ACCEPT
+}
+
 input SendMessageInput {
   content: String!
-  associationId: Float!
+  associationId: Int!
   attachments: [String!]! = []
-  replyId: Float
+  replyId: Int
   embeds: [EmbedInput!]
 }
 
@@ -1628,6 +1876,20 @@ input EmbedInput {
 
 input InteractiveGraphInput {
   type: String!
+}
+
+input EditMessageInput {
+  content: String
+  attachments: [String!]! = []
+  messageId: Int!
+  embeds: [EmbedInput!]
+  associationId: Int!
+  pinned: Boolean
+}
+
+input DeleteMessageInput {
+  messageId: Int!
+  associationId: Int!
 }
 
 input UpdateRank {
@@ -1656,6 +1918,42 @@ input UpdateRankOrder {
 input DeleteRank {
   associationId: Int!
   rankId: String!
+}
+
+input ActOnAutoCollectsInput {
+  items: [Int!]!
+  action: AutoCollectAction!
+}
+
+enum AutoCollectAction {
+  APPROVE
+  REJECT
+}
+
+input AddToCollectionInput {
+  collectionId: Float!
+  items: [Float!]!
+}
+
+input ClearCacheInput {
+  userId: Int
+  type: AdminCacheType!
+  await: Boolean = false
+}
+
+"""The type of cache to clear"""
+enum AdminCacheType {
+  everything
+  state
+  collections
+  sharelinks
+  autocollects
+  invites
+  chats
+  insights
+  userstats
+  lastfm
+  mal
 }
 
 input BlockUserInput {
@@ -1704,6 +2002,7 @@ input UpdateAppInput {
   private: Boolean!
   verified: Boolean!
   id: String!
+  scopes: [String!]
 }
 
 input CreateBotInput {
@@ -1739,10 +2038,126 @@ input RegisterCommand {
 input UpdateEmojiInput {
   id: String!
   name: String!
-  associationId: Float!
+  associationId: Int!
 }
 
 input DeleteEmojiInput {
   id: String!
-  associationId: Float!
+  associationId: Int!
+}
+
+input PulseInput {
+  type: String!
+  id: String
+  action: String!
+  route: String!
+  device: String!
+  sysInfo: PulseUserAgent!
+  name: String
+  other: JSON
+}
+
+input PulseUserAgent {
+  ua: String!
+}
+
+input SinglePulseInput {
+  type: String!
+  id: String
+  action: String!
+  route: String!
+  device: String!
+  sysInfo: PulseUserAgent!
+  name: String
+  other: JSON
+  timeSpent: Float!
+}
+
+input PulseUpdateInput {
+  id: String!
+  timeSpent: Float!
+}
+
+input EmbedPrecacheInput {
+  url: String
+  attachment: String
+}
+
+type Subscription {
+  onUserStatus: StatusEvent!
+  onCollectionUserAdded(input: FilterCollectionInput): CollectionUser!
+  onCollectionUpdated(input: FilterCollectionInput): Collection!
+  onCollectionRemoved(input: FilterCollectionInput): Int!
+  onCollectionCreated: Collection!
+  onCollectionUserRemoved(input: FilterCollectionInput): CollectionUser!
+  onCollectionUserUpdated(input: FilterCollectionInput): CollectionUser!
+  onCollectionInviteCount: Int!
+  onDeleteUpload: Int!
+  onUpdateUploads: [Upload!]!
+  onCreateUpload(input: GalleryInput): CreateUploadEvent!
+  onTyping: ChatTypingEvent!
+  onCancelTyping: ChatTypingEvent!
+
+  """Returns the chat association ID"""
+  onReadChat: Int!
+  onMessage(input: SubscriptionMessageInput): MessageSubscription!
+  onEditMessage(input: SubscriptionMessageInput): EditMessageEvent!
+  onReadReceipt: ReadReceipt!
+  onDeleteMessage(input: SubscriptionMessageInput): DeleteMessage!
+  onAutoCollectApproval: AutoCollectApprovalEvent!
+}
+
+type StatusEvent {
+  id: Int!
+  status: UserStatus!
+  platforms: [Platform!]!
+}
+
+input FilterCollectionInput {
+  collectionId: Int
+}
+
+type CreateUploadEvent {
+  url: String!
+  upload: Upload!
+}
+
+type ChatTypingEvent {
+  chatId: Float!
+  user: PartialUserFriend!
+  expires: Float
+}
+
+type MessageSubscription {
+  message: Message
+  associationId: Int!
+  mention: Boolean!
+  chat: Chat!
+}
+
+input SubscriptionMessageInput {
+  associationId: Int
+  chatId: Int
+}
+
+type EditMessageEvent {
+  associationId: Int!
+  message: Message!
+}
+
+type DeleteMessage {
+  id: Int!
+  associationId: Int!
+  chatId: Int!
+}
+
+type AutoCollectApprovalEvent {
+  type: AutoCollectApprovalType!
+  autoCollectApproval: AutoCollectApproval!
+}
+
+enum AutoCollectApprovalType {
+  NEW
+  APPROVED
+  DENIED
 }

@@ -4,8 +4,8 @@
 import ApolloAPI
 
 public extension Objects {
-  static let Embed = Object(
-    typename: "Embed",
+  static let EmbedMetadata = Object(
+    typename: "EmbedMetadata",
     implementedInterfaces: []
   )
 }
