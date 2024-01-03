@@ -112,7 +112,7 @@ public class ChatsQuery: GraphQLQuery {
           public static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
             .field("username", String.self),
-            .field("id", Double.self),
+            .field("id", Int.self),
             .field("createdAt", PrivateUploaderAPI.Date.self),
             .field("administrator", Bool.self),
             .field("moderator", Bool.self),
@@ -120,7 +120,7 @@ public class ChatsQuery: GraphQLQuery {
           ] }
 
           public var username: String { __data["username"] }
-          public var id: Double { __data["id"] }
+          public var id: Int { __data["id"] }
           public var createdAt: PrivateUploaderAPI.Date { __data["createdAt"] }
           public var administrator: Bool { __data["administrator"] }
           public var moderator: Bool { __data["moderator"] }
@@ -171,7 +171,7 @@ public class ChatsQuery: GraphQLQuery {
           public static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
             .field("username", String.self),
-            .field("id", Double.self),
+            .field("id", Int.self),
             .field("createdAt", PrivateUploaderAPI.Date.self),
             .field("administrator", Bool.self),
             .field("moderator", Bool.self),
@@ -179,7 +179,7 @@ public class ChatsQuery: GraphQLQuery {
           ] }
 
           public var username: String { __data["username"] }
-          public var id: Double { __data["id"] }
+          public var id: Int { __data["id"] }
           public var createdAt: PrivateUploaderAPI.Date { __data["createdAt"] }
           public var administrator: Bool { __data["administrator"] }
           public var moderator: Bool { __data["moderator"] }
@@ -198,7 +198,7 @@ public class ChatsQuery: GraphQLQuery {
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("username", String.self),
-          .field("id", Double.self),
+          .field("id", Int.self),
           .field("createdAt", PrivateUploaderAPI.Date.self),
           .field("administrator", Bool.self),
           .field("moderator", Bool.self),
@@ -206,7 +206,7 @@ public class ChatsQuery: GraphQLQuery {
         ] }
 
         public var username: String { __data["username"] }
-        public var id: Double { __data["id"] }
+        public var id: Int { __data["id"] }
         public var createdAt: PrivateUploaderAPI.Date { __data["createdAt"] }
         public var administrator: Bool { __data["administrator"] }
         public var moderator: Bool { __data["moderator"] }

@@ -5,7 +5,7 @@
 
 public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
   public static var fragmentDefinition: StaticString {
-    #"fragment StandardMessage on Message { __typename id createdAt updatedAt chatId userId content type emoji { __typename name icon id chatId } reply { __typename readReceipts { __typename id userId lastRead legacyUserId } content userId id legacyUserId embeds { __typename type } legacyUser { __typename username id avatar } user { __typename username id avatar } } legacyUser { __typename username id avatar } user { __typename username id avatar } edited editedAt replyId legacyUserId pinned readReceipts { __typename id userId lastRead legacyUserId } }"#
+    #"fragment StandardMessage on Message { __typename id createdAt updatedAt chatId userId content type emoji { __typename name icon id chatId } embeds { __typename ...StandardEmbed } reply { __typename readReceipts { __typename associationId user { __typename id avatar username legacy } messageId } content userId id legacyUserId embeds { __typename metadata { __typename type } media { __typename type } } legacyUser { __typename username id avatar } user { __typename username id avatar } } legacyUser { __typename username id avatar } user { __typename username id avatar } edited editedAt replyId legacyUserId pinned readReceipts { __typename associationId user { __typename id avatar username legacy } messageId } }"#
   }
 
   public let __data: DataDict
@@ -22,6 +22,7 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
     .field("content", String?.self),
     .field("type", GraphQLEnum<PrivateUploaderAPI.MessageType>?.self),
     .field("emoji", [Emoji]?.self),
+    .field("embeds", [Embed].self),
     .field("reply", Reply?.self),
     .field("legacyUser", LegacyUser?.self),
     .field("user", User?.self),
@@ -41,6 +42,7 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
   public var content: String? { __data["content"] }
   public var type: GraphQLEnum<PrivateUploaderAPI.MessageType>? { __data["type"] }
   public var emoji: [Emoji]? { __data["emoji"] }
+  public var embeds: [Embed] { __data["embeds"] }
   public var reply: Reply? { __data["reply"] }
   public var legacyUser: LegacyUser? { __data["legacyUser"] }
   public var user: User? { __data["user"] }
@@ -71,6 +73,31 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
     public var icon: String? { __data["icon"] }
     public var id: String { __data["id"] }
     public var chatId: Int { __data["chatId"] }
+  }
+
+  /// Embed
+  ///
+  /// Parent Type: `EmbedDataV2`
+  public struct Embed: PrivateUploaderAPI.SelectionSet {
+    public let __data: DataDict
+    public init(_dataDict: DataDict) { __data = _dataDict }
+
+    public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedDataV2 }
+    public static var __selections: [ApolloAPI.Selection] { [
+      .field("__typename", String.self),
+      .fragment(StandardEmbed.self),
+    ] }
+
+    public var media: [StandardEmbed.Medium]? { __data["media"] }
+    public var text: [StandardEmbed.Text]? { __data["text"] }
+    public var metadata: StandardEmbed.Metadata { __data["metadata"] }
+
+    public struct Fragments: FragmentContainer {
+      public let __data: DataDict
+      public init(_dataDict: DataDict) { __data = _dataDict }
+
+      public var standardEmbed: StandardEmbed { _toFragment() }
+    }
   }
 
   /// Reply
@@ -104,42 +131,94 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
 
     /// Reply.ReadReceipt
     ///
-    /// Parent Type: `ChatAssociation`
+    /// Parent Type: `ReadReceipt`
     public struct ReadReceipt: PrivateUploaderAPI.SelectionSet {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 
-      public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.ChatAssociation }
+      public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.ReadReceipt }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
-        .field("id", Int.self),
-        .field("userId", Double?.self),
-        .field("lastRead", Double?.self),
-        .field("legacyUserId", Double?.self),
+        .field("associationId", Int.self),
+        .field("user", User.self),
+        .field("messageId", Int.self),
       ] }
 
-      public var id: Int { __data["id"] }
-      public var userId: Double? { __data["userId"] }
-      public var lastRead: Double? { __data["lastRead"] }
-      /// Used for legacy Colubrina accounts.
-      @available(*, deprecated, message: "Use `userId` instead.")
-      public var legacyUserId: Double? { __data["legacyUserId"] }
+      public var associationId: Int { __data["associationId"] }
+      public var user: User { __data["user"] }
+      public var messageId: Int { __data["messageId"] }
+
+      /// Reply.ReadReceipt.User
+      ///
+      /// Parent Type: `PartialUserBase`
+      public struct User: PrivateUploaderAPI.SelectionSet {
+        public let __data: DataDict
+        public init(_dataDict: DataDict) { __data = _dataDict }
+
+        public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PartialUserBase }
+        public static var __selections: [ApolloAPI.Selection] { [
+          .field("__typename", String.self),
+          .field("id", Int.self),
+          .field("avatar", String?.self),
+          .field("username", String.self),
+          .field("legacy", Bool.self),
+        ] }
+
+        public var id: Int { __data["id"] }
+        public var avatar: String? { __data["avatar"] }
+        public var username: String { __data["username"] }
+        public var legacy: Bool { __data["legacy"] }
+      }
     }
 
     /// Reply.Embed
     ///
-    /// Parent Type: `Embed`
+    /// Parent Type: `EmbedDataV2`
     public struct Embed: PrivateUploaderAPI.SelectionSet {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 
-      public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Embed }
+      public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedDataV2 }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
-        .field("type", String.self),
+        .field("metadata", Metadata.self),
+        .field("media", [Medium]?.self),
       ] }
 
-      public var type: String { __data["type"] }
+      public var metadata: Metadata { __data["metadata"] }
+      public var media: [Medium]? { __data["media"] }
+
+      /// Reply.Embed.Metadata
+      ///
+      /// Parent Type: `EmbedMetadata`
+      public struct Metadata: PrivateUploaderAPI.SelectionSet {
+        public let __data: DataDict
+        public init(_dataDict: DataDict) { __data = _dataDict }
+
+        public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedMetadata }
+        public static var __selections: [ApolloAPI.Selection] { [
+          .field("__typename", String.self),
+          .field("type", Double.self),
+        ] }
+
+        public var type: Double { __data["type"] }
+      }
+
+      /// Reply.Embed.Medium
+      ///
+      /// Parent Type: `EmbedMedia`
+      public struct Medium: PrivateUploaderAPI.SelectionSet {
+        public let __data: DataDict
+        public init(_dataDict: DataDict) { __data = _dataDict }
+
+        public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedMedia }
+        public static var __selections: [ApolloAPI.Selection] { [
+          .field("__typename", String.self),
+          .field("type", GraphQLEnum<PrivateUploaderAPI.EmbedMediaType>.self),
+        ] }
+
+        public var type: GraphQLEnum<PrivateUploaderAPI.EmbedMediaType> { __data["type"] }
+      }
     }
 
     /// Reply.LegacyUser
@@ -153,12 +232,12 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("username", String.self),
-        .field("id", Double.self),
+        .field("id", Int.self),
         .field("avatar", String?.self),
       ] }
 
       public var username: String { __data["username"] }
-      public var id: Double { __data["id"] }
+      public var id: Int { __data["id"] }
       public var avatar: String? { __data["avatar"] }
     }
 
@@ -173,12 +252,12 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("username", String.self),
-        .field("id", Double.self),
+        .field("id", Int.self),
         .field("avatar", String?.self),
       ] }
 
       public var username: String { __data["username"] }
-      public var id: Double { __data["id"] }
+      public var id: Int { __data["id"] }
       public var avatar: String? { __data["avatar"] }
     }
   }
@@ -194,12 +273,12 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("__typename", String.self),
       .field("username", String.self),
-      .field("id", Double.self),
+      .field("id", Int.self),
       .field("avatar", String?.self),
     ] }
 
     public var username: String { __data["username"] }
-    public var id: Double { __data["id"] }
+    public var id: Int { __data["id"] }
     public var avatar: String? { __data["avatar"] }
   }
 
@@ -214,36 +293,54 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("__typename", String.self),
       .field("username", String.self),
-      .field("id", Double.self),
+      .field("id", Int.self),
       .field("avatar", String?.self),
     ] }
 
     public var username: String { __data["username"] }
-    public var id: Double { __data["id"] }
+    public var id: Int { __data["id"] }
     public var avatar: String? { __data["avatar"] }
   }
 
   /// ReadReceipt
   ///
-  /// Parent Type: `ChatAssociation`
+  /// Parent Type: `ReadReceipt`
   public struct ReadReceipt: PrivateUploaderAPI.SelectionSet {
     public let __data: DataDict
     public init(_dataDict: DataDict) { __data = _dataDict }
 
-    public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.ChatAssociation }
+    public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.ReadReceipt }
     public static var __selections: [ApolloAPI.Selection] { [
       .field("__typename", String.self),
-      .field("id", Int.self),
-      .field("userId", Double?.self),
-      .field("lastRead", Double?.self),
-      .field("legacyUserId", Double?.self),
+      .field("associationId", Int.self),
+      .field("user", User.self),
+      .field("messageId", Int.self),
     ] }
 
-    public var id: Int { __data["id"] }
-    public var userId: Double? { __data["userId"] }
-    public var lastRead: Double? { __data["lastRead"] }
-    /// Used for legacy Colubrina accounts.
-    @available(*, deprecated, message: "Use `userId` instead.")
-    public var legacyUserId: Double? { __data["legacyUserId"] }
+    public var associationId: Int { __data["associationId"] }
+    public var user: User { __data["user"] }
+    public var messageId: Int { __data["messageId"] }
+
+    /// ReadReceipt.User
+    ///
+    /// Parent Type: `PartialUserBase`
+    public struct User: PrivateUploaderAPI.SelectionSet {
+      public let __data: DataDict
+      public init(_dataDict: DataDict) { __data = _dataDict }
+
+      public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PartialUserBase }
+      public static var __selections: [ApolloAPI.Selection] { [
+        .field("__typename", String.self),
+        .field("id", Int.self),
+        .field("avatar", String?.self),
+        .field("username", String.self),
+        .field("legacy", Bool.self),
+      ] }
+
+      public var id: Int { __data["id"] }
+      public var avatar: String? { __data["avatar"] }
+      public var username: String { __data["username"] }
+      public var legacy: Bool { __data["legacy"] }
+    }
   }
 }
