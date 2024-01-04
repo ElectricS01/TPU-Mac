@@ -5,11 +5,11 @@
 //  Created by ElectricS01  on 6/10/2023.
 //
 
-import SwiftUI
 import Apollo
-import PrivateUploaderAPI
-import KeychainSwift
 import AVKit
+import KeychainSwift
+import PrivateUploaderAPI
+import SwiftUI
 
 let keychain = KeychainSwift()
 
@@ -29,10 +29,10 @@ func formatFileSize(_ size: Double) -> String {
   let byteCountFormatter = ByteCountFormatter()
   byteCountFormatter.allowedUnits = [.useKB, .useMB, .useGB]
   byteCountFormatter.countStyle = .file
-  return byteCountFormatter.string(fromByteCount: Int64(size)) 
+  return byteCountFormatter.string(fromByteCount: Int64(size))
 }
 
-func login(username:String,password:String,totp:String, completion: @escaping (Result<String, Error>) -> Void) {
+func login(username: String, password: String, totp: String, completion: @escaping (Result<String, Error>) -> Void) {
   Network.shared.apollo.perform(mutation: LoginMutation(input: LoginInput(username: username, password: password, totp: GraphQLNullable(stringLiteral: totp)))) { result in
     switch result {
     case .success(let graphQLResult):
@@ -46,7 +46,7 @@ func login(username:String,password:String,totp:String, completion: @escaping (R
 }
 
 func gallery(completion: @escaping (Result<GraphQLResult<GalleryItemsQuery.Data>, Error>) -> Void) {
-  Network.shared.apollo.fetch(query: GalleryItemsQuery(input: GalleryInput(InputDict()))) { result in
+  Network.shared.apollo.fetch(query: GalleryItemsQuery(input: GalleryInput(InputDict())), cachePolicy: .fetchIgnoringCacheData) { result in
     switch result {
     case .success:
       completion(result)
@@ -61,7 +61,7 @@ struct TwoColumnSplitView: View {
   @AppStorage("tapCount") private var tapCount = 0
   @AppStorage("token") var token = ""
   @State var showingLogin = false
-  
+
   var body: some View {
     NavigationSplitView {
       List {
@@ -99,22 +99,23 @@ struct LoginSheet: View {
   @State private var password: String = ""
   @State private var totp: String = ""
   @State private var errorMessage = ""
-  
-  func login () {
+
+  func login() {
     TPU_Mac.login(username: username, password: password, totp: totp) { result in
       switch result {
       case .success(let message):
         errorMessage = message
-        if errorMessage == "Success"{
+        if errorMessage == "Success" {
           dismiss()
         }
       case .failure(let error):
         errorMessage = error.localizedDescription
-      }}
+      }
+    }
   }
-  
+
   var body: some View {
-    VStack{
+    VStack {
       Text("Login")
         .font(.title)
       TextField(
@@ -127,7 +128,7 @@ struct LoginSheet: View {
       .frame(width: 200)
       .textFieldStyle(RoundedBorderTextFieldStyle())
       .fixedSize(horizontal: true, vertical: false)
-      SecureField (
+      SecureField(
         "Password",
         text: $password
       )
@@ -162,7 +163,7 @@ struct LoginSheet: View {
 struct HomeView: View {
   @AppStorage("tapCount") private var tapCount = 0
   @Binding var showingLogin: Bool
-  
+
   var body: some View {
     Text("Welcome to TPU Mac")
       .navigationTitle("Home")
@@ -173,7 +174,7 @@ struct HomeView: View {
       showingLogin = true
     }
     Button("Req") {
-      gallery() { result in
+      gallery { result in
         switch result {
         case .success(let message):
           print(message.data?.gallery.items.count ?? message)
@@ -197,15 +198,15 @@ struct SettingsView: View {
 struct GalleryView: View {
   @State private var galleryItems: [GalleryItemsQuery.Data.Gallery.Item] = []
   @State private var isPlaying: Int = -1
-  
+
   var body: some View {
     ScrollView {
       LazyVGrid(columns: [GridItem(.adaptive(minimum: 316))], spacing: 20) {
         ForEach(galleryItems, id: \.self) { galleryItem in
-          VStack (alignment: .leading) {
+          VStack(alignment: .leading) {
             Text(galleryItem.name ?? "Unknown").font(.title2)
-            HStack (alignment: .center) {
-              if (galleryItem.type == "image") {
+            HStack(alignment: .center) {
+              if galleryItem.type == "image" {
                 AsyncImage(
                   url: URL(string: "https://i.electrics01.com/i/" + galleryItem.attachment)
                 ) { image in
@@ -215,7 +216,7 @@ struct GalleryView: View {
                 } placeholder: {
                   ProgressView()
                 }
-              } else if (galleryItem.type == "video") {
+              } else if galleryItem.type == "video" {
                 if isPlaying != galleryItem.id {
                   Button(action: {
                     if isPlaying == galleryItem.id {
@@ -233,7 +234,7 @@ struct GalleryView: View {
                 if isPlaying == galleryItem.id {
                   let player = AVPlayer(url: URL(string: "https://i.electrics01.com/i/" + galleryItem.attachment)!)
                   VideoPlayer(player: player)
-                    .onAppear() {
+                    .onAppear {
                       player.play()
                     }
                 }
@@ -243,15 +244,15 @@ struct GalleryView: View {
               minWidth: 0,
               maxWidth: .infinity
             )
-            Text("Type: " + (galleryItem.type ))
-            Text("Upload name: " + (galleryItem.attachment ))
+            Text("Type: " + (galleryItem.type))
+            Text("Upload name: " + (galleryItem.attachment))
             if let date = inputDateFormatter.date(from: galleryItem.createdAt) {
               let formattedDate = outputDateFormatter.string(from: date)
               Text("Created at: " + formattedDate)
             } else {
               Text("Created at: Invalid Date")
             }
-            Text("Size: " + (formatFileSize(galleryItem.fileSize )))
+            Text("Size: " + formatFileSize(galleryItem.fileSize))
           }
           .padding()
           .frame(width: 300, height: 300)
@@ -273,9 +274,7 @@ struct GalleryView: View {
             print(error)
           }
         }
-        
       }
-    
   }
 }
 
@@ -283,7 +282,7 @@ struct AboutView: View {
   var body: some View {
     Text("About")
       .navigationTitle("About")
-    Text("TPU Mac version 0.0.2 (3/1/2024)")
+    Text("TPU Mac version 0.0.3 (4/1/2024)")
   }
 }
 
@@ -296,4 +295,3 @@ struct ContentView: View {
 #Preview {
   ContentView()
 }
-

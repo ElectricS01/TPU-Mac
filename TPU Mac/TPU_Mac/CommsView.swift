@@ -5,9 +5,9 @@
 //  Created by ElectricS01  on 3/11/2023.
 //
 
-import SwiftUI
 import Apollo
 import PrivateUploaderAPI
+import SwiftUI
 
 struct CommsView: View {
   @State private var chatsList: [ChatsQuery.Data.Chat] = []
@@ -16,7 +16,7 @@ struct CommsView: View {
   @State private var inputMessage: String = ""
   
   func messages(chat: Int, completion: @escaping (Result<GraphQLResult<MessagesQuery.Data>, Error>) -> Void) {
-    Network.shared.apollo.fetch(query: MessagesQuery(input: InfiniteMessagesInput(associationId: chat, position: GraphQLNullable(ScrollPosition.top), limit: 50 ))) { result in
+    Network.shared.apollo.fetch(query: MessagesQuery(input: InfiniteMessagesInput(associationId: chat, position: GraphQLNullable(ScrollPosition.top), limit: 50)), cachePolicy: .fetchIgnoringCacheData) { result in
       switch result {
       case .success:
         completion(result)
@@ -27,7 +27,7 @@ struct CommsView: View {
     }
   }
   
-  func openChat (chatId: Int?) {
+  func openChat(chatId: Int?) {
     messages(chat: chatId ?? 0) { result in
       switch result {
       case .success(let graphQLResult):
@@ -55,7 +55,7 @@ struct CommsView: View {
   }
   
   func sendMessage() {
-    Network.shared.apollo.perform(mutation: SendMessageMutation(input: SendMessageInput( content: inputMessage, associationId: chatOpen, attachments: [] ))) { result in
+    Network.shared.apollo.perform(mutation: SendMessageMutation(input: SendMessageInput(content: inputMessage, associationId: chatOpen, attachments: []))) { result in
       switch result {
       case .success(let graphQLResult):
         print(graphQLResult)
@@ -69,7 +69,7 @@ struct CommsView: View {
   var body: some View {
     NavigationSplitView {
       List {
-        ForEach(0..<chatsList.count, id: \.self) { result in
+        ForEach(0 ..< chatsList.count, id: \.self) { result in
           Button(chatsList[result].recipient?.username ?? chatsList[result].name) {
             openChat(chatId: chatsList[result].association?.id)
           }
@@ -81,8 +81,8 @@ struct CommsView: View {
           ScrollView {
             VStack(alignment: .leading, spacing: 6) {
               ForEach(chatMessages.reversed(), id: \.self) { message in
-                HStack (alignment: .top, spacing: 6) {
-                  if ((message.user?.avatar) != nil) {
+                HStack(alignment: .top, spacing: 6) {
+                  if (message.user?.avatar) != nil {
                     AsyncImage(
                       url: URL(string: "https://i.electrics01.com/i/" + (message.user?.avatar ?? ""))
                     ) { image in
@@ -127,7 +127,7 @@ struct CommsView: View {
               alignment: .topLeading
             )
             .onAppear {
-              if (chatMessages.count != 0) {
+              if chatMessages.count != 0 {
                 proxy.scrollTo(chatMessages.first?.id)
               }
             }
