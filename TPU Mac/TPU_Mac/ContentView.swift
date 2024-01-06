@@ -282,7 +282,7 @@ struct AboutView: View {
   var body: some View {
     Text("About")
       .navigationTitle("About")
-    Text("TPU Mac version 0.0.3 (4/1/2024)")
+    Text("TPU Mac version 0.0.4 (6/1/2024)")
   }
 }
 

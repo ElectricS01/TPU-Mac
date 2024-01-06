@@ -75,6 +75,7 @@ struct CommsView: View {
           }
         }
       }
+      .padding(EdgeInsets(top: 2, leading: -10, bottom: -8, trailing: 0))
     } detail: {
       if chatOpen != 0 {
         ScrollViewReader { proxy in
