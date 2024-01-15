@@ -11,6 +11,7 @@ import SwiftUI
 
 struct CommsView: View {
   @State private var chatsList: [ChatsQuery.Data.Chat] = []
+  @State private var usersList: [ChatsQuery.Data.Chat] = []
   @State private var chatMessages: [MessagesQuery.Data.Message] = []
   @State private var chatOpen: Int = 0
   @State private var inputMessage: String = ""
@@ -31,7 +32,6 @@ struct CommsView: View {
     messages(chat: chatId ?? 0) { result in
       switch result {
       case .success(let graphQLResult):
-        print(graphQLResult)
         if let unwrapped = graphQLResult.data {
           chatMessages = unwrapped.messages
           chatOpen = chatId ?? 0
@@ -67,16 +67,15 @@ struct CommsView: View {
   }
   
   var body: some View {
-    NavigationSplitView {
+    HSplitView {
       List {
         ForEach(0 ..< chatsList.count, id: \.self) { result in
           Button(chatsList[result].recipient?.username ?? chatsList[result].name) {
             openChat(chatId: chatsList[result].association?.id)
           }
         }
-      }
-      .padding(EdgeInsets(top: 2, leading: -10, bottom: -8, trailing: 0))
-    } detail: {
+      }.frame(width: 150)
+        .padding(EdgeInsets(top: -8, leading: -10, bottom: -8, trailing: 0))
       if chatOpen != 0 {
         ScrollViewReader { proxy in
           ScrollView {
@@ -143,7 +142,15 @@ struct CommsView: View {
             .textFieldStyle(RoundedBorderTextFieldStyle())
         }
       } else {
-        Text("Comms")
+        VStack {
+          Spacer()
+          HStack {
+            Spacer()
+            Text("Comms")
+            Spacer()
+          }
+          Spacer()
+        }
       }
     }
     .navigationTitle("Comms")
@@ -158,6 +165,16 @@ struct CommsView: View {
           print(error)
         }
       }
+    }
+    if usersList != [] {
+      List {
+        ForEach(0 ..< usersList.count, id: \.self) { result in
+          Button(usersList[result].recipient?.username ?? usersList[result].name) {
+            openChat(chatId: usersList[result].association?.id)
+          }
+        }
+      }.frame(width: 150)
+        .padding(EdgeInsets(top: -8, leading: -10, bottom: -8, trailing: 0))
     }
   }
 }

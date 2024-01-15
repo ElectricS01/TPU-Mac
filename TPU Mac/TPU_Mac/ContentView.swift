@@ -58,7 +58,6 @@ func gallery(completion: @escaping (Result<GraphQLResult<GalleryItemsQuery.Data>
 }
 
 struct TwoColumnSplitView: View {
-  @AppStorage("tapCount") private var tapCount = 0
   @AppStorage("token") var token = ""
   @State var showingLogin = false
 
@@ -161,15 +160,11 @@ struct LoginSheet: View {
 }
 
 struct HomeView: View {
-  @AppStorage("tapCount") private var tapCount = 0
   @Binding var showingLogin: Bool
 
   var body: some View {
     Text("Welcome to TPU Mac")
       .navigationTitle("Home")
-    Button("Tap count: \(tapCount)") {
-      tapCount += 1
-    }
     Button("Login") {
       showingLogin = true
     }
@@ -282,7 +277,7 @@ struct AboutView: View {
   var body: some View {
     Text("About")
       .navigationTitle("About")
-    Text("TPU Mac version 0.0.4 (6/1/2024)")
+    Text("TPU Mac version 0.0.5 (15/1/2024)")
   }
 }
 
