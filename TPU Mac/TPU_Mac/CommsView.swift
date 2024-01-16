@@ -11,9 +11,8 @@ import SwiftUI
 
 struct CommsView: View {
   @State private var chatsList: [ChatsQuery.Data.Chat] = []
-  @State private var usersList: [ChatsQuery.Data.Chat] = []
   @State private var chatMessages: [MessagesQuery.Data.Message] = []
-  @State private var chatOpen: Int = 0
+  @State private var chatOpen: Int = -1
   @State private var inputMessage: String = ""
   
   func messages(chat: Int, completion: @escaping (Result<GraphQLResult<MessagesQuery.Data>, Error>) -> Void) {
@@ -29,12 +28,12 @@ struct CommsView: View {
   }
   
   func openChat(chatId: Int?) {
-    messages(chat: chatId ?? 0) { result in
+    messages(chat: chatsList[chatId ?? 0].association?.id ?? 0) { result in
       switch result {
       case .success(let graphQLResult):
         if let unwrapped = graphQLResult.data {
           chatMessages = unwrapped.messages
-          chatOpen = chatId ?? 0
+          chatOpen = chatId ?? -1
         }
       case .failure(let error):
         print(error)
@@ -71,12 +70,12 @@ struct CommsView: View {
       List {
         ForEach(0 ..< chatsList.count, id: \.self) { result in
           Button(chatsList[result].recipient?.username ?? chatsList[result].name) {
-            openChat(chatId: chatsList[result].association?.id)
+            openChat(chatId: result)
           }
         }
       }.frame(width: 150)
         .padding(EdgeInsets(top: -8, leading: -10, bottom: -8, trailing: 0))
-      if chatOpen != 0 {
+      if chatOpen != -1 {
         ScrollViewReader { proxy in
           ScrollView {
             VStack(alignment: .leading, spacing: 6) {
@@ -152,6 +151,16 @@ struct CommsView: View {
           Spacer()
         }
       }
+      if chatOpen != -1 {
+        List {
+          ForEach(0 ..< chatsList[chatOpen].users.count, id: \.self) { result in
+            Button(chatsList[chatOpen].users[result].user?.username ?? "User's name could not be found") {
+              // openChat(chatId: chatsList[chatOpen].users[result].user.id)
+            }
+          }
+        }.frame(width: 150)
+          .padding(EdgeInsets(top: -8, leading: -10, bottom: -8, trailing: 0))
+      }
     }
     .navigationTitle("Comms")
     .onAppear {
@@ -165,16 +174,6 @@ struct CommsView: View {
           print(error)
         }
       }
-    }
-    if usersList != [] {
-      List {
-        ForEach(0 ..< usersList.count, id: \.self) { result in
-          Button(usersList[result].recipient?.username ?? usersList[result].name) {
-            openChat(chatId: usersList[result].association?.id)
-          }
-        }
-      }.frame(width: 150)
-        .padding(EdgeInsets(top: -8, leading: -10, bottom: -8, trailing: 0))
     }
   }
 }
