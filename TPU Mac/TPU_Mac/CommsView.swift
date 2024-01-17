@@ -69,12 +69,21 @@ struct CommsView: View {
     HSplitView {
       List {
         ForEach(0 ..< chatsList.count, id: \.self) { result in
-          Button(chatsList[result].recipient?.username ?? chatsList[result].name) {
-            openChat(chatId: result)
+          Button(action: { openChat(chatId: result) }) {
+            Text(chatsList[result].recipient?.username ?? chatsList[result].name)
+              .lineLimit(1)
+            if chatsList[result].unread != 0 {
+              Text(String(chatsList[result].unread!))
+                .frame(minWidth: 16, minHeight: 16)
+                .background(Color.red)
+                .cornerRadius(10)
+            }
           }
+          .buttonStyle(.plain)
         }
-      }.frame(width: 150)
-        .padding(EdgeInsets(top: -8, leading: -10, bottom: -8, trailing: 0))
+      }
+      .frame(width: 150)
+      .padding(EdgeInsets(top: -8, leading: -10, bottom: -8, trailing: 0))
       if chatOpen != -1 {
         ScrollViewReader { proxy in
           ScrollView {
