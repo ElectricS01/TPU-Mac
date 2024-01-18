@@ -54,7 +54,7 @@ struct CommsView: View {
   }
   
   func sendMessage() {
-    Network.shared.apollo.perform(mutation: SendMessageMutation(input: SendMessageInput(content: inputMessage, associationId: chatOpen, attachments: []))) { result in
+    Network.shared.apollo.perform(mutation: SendMessageMutation(input: SendMessageInput(content: inputMessage, associationId: chatsList[chatOpen].association?.id ?? 0, attachments: []))) { result in
       switch result {
       case .success(let graphQLResult):
         print(graphQLResult)
