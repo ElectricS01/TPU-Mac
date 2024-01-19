@@ -207,7 +207,7 @@ struct GalleryView: View {
                 ) { image in
                   image.resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 268, height: 168)
+                    .frame(width: 268, height: 140)
                 } placeholder: {
                   ProgressView()
                 }
@@ -222,7 +222,7 @@ struct GalleryView: View {
                   }) {
                     Image(systemName: "play.circle.fill")
                       .resizable()
-                      .frame(width: 140, height: 140)
+                      .frame(width: 112, height: 112)
                       .foregroundColor(.white)
                   }
                 }
@@ -233,6 +233,8 @@ struct GalleryView: View {
                       player.play()
                     }
                 }
+              } else if galleryItem.type == "binary" {
+                Image(systemName: "doc.zipper").resizable().aspectRatio(contentMode: .fit).frame(width: 64, height: 64).font(.largeTitle).padding(38)
               }
             }
             .frame(
@@ -248,6 +250,11 @@ struct GalleryView: View {
               Text("Created at: Invalid Date")
             }
             Text("Size: " + formatFileSize(galleryItem.fileSize))
+            Button(action: {
+              NSPasteboard.general.clearContents(); NSPasteboard.general.setString("https://i.electrics01.com/i/" + galleryItem.attachment, forType: .string)
+            }) {
+              Text("Copy Link")
+            }
           }
           .padding()
           .frame(width: 300, height: 300)
@@ -255,6 +262,7 @@ struct GalleryView: View {
           .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
         }
       }
+      .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
     }
     Text("Gallery")
       .navigationTitle("Gallery")
@@ -277,7 +285,7 @@ struct AboutView: View {
   var body: some View {
     Text("About")
       .navigationTitle("About")
-    Text("TPU Mac version 0.0.8 (18/1/2024)")
+    Text("TPU Mac version 0.0.9 (19/1/2024)")
   }
 }
 
