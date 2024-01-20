@@ -45,18 +45,6 @@ func login(username: String, password: String, totp: String, completion: @escapi
   }
 }
 
-func gallery(completion: @escaping (Result<GraphQLResult<GalleryItemsQuery.Data>, Error>) -> Void) {
-  Network.shared.apollo.fetch(query: GalleryItemsQuery(input: GalleryInput(InputDict())), cachePolicy: .fetchIgnoringCacheData) { result in
-    switch result {
-    case .success:
-      completion(result)
-    case .failure(let error):
-      print("Failure! Error: \(error)")
-      completion(result)
-    }
-  }
-}
-
 struct TwoColumnSplitView: View {
   @AppStorage("token") var token = ""
   @State var showingLogin = false
@@ -168,18 +156,6 @@ struct HomeView: View {
     Button("Login") {
       showingLogin = true
     }
-    Button("Req") {
-      gallery { result in
-        switch result {
-        case .success(let message):
-          print(message.data?.gallery.items.count ?? message)
-          print("eee")
-          print(message.errors?[0].message ?? message)
-        case .failure(let error):
-          print(error.localizedDescription)
-        }
-      }
-    }
   }
 }
 
@@ -193,6 +169,19 @@ struct SettingsView: View {
 struct GalleryView: View {
   @State private var galleryItems: [GalleryItemsQuery.Data.Gallery.Item] = []
   @State private var isPlaying: Int = -1
+  @State private var page: Int = 1
+
+  func gallery(completion: @escaping (Result<GraphQLResult<GalleryItemsQuery.Data>, Error>) -> Void) {
+    Network.shared.apollo.fetch(query: GalleryItemsQuery(input: GalleryInput(InputDict(["page": page, "limit": 30]))), cachePolicy: .fetchIgnoringCacheData) { result in
+      switch result {
+      case .success:
+        completion(result)
+      case .failure(let error):
+        print("Failure! Error: \(error)")
+        completion(result)
+      }
+    }
+  }
 
   var body: some View {
     ScrollView {
@@ -202,15 +191,15 @@ struct GalleryView: View {
             Text(galleryItem.name ?? "Unknown").font(.title2)
             HStack(alignment: .center) {
               if galleryItem.type == "image" {
-                AsyncImage(
+                CacheAsyncImage(
                   url: URL(string: "https://i.electrics01.com/i/" + galleryItem.attachment)
                 ) { image in
                   image.resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 268, height: 140)
                 } placeholder: {
                   ProgressView()
                 }
+                .frame(width: 268, height: 140)
               } else if galleryItem.type == "video" {
                 if isPlaying != galleryItem.id {
                   Button(action: {
@@ -263,21 +252,53 @@ struct GalleryView: View {
         }
       }
       .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
-    }
-    Text("Gallery")
-      .navigationTitle("Gallery")
-      .onAppear {
-        gallery { result in
-          switch result {
-          case .success(let graphQLResult):
-            if let unwrapped = graphQLResult.data {
-              galleryItems = unwrapped.gallery.items
+      HStack{
+        Button(action: {
+          page += 1
+          gallery { result in
+            switch result {
+            case .success(let graphQLResult):
+              if let unwrapped = graphQLResult.data {
+                galleryItems = unwrapped.gallery.items
+              }
+            case .failure(let error):
+              print(error)
             }
-          case .failure(let error):
-            print(error)
           }
+        }) {
+          Text("Next Page")
+        }
+        Button(action: {
+          page -= 1
+          gallery { result in
+            switch result {
+            case .success(let graphQLResult):
+              if let unwrapped = graphQLResult.data {
+                galleryItems = unwrapped.gallery.items
+              }
+            case .failure(let error):
+              print(error)
+            }
+          }
+        }) {
+          Text("Last Page")
         }
       }
+      .padding(EdgeInsets(top: 0, leading: 0, bottom: 10, trailing: 0))
+    }
+    .navigationTitle("Gallery")
+    .onAppear {
+      gallery { result in
+        switch result {
+        case .success(let graphQLResult):
+          if let unwrapped = graphQLResult.data {
+            galleryItems = unwrapped.gallery.items
+          }
+        case .failure(let error):
+          print(error)
+        }
+      }
+    }
   }
 }
 
@@ -285,7 +306,7 @@ struct AboutView: View {
   var body: some View {
     Text("About")
       .navigationTitle("About")
-    Text("TPU Mac version 0.0.9 (19/1/2024)")
+    Text("TPU Mac version 0.0.10 (20/1/2024)")
   }
 }
 
