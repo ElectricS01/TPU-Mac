@@ -45,8 +45,7 @@ func login(username: String, password: String, totp: String, completion: @escapi
   }
 }
 
-struct TwoColumnSplitView: View {
-  @AppStorage("token") var token = ""
+struct ContentView: View {
   @State var showingLogin = false
 
   var body: some View {
@@ -153,7 +152,7 @@ struct HomeView: View {
   var body: some View {
     Text("Welcome to TPU Mac")
       .navigationTitle("Home")
-    Button("Login") {
+    Button("Backup Login") {
       showingLogin = true
     }
   }
@@ -162,6 +161,7 @@ struct HomeView: View {
 struct SettingsView: View {
   var body: some View {
     Text("Settings")
+    Text("Coming soon")
       .navigationTitle("Settings")
   }
 }
@@ -252,7 +252,7 @@ struct GalleryView: View {
         }
       }
       .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
-      HStack{
+      HStack {
         Button(action: {
           page += 1
           gallery { result in
@@ -306,13 +306,9 @@ struct AboutView: View {
   var body: some View {
     Text("About")
       .navigationTitle("About")
-    Text("TPU Mac version 0.0.10 (20/1/2024)")
-  }
-}
-
-struct ContentView: View {
-  var body: some View {
-    TwoColumnSplitView()
+    Text("TPU Mac version 0.0.11 (21/1/2024)")
+    Text("Made by ElectricS01")
+    Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
   }
 }
 

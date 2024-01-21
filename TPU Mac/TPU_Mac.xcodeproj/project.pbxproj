@@ -114,16 +114,16 @@
 		C45099132ACFFA7F00FA9247 /* TPU_Mac */ = {
 			isa = PBXGroup;
 			children = (
+				C45099142ACFFA7F00FA9247 /* TPU_MacApp.swift */,
 				C4569DF62AD1828300F17C06 /* Network.swift */,
 				C4FE71552AD3F41B003E4DC0 /* AuthorisationInterceptor.swift */,
-				C45099142ACFFA7F00FA9247 /* TPU_MacApp.swift */,
+				C4FE71572AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift */,
 				C45099162ACFFA7F00FA9247 /* ContentView.swift */,
+				C4D7E5052AF4D4FC008308CA /* CommsView.swift */,
+				C4B732B22B5B7A0C009EC113 /* CacheAsyncImage.swift */,
 				C45099182ACFFA8100FA9247 /* Assets.xcassets */,
 				C450991A2ACFFA8100FA9247 /* TPU_Mac.entitlements */,
 				C450991B2ACFFA8100FA9247 /* Preview Content */,
-				C4FE71572AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift */,
-				C4D7E5052AF4D4FC008308CA /* CommsView.swift */,
-				C4B732B22B5B7A0C009EC113 /* CacheAsyncImage.swift */,
 			);
 			path = TPU_Mac;
 			sourceTree = "<group>";

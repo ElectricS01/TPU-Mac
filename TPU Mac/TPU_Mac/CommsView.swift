@@ -70,14 +70,17 @@ struct CommsView: View {
       List {
         ForEach(0 ..< chatsList.count, id: \.self) { result in
           Button(action: { openChat(chatId: result) }) {
-            Text(chatsList[result].recipient?.username ?? chatsList[result].name)
-              .lineLimit(1)
-            if chatsList[result].unread != 0 {
-              Text(String(chatsList[result].unread!))
-                .frame(minWidth: 16, minHeight: 16)
-                .background(Color.red)
-                .cornerRadius(10)
-            }
+            HStack{
+              Text(chatsList[result].recipient?.username ?? chatsList[result].name)
+                .lineLimit(1)
+              Spacer()
+              if chatsList[result].unread != 0 {
+                Text(String(chatsList[result].unread!))
+                  .frame(minWidth: 16, minHeight: 16)
+                  .background(Color.red)
+                  .cornerRadius(10)
+              }
+            }.contentShape(Rectangle())
           }
           .buttonStyle(.plain)
         }
@@ -91,7 +94,7 @@ struct CommsView: View {
               ForEach(chatMessages.reversed(), id: \.self) { message in
                 HStack(alignment: .top, spacing: 6) {
                   if (message.user?.avatar) != nil {
-                    AsyncImage(
+                    CacheAsyncImage(
                       url: URL(string: "https://i.electrics01.com/i/" + (message.user?.avatar ?? ""))
                     ) { image in
                       image.resizable()
@@ -163,9 +166,12 @@ struct CommsView: View {
       if chatOpen != -1 {
         List {
           ForEach(0 ..< chatsList[chatOpen].users.count, id: \.self) { result in
-            Button(chatsList[chatOpen].users[result].user?.username ?? "User's name could not be found") {
-              // openChat(chatId: chatsList[chatOpen].users[result].user.id)
-            }
+            Button(action: { print("Clicked: " + (chatsList[chatOpen].users[result].user?.username ?? "User's name could not be found")) }) {
+              HStack {
+                Text(chatsList[chatOpen].users[result].user?.username ?? "User's name could not be found")
+                Spacer()
+              }.contentShape(Rectangle())
+            }.buttonStyle(.plain)
           }
         }.frame(width: 150)
           .padding(EdgeInsets(top: -8, leading: -10, bottom: -8, trailing: 0))
