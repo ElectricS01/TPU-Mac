@@ -32,28 +32,18 @@ func formatFileSize(_ size: Double) -> String {
   return byteCountFormatter.string(fromByteCount: Int64(size))
 }
 
-func login(username: String, password: String, totp: String, completion: @escaping (Result<String, Error>) -> Void) {
-  Network.shared.apollo.perform(mutation: LoginMutation(input: LoginInput(username: username, password: password, totp: GraphQLNullable(stringLiteral: totp)))) { result in
-    switch result {
-    case .success(let graphQLResult):
-      completion(.success(graphQLResult.errors?[0].message ?? "Success"))
-      keychain.set(graphQLResult.data?.login.token ?? "", forKey: "token")
-    case .failure(let error):
-      print("Failure! Error: \(error)")
-      completion(.failure(error))
-    }
-  }
-}
-
 struct ContentView: View {
   @State var showingLogin = false
 
   var body: some View {
     NavigationSplitView {
       List {
-        NavigationLink(destination: HomeView(showingLogin: $showingLogin)) {
-          Label("Home", systemImage: "house")
-        }
+        NavigationLink(destination: HomeView(showingLogin: $showingLogin)
+          .sheet(isPresented: $showingLogin) {
+            LoginSheet()
+          }) {
+            Label("Home", systemImage: "house")
+          }
         NavigationLink(destination: SettingsView()) {
           Label("Settings", systemImage: "gear")
         }
@@ -86,8 +76,21 @@ struct LoginSheet: View {
   @State private var totp: String = ""
   @State private var errorMessage = ""
 
-  func login() {
-    TPU_Mac.login(username: username, password: password, totp: totp) { result in
+  func login(username: String, password: String, totp: String, completion: @escaping (Result<String, Error>) -> Void) {
+    Network.shared.apollo.perform(mutation: LoginMutation(input: LoginInput(username: username, password: password, totp: GraphQLNullable(stringLiteral: totp)))) { result in
+      switch result {
+      case .success(let graphQLResult):
+        completion(.success(graphQLResult.errors?[0].message ?? "Success"))
+        keychain.set(graphQLResult.data?.login.token ?? "", forKey: "token")
+      case .failure(let error):
+        print("Failure! Error: \(error)")
+        completion(.failure(error))
+      }
+    }
+  }
+
+  func loginDetails() {
+    login(username: username, password: password, totp: totp) { result in
       switch result {
       case .success(let message):
         errorMessage = message
@@ -109,7 +112,7 @@ struct LoginSheet: View {
         text: $username
       )
       .onSubmit {
-        login()
+        loginDetails()
       }
       .frame(width: 200)
       .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -119,7 +122,7 @@ struct LoginSheet: View {
         text: $password
       )
       .onSubmit {
-        login()
+        loginDetails()
       }
       .frame(width: 200)
       .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -129,13 +132,13 @@ struct LoginSheet: View {
         text: $totp
       )
       .onSubmit {
-        login()
+        loginDetails()
       }
       .frame(width: 200)
       .textFieldStyle(RoundedBorderTextFieldStyle())
       .fixedSize(horizontal: true, vertical: false)
       Button("Login") {
-        login()
+        loginDetails()
       }
       Text(errorMessage)
         .foregroundColor(.red)
@@ -199,7 +202,7 @@ struct GalleryView: View {
                 } placeholder: {
                   ProgressView()
                 }
-                .frame(width: 268, height: 140)
+                .frame(minWidth: 268, maxWidth: .infinity, maxHeight: 140)
               } else if galleryItem.type == "video" {
                 if isPlaying != galleryItem.id {
                   Button(action: {
@@ -239,19 +242,55 @@ struct GalleryView: View {
               Text("Created at: Invalid Date")
             }
             Text("Size: " + formatFileSize(galleryItem.fileSize))
-            Button(action: {
-              NSPasteboard.general.clearContents(); NSPasteboard.general.setString("https://i.electrics01.com/i/" + galleryItem.attachment, forType: .string)
-            }) {
-              Text("Copy Link")
+            HStack {
+              Button(action: {
+                NSPasteboard.general.clearContents(); NSPasteboard.general.setString("https://i.electrics01.com/i/" + galleryItem.attachment, forType: .string)
+              }) {
+                Text("Copy Link")
+              }
+              Button(action: {
+                let downloadTask = URLSession.shared.downloadTask(with: URL(string: "https://i.electrics01.com/i/" + galleryItem.attachment)!) { location, _, error in
+                  guard let location = location else {
+                    if let error = error {
+                      print("Download failed with error: \(error.localizedDescription)")
+                    }
+                    return
+                  }
+                  do {
+                    let documentsDirectory = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first!
+                    let destinationURL = documentsDirectory.appendingPathComponent(galleryItem.attachment)
+                    try FileManager.default.moveItem(at: location, to: destinationURL)
+                    print("File downloaded successfully and moved to \(destinationURL)")
+                  } catch {
+                    print("Error moving file: \(error.localizedDescription)")
+                  }
+                }
+                downloadTask.resume()
+              }) {
+                Text("Download file")
+              }
+              Button(action: {
+                Network.shared.apollo.perform(mutation: DeleteUploadsMutation(input: DeleteUploadInput(items: [Double(galleryItem.id)]))) { result in
+                  switch result {
+                  case .success(let graphQLResult):
+                    print(graphQLResult)
+                    galleryItems.remove(at: galleryItems.firstIndex(of: galleryItem)!)
+                  case .failure(let error):
+                    print("Failure! Error: \(error)")
+                  }
+                }
+              }) {
+                Text("Delete")
+              }
             }
           }
           .padding()
-          .frame(width: 300, height: 300)
+          .frame(minWidth: 300, minHeight: 300)
           .background()
           .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
         }
       }
-      .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
+      .padding(EdgeInsets(top: 10, leading: 10, bottom: 0, trailing: 10))
       HStack {
         Button(action: {
           page += 1
@@ -306,7 +345,7 @@ struct AboutView: View {
   var body: some View {
     Text("About")
       .navigationTitle("About")
-    Text("TPU Mac version 0.0.11 (21/1/2024)")
+    Text("TPU Mac version 0.0.12 (22/1/2024)")
     Text("Made by ElectricS01")
     Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
   }

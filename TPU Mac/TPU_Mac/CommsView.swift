@@ -70,7 +70,7 @@ struct CommsView: View {
       List {
         ForEach(0 ..< chatsList.count, id: \.self) { result in
           Button(action: { openChat(chatId: result) }) {
-            HStack{
+            HStack {
               Text(chatsList[result].recipient?.username ?? chatsList[result].name)
                 .lineLimit(1)
               Spacer()

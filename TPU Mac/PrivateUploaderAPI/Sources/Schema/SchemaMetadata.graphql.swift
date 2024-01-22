@@ -28,6 +28,7 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "Query": return PrivateUploaderAPI.Objects.Query
     case "PaginatedUploadResponse": return PrivateUploaderAPI.Objects.PaginatedUploadResponse
     case "Upload": return PrivateUploaderAPI.Objects.Upload
+    case "GenericSuccessObject": return PrivateUploaderAPI.Objects.GenericSuccessObject
     case "Chat": return PrivateUploaderAPI.Objects.Chat
     case "ChatAssociation": return PrivateUploaderAPI.Objects.ChatAssociation
     case "PartialUserBase": return PrivateUploaderAPI.Objects.PartialUserBase
