@@ -11,3 +11,9 @@ query GalleryItems($input: GalleryInput!) {
     }
   }
 }
+
+mutation DeleteUploads($input: DeleteUploadInput!) {
+  deleteUploads(input: $input) {
+    success
+  }
+}
