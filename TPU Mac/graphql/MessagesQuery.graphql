@@ -1,41 +1,79 @@
-
-  fragment StandardMessage on Message {
-    id
-    createdAt
-    updatedAt
-    chatId
-    userId
-    content
-    type
-    emoji {
-      name
-      icon
+fragment StandardEmbed on EmbedDataV2 {
+  media {
+    url
+    proxyUrl
+    attachment
+    width
+    height
+    isInternal
+    videoEmbedUrl
+    upload {
       id
-      chatId
-    }
-    reply {
-      readReceipts {
-        id
-        userId
-        lastRead
-        legacyUserId
-      }
-      content
+      createdAt
+      attachment
       userId
-      id
-      legacyUserId
-      embeds {
+      name
+      type
+      fileSize
+    }
+    mimeType
+    type
+  }
+  text {
+    imageProxyUrl
+    text
+    heading
+    imageUrl
+  }
+  metadata {
+    url
+    siteName
+    siteIcon
+    footer
+    type
+    id
+    restricted
+  }
+}
+
+fragment StandardMessage on Message {
+  id
+  createdAt
+  updatedAt
+  chatId
+  userId
+  content
+  type
+  emoji {
+    name
+    icon
+    id
+    chatId
+  }
+  embeds {
+    ...StandardEmbed
+  }
+  reply {
+    readReceipts {
+      associationId
+      user {
+        id
+        avatar
+        username
+        legacy
+      }
+      messageId
+    }
+    content
+    userId
+    id
+    legacyUserId
+    embeds {
+      metadata {
         type
       }
-      legacyUser {
-        username
-        id
-        avatar
-      }
-      user {
-        username
-        id
-        avatar
+      media {
+        type
       }
     }
     legacyUser {
@@ -48,35 +86,49 @@
       id
       avatar
     }
-    edited
-    editedAt
-    replyId
-    legacyUserId
-    pinned
-    readReceipts {
-      id
-      userId
-      lastRead
-      legacyUserId
-    }
   }
+  legacyUser {
+    username
+    id
+    avatar
+  }
+  user {
+    username
+    id
+    avatar
+  }
+  edited
+  editedAt
+  replyId
+  legacyUserId
+  pinned
+  readReceipts {
+    associationId
+    user {
+      id
+      avatar
+      username
+      legacy
+    }
+    messageId
+  }
+}
 
 
-  query Messages($input: InfiniteMessagesInput!) {
-    messages(input: $input) {
+query Messages($input: InfiniteMessagesInput!) {
+  messages(input: $input) {
+    ...StandardMessage
+  }
+}
+
+
+query PagedMessages($input: PagedMessagesInput!) {
+  messagesPaged(input: $input) {
+    items {
       ...StandardMessage
     }
-  }
-
-
-  query PagedMessages($input: PagedMessagesInput!) {
-    messagesPaged(input: $input) {
-      items {
-        ...StandardMessage
-      }
-      pager {
-        ...PagerFragment
-      }
+    pager {
+      ...PagerFragment
     }
   }
-
+}

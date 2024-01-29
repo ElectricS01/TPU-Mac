@@ -8,7 +8,7 @@ public class MessagesQuery: GraphQLQuery {
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
       #"query Messages($input: InfiniteMessagesInput!) { messages(input: $input) { __typename ...StandardMessage } }"#,
-      fragments: [StandardMessage.self]
+      fragments: [StandardMessage.self, StandardEmbed.self]
     ))
 
   public var input: InfiniteMessagesInput
@@ -51,6 +51,7 @@ public class MessagesQuery: GraphQLQuery {
       public var content: String? { __data["content"] }
       public var type: GraphQLEnum<PrivateUploaderAPI.MessageType>? { __data["type"] }
       public var emoji: [StandardMessage.Emoji]? { __data["emoji"] }
+      public var embeds: [Embed] { __data["embeds"] }
       public var reply: StandardMessage.Reply? { __data["reply"] }
       public var legacyUser: StandardMessage.LegacyUser? { __data["legacyUser"] }
       public var user: StandardMessage.User? { __data["user"] }
@@ -66,6 +67,27 @@ public class MessagesQuery: GraphQLQuery {
         public init(_dataDict: DataDict) { __data = _dataDict }
 
         public var standardMessage: StandardMessage { _toFragment() }
+      }
+
+      /// Message.Embed
+      ///
+      /// Parent Type: `EmbedDataV2`
+      public struct Embed: PrivateUploaderAPI.SelectionSet {
+        public let __data: DataDict
+        public init(_dataDict: DataDict) { __data = _dataDict }
+
+        public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedDataV2 }
+
+        public var media: [StandardEmbed.Medium]? { __data["media"] }
+        public var text: [StandardEmbed.Text]? { __data["text"] }
+        public var metadata: StandardEmbed.Metadata { __data["metadata"] }
+
+        public struct Fragments: FragmentContainer {
+          public let __data: DataDict
+          public init(_dataDict: DataDict) { __data = _dataDict }
+
+          public var standardEmbed: StandardEmbed { _toFragment() }
+        }
       }
     }
   }

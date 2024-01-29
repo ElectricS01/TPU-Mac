@@ -7,6 +7,7 @@ import ApolloAPI
 public enum GallerySort: String, EnumType {
   case createdAt = "CREATED_AT"
   case updatedAt = "UPDATED_AT"
+  case addedAt = "ADDED_AT"
   case name = "NAME"
   case size = "SIZE"
 }

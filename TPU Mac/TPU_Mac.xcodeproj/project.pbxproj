@@ -14,10 +14,11 @@
 		C45099272ACFFA8100FA9247 /* TPU_MacTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45099262ACFFA8100FA9247 /* TPU_MacTests.swift */; };
 		C45099312ACFFA8100FA9247 /* TPU_MacUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45099302ACFFA8100FA9247 /* TPU_MacUITests.swift */; };
 		C45099332ACFFA8100FA9247 /* TPU_MacUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45099322ACFFA8100FA9247 /* TPU_MacUITestsLaunchTests.swift */; };
-		C4569DEC2AD1787E00F17C06 /* graphql in Resources */ = {isa = PBXBuildFile; fileRef = C4569DEB2AD1787E00F17C06 /* graphql */; };
 		C4569DF12AD17A2A00F17C06 /* PrivateUploaderAPI in Frameworks */ = {isa = PBXBuildFile; productRef = C4569DF02AD17A2A00F17C06 /* PrivateUploaderAPI */; };
 		C4569DF72AD1828300F17C06 /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4569DF62AD1828300F17C06 /* Network.swift */; };
 		C48C2E9E2AD0417B0000A362 /* Apollo in Frameworks */ = {isa = PBXBuildFile; productRef = C48C2E9D2AD0417B0000A362 /* Apollo */; };
+		C4B732B32B5B7A0C009EC113 /* CacheAsyncImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B732B22B5B7A0C009EC113 /* CacheAsyncImage.swift */; };
+		C4D7E5062AF4D4FC008308CA /* CommsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D7E5052AF4D4FC008308CA /* CommsView.swift */; };
 		C4FE71542AD3F085003E4DC0 /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C4FE71532AD3F085003E4DC0 /* KeychainSwift */; };
 		C4FE71562AD3F41B003E4DC0 /* AuthorisationInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4FE71552AD3F41B003E4DC0 /* AuthorisationInterceptor.swift */; };
 		C4FE71582AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4FE71572AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift */; };
@@ -52,8 +53,10 @@
 		C450992C2ACFFA8100FA9247 /* TPU-MacUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "TPU-MacUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C45099302ACFFA8100FA9247 /* TPU_MacUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPU_MacUITests.swift; sourceTree = "<group>"; };
 		C45099322ACFFA8100FA9247 /* TPU_MacUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPU_MacUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		C4569DEB2AD1787E00F17C06 /* graphql */ = {isa = PBXFileReference; lastKnownFileType = folder; path = graphql; sourceTree = "<group>"; };
 		C4569DF62AD1828300F17C06 /* Network.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
+		C48D5DB72AF4D2DB00067554 /* graphql */ = {isa = PBXFileReference; lastKnownFileType = folder; path = graphql; sourceTree = "<group>"; };
+		C4B732B22B5B7A0C009EC113 /* CacheAsyncImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheAsyncImage.swift; sourceTree = "<group>"; };
+		C4D7E5052AF4D4FC008308CA /* CommsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommsView.swift; sourceTree = "<group>"; };
 		C4FE71552AD3F41B003E4DC0 /* AuthorisationInterceptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorisationInterceptor.swift; sourceTree = "<group>"; };
 		C4FE71572AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkInterceptorProvider.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -89,7 +92,7 @@
 		C45099082ACFFA7F00FA9247 = {
 			isa = PBXGroup;
 			children = (
-				C4569DEB2AD1787E00F17C06 /* graphql */,
+				C48D5DB72AF4D2DB00067554 /* graphql */,
 				C45099132ACFFA7F00FA9247 /* TPU_Mac */,
 				C45099252ACFFA8100FA9247 /* TPU MacTests */,
 				C450992F2ACFFA8100FA9247 /* TPU MacUITests */,
@@ -111,14 +114,16 @@
 		C45099132ACFFA7F00FA9247 /* TPU_Mac */ = {
 			isa = PBXGroup;
 			children = (
+				C45099142ACFFA7F00FA9247 /* TPU_MacApp.swift */,
 				C4569DF62AD1828300F17C06 /* Network.swift */,
 				C4FE71552AD3F41B003E4DC0 /* AuthorisationInterceptor.swift */,
-				C45099142ACFFA7F00FA9247 /* TPU_MacApp.swift */,
+				C4FE71572AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift */,
 				C45099162ACFFA7F00FA9247 /* ContentView.swift */,
+				C4D7E5052AF4D4FC008308CA /* CommsView.swift */,
+				C4B732B22B5B7A0C009EC113 /* CacheAsyncImage.swift */,
 				C45099182ACFFA8100FA9247 /* Assets.xcassets */,
 				C450991A2ACFFA8100FA9247 /* TPU_Mac.entitlements */,
 				C450991B2ACFFA8100FA9247 /* Preview Content */,
-				C4FE71572AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift */,
 			);
 			path = TPU_Mac;
 			sourceTree = "<group>";
@@ -224,7 +229,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 1510;
 				TargetAttributes = {
 					C45099102ACFFA7F00FA9247 = {
 						CreatedOnToolsVersion = 15.0;
@@ -269,7 +274,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C4569DEC2AD1787E00F17C06 /* graphql in Resources */,
 				C450991D2ACFFA8100FA9247 /* Preview Assets.xcassets in Resources */,
 				C45099192ACFFA8100FA9247 /* Assets.xcassets in Resources */,
 			);
@@ -300,6 +304,8 @@
 				C45099172ACFFA7F00FA9247 /* ContentView.swift in Sources */,
 				C4FE71582AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift in Sources */,
 				C4FE71562AD3F41B003E4DC0 /* AuthorisationInterceptor.swift in Sources */,
+				C4D7E5062AF4D4FC008308CA /* CommsView.swift in Sources */,
+				C4B732B32B5B7A0C009EC113 /* CacheAsyncImage.swift in Sources */,
 				C45099152ACFFA7F00FA9247 /* TPU_MacApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -371,6 +377,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -432,6 +439,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -447,6 +455,7 @@
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				SWIFT_COMPILATION_MODE = wholemodule;
 			};
 			name = Release;
@@ -457,8 +466,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = TPU_Mac/TPU_Mac.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"TPU_Mac/Preview Content\"";
 				DEVELOPMENT_TEAM = 9R84L57UN4;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -497,6 +508,7 @@
 				CODE_SIGN_ENTITLEMENTS = TPU_Mac/TPU_Mac.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"TPU_Mac/Preview Content\"";
 				DEVELOPMENT_TEAM = 9R84L57UN4;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -534,6 +546,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 9R84L57UN4;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -557,6 +570,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 9R84L57UN4;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -579,6 +593,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 9R84L57UN4;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -601,6 +616,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 9R84L57UN4;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;

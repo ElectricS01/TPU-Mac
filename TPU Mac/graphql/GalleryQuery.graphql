@@ -3,8 +3,17 @@ query GalleryItems($input: GalleryInput!) {
     items {
       id
       attachment
+      type
+      fileSize
       name
       textMetadata
+      createdAt
     }
+  }
+}
+
+mutation DeleteUploads($input: DeleteUploadInput!) {
+  deleteUploads(input: $input) {
+    success
   }
 }

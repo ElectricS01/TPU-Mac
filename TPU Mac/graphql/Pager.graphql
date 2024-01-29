@@ -1,11 +1,11 @@
 fragment PagerFragment on Pager {
-    totalItems
-    currentPage
-    pageSize
-    totalPages
-    startPage
-    endPage
-    startIndex
-    endIndex
-    pages
-  }
+  totalItems
+  currentPage
+  pageSize
+  totalPages
+  startPage
+  endPage
+  startIndex
+  endIndex
+  pages
+}

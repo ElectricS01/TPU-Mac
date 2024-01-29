@@ -8,7 +8,7 @@ public class PagedMessagesQuery: GraphQLQuery {
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
       #"query PagedMessages($input: PagedMessagesInput!) { messagesPaged(input: $input) { __typename items { __typename ...StandardMessage } pager { __typename ...PagerFragment } } }"#,
-      fragments: [StandardMessage.self, PagerFragment.self]
+      fragments: [StandardMessage.self, StandardEmbed.self, PagerFragment.self]
     ))
 
   public var input: PagedMessagesInput
@@ -68,6 +68,7 @@ public class PagedMessagesQuery: GraphQLQuery {
         public var content: String? { __data["content"] }
         public var type: GraphQLEnum<PrivateUploaderAPI.MessageType>? { __data["type"] }
         public var emoji: [StandardMessage.Emoji]? { __data["emoji"] }
+        public var embeds: [Embed] { __data["embeds"] }
         public var reply: StandardMessage.Reply? { __data["reply"] }
         public var legacyUser: StandardMessage.LegacyUser? { __data["legacyUser"] }
         public var user: StandardMessage.User? { __data["user"] }
@@ -83,6 +84,27 @@ public class PagedMessagesQuery: GraphQLQuery {
           public init(_dataDict: DataDict) { __data = _dataDict }
 
           public var standardMessage: StandardMessage { _toFragment() }
+        }
+
+        /// MessagesPaged.Item.Embed
+        ///
+        /// Parent Type: `EmbedDataV2`
+        public struct Embed: PrivateUploaderAPI.SelectionSet {
+          public let __data: DataDict
+          public init(_dataDict: DataDict) { __data = _dataDict }
+
+          public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedDataV2 }
+
+          public var media: [StandardEmbed.Medium]? { __data["media"] }
+          public var text: [StandardEmbed.Text]? { __data["text"] }
+          public var metadata: StandardEmbed.Metadata { __data["metadata"] }
+
+          public struct Fragments: FragmentContainer {
+            public let __data: DataDict
+            public init(_dataDict: DataDict) { __data = _dataDict }
+
+            public var standardEmbed: StandardEmbed { _toFragment() }
+          }
         }
       }
 
