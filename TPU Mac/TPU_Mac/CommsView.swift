@@ -120,7 +120,8 @@ struct CommsView: View {
                             minHeight: 0,
                             maxHeight: 6,
                             alignment: .topLeading)
-                    Text(message.content ?? "Error")
+                    Text(.init(message.content ?? "Error"))
+                      .textSelection(.enabled)
                       .frame(minWidth: 0,
                              maxWidth: .infinity,
                              minHeight: 0,

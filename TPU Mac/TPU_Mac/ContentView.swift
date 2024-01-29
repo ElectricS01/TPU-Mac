@@ -202,7 +202,7 @@ struct GalleryView: View {
                 } placeholder: {
                   ProgressView()
                 }
-                .frame(minWidth: 268, maxWidth: .infinity, maxHeight: 140)
+                .frame(minWidth: 268, maxWidth: .infinity, minHeight: 140, maxHeight: 140)
               } else if galleryItem.type == "video" {
                 if isPlaying != galleryItem.id {
                   Button(action: {
@@ -345,7 +345,7 @@ struct AboutView: View {
   var body: some View {
     Text("About")
       .navigationTitle("About")
-    Text("TPU Mac version 0.0.12 (22/1/2024)")
+    Text("TPU Mac version 0.0.13 (30/1/2024)")
     Text("Made by ElectricS01")
     Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
   }
