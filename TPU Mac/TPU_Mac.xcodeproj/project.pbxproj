@@ -16,6 +16,7 @@
 		C45099332ACFFA8100FA9247 /* TPU_MacUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45099322ACFFA8100FA9247 /* TPU_MacUITestsLaunchTests.swift */; };
 		C4569DF12AD17A2A00F17C06 /* PrivateUploaderAPI in Frameworks */ = {isa = PBXBuildFile; productRef = C4569DF02AD17A2A00F17C06 /* PrivateUploaderAPI */; };
 		C4569DF72AD1828300F17C06 /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4569DF62AD1828300F17C06 /* Network.swift */; };
+		C45C3D9B2B68DCB300D5AB4D /* GalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45C3D9A2B68DCB300D5AB4D /* GalleryView.swift */; };
 		C48C2E9E2AD0417B0000A362 /* Apollo in Frameworks */ = {isa = PBXBuildFile; productRef = C48C2E9D2AD0417B0000A362 /* Apollo */; };
 		C4B732B32B5B7A0C009EC113 /* CacheAsyncImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B732B22B5B7A0C009EC113 /* CacheAsyncImage.swift */; };
 		C4D7E5062AF4D4FC008308CA /* CommsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D7E5052AF4D4FC008308CA /* CommsView.swift */; };
@@ -54,6 +55,7 @@
 		C45099302ACFFA8100FA9247 /* TPU_MacUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPU_MacUITests.swift; sourceTree = "<group>"; };
 		C45099322ACFFA8100FA9247 /* TPU_MacUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPU_MacUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		C4569DF62AD1828300F17C06 /* Network.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
+		C45C3D9A2B68DCB300D5AB4D /* GalleryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryView.swift; sourceTree = "<group>"; };
 		C48D5DB72AF4D2DB00067554 /* graphql */ = {isa = PBXFileReference; lastKnownFileType = folder; path = graphql; sourceTree = "<group>"; };
 		C4B732B22B5B7A0C009EC113 /* CacheAsyncImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheAsyncImage.swift; sourceTree = "<group>"; };
 		C4D7E5052AF4D4FC008308CA /* CommsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommsView.swift; sourceTree = "<group>"; };
@@ -120,6 +122,7 @@
 				C4FE71572AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift */,
 				C45099162ACFFA7F00FA9247 /* ContentView.swift */,
 				C4D7E5052AF4D4FC008308CA /* CommsView.swift */,
+				C45C3D9A2B68DCB300D5AB4D /* GalleryView.swift */,
 				C4B732B22B5B7A0C009EC113 /* CacheAsyncImage.swift */,
 				C45099182ACFFA8100FA9247 /* Assets.xcassets */,
 				C450991A2ACFFA8100FA9247 /* TPU_Mac.entitlements */,
@@ -307,6 +310,7 @@
 				C4D7E5062AF4D4FC008308CA /* CommsView.swift in Sources */,
 				C4B732B32B5B7A0C009EC113 /* CacheAsyncImage.swift in Sources */,
 				C45099152ACFFA7F00FA9247 /* TPU_MacApp.swift in Sources */,
+				C45C3D9B2B68DCB300D5AB4D /* GalleryView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
