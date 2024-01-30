@@ -195,7 +195,7 @@ struct GalleryView: View {
             HStack(alignment: .center) {
               if galleryItem.type == "image" {
                 CacheAsyncImage(
-                  url: URL(string: "https://i.electrics01.com/i/" + galleryItem.attachment)
+                  url: URL(string: "https://i.troplo.com/i/" + galleryItem.attachment)
                 ) { image in
                   image.resizable()
                     .aspectRatio(contentMode: .fit)
@@ -219,7 +219,7 @@ struct GalleryView: View {
                   }
                 }
                 if isPlaying == galleryItem.id {
-                  let player = AVPlayer(url: URL(string: "https://i.electrics01.com/i/" + galleryItem.attachment)!)
+                  let player = AVPlayer(url: URL(string: "https://i.troplo.com/i/" + galleryItem.attachment)!)
                   VideoPlayer(player: player)
                     .onAppear {
                       player.play()
@@ -244,12 +244,12 @@ struct GalleryView: View {
             Text("Size: " + formatFileSize(galleryItem.fileSize))
             HStack {
               Button(action: {
-                NSPasteboard.general.clearContents(); NSPasteboard.general.setString("https://i.electrics01.com/i/" + galleryItem.attachment, forType: .string)
+                NSPasteboard.general.clearContents(); NSPasteboard.general.setString("https://i.troplo.com/i/" + galleryItem.attachment, forType: .string)
               }) {
                 Text("Copy Link")
               }
               Button(action: {
-                let downloadTask = URLSession.shared.downloadTask(with: URL(string: "https://i.electrics01.com/i/" + galleryItem.attachment)!) { location, _, error in
+                let downloadTask = URLSession.shared.downloadTask(with: URL(string: "https://i.troplo.com/i/" + galleryItem.attachment)!) { location, _, error in
                   guard let location = location else {
                     if let error = error {
                       print("Download failed with error: \(error.localizedDescription)")

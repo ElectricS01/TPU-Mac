@@ -95,7 +95,7 @@ struct CommsView: View {
                 HStack(alignment: .top, spacing: 6) {
                   if (message.user?.avatar) != nil {
                     CacheAsyncImage(
-                      url: URL(string: "https://i.electrics01.com/i/" + (message.user?.avatar ?? ""))
+                      url: URL(string: "https://i.troplo.com/i/" + (message.user?.avatar ?? ""))
                     ) { image in
                       image.resizable()
                     } placeholder: {
