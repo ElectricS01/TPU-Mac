@@ -14,6 +14,7 @@ struct CommsView: View {
   @State private var chatMessages: [MessagesQuery.Data.Message] = []
   @State private var chatOpen: Int = -1
   @State private var inputMessage: String = ""
+//  @State private var hoverItem = -1
   
   func messages(chat: Int, completion: @escaping (Result<GraphQLResult<MessagesQuery.Data>, Error>) -> Void) {
     Network.shared.apollo.fetch(query: MessagesQuery(input: InfiniteMessagesInput(associationId: chat, position: GraphQLNullable(ScrollPosition.top), limit: 50)), cachePolicy: .fetchIgnoringCacheData) { result in
@@ -120,16 +121,32 @@ struct CommsView: View {
                             minHeight: 0,
                             maxHeight: 6,
                             alignment: .topLeading)
-                    Text(.init(message.content ?? "Error"))
-                      .textSelection(.enabled)
-                      .frame(minWidth: 0,
-                             maxWidth: .infinity,
-                             minHeight: 0,
-                             maxHeight: .infinity,
-                             alignment: .topLeading)
+                    VStack {
+                      Text(.init(message.content ?? "Error"))
+                        .textSelection(.enabled)
+                        .frame(minWidth: 0,
+                               maxWidth: .infinity,
+                               minHeight: 0,
+                               maxHeight: 14,
+                               alignment: .topLeading)
+                      ForEach(message.embeds, id: \.self) { embed in
+                        CacheAsyncImage(
+                          url: URL(string: "https://i.electrics01.com" + (embed.media?[0].proxyUrl ?? ""))
+                        ) { image in
+                          image.resizable()
+                            .aspectRatio(contentMode: .fit)
+                        } placeholder: {
+                          ProgressView()
+                        }.frame(minWidth: 0, maxWidth: 268, minHeight: 0, maxHeight: 268, alignment: .topLeading)
+                      }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
+                    }
                   }
                 }.padding(4)
                   .id(message.id)
+//                  .background(Color(hoverItem == message.id ? Color.primary : .clear))
+//                  .onHover(perform: { _ in
+//                    hoverItem = message.id
+//                  })
               }
             }.frame(
               minWidth: 0,
