@@ -172,7 +172,7 @@ struct AboutView: View {
   var body: some View {
     Text("About")
       .navigationTitle("About")
-    Text("TPU Mac version 0.0.15 (31/1/2024)")
+    Text("TPU Mac version 0.0.16 (1/2/2024)")
     Text("Made by ElectricS01")
     Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
   }

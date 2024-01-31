@@ -121,32 +121,31 @@ struct CommsView: View {
                             minHeight: 0,
                             maxHeight: 6,
                             alignment: .topLeading)
-                    VStack {
-                      Text(.init(message.content ?? "Error"))
-                        .textSelection(.enabled)
-                        .frame(minWidth: 0,
-                               maxWidth: .infinity,
-                               minHeight: 0,
-                               maxHeight: 14,
-                               alignment: .topLeading)
-                      ForEach(message.embeds, id: \.self) { embed in
-                        CacheAsyncImage(
-                          url: URL(string: "https://i.electrics01.com" + (embed.media?[0].proxyUrl ?? ""))
-                        ) { image in
-                          image.resizable()
-                            .aspectRatio(contentMode: .fit)
-                        } placeholder: {
-                          ProgressView()
-                        }.frame(minWidth: 0, maxWidth: 268, minHeight: 0, maxHeight: 268, alignment: .topLeading)
-                      }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
-                    }
+                    Text(.init(message.content ?? "Error"))
+                      .textSelection(.enabled)
+                      .frame(minWidth: 0,
+                             maxWidth: .infinity,
+                             minHeight: 0,
+                             maxHeight: .infinity,
+                             alignment: .topLeading)
+                      .lineLimit(nil)
+                    ForEach(message.embeds, id: \.self) { embed in
+                      CacheAsyncImage(
+                        url: URL(string: "https://i.electrics01.com" + (embed.media?[0].proxyUrl ?? ""))
+                      ) { image in
+                        image.resizable()
+                          .aspectRatio(contentMode: .fit)
+                      } placeholder: {
+                        ProgressView()
+                      }.frame(minWidth: 0, maxWidth: 400, minHeight: 0, maxHeight: 400, alignment: .topLeading)
+                    }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
                   }
                 }.padding(4)
                   .id(message.id)
-//                  .background(Color(hoverItem == message.id ? Color.primary : .clear))
-//                  .onHover(perform: { _ in
-//                    hoverItem = message.id
-//                  })
+                //                  .background(Color(hoverItem == message.id ? Color.primary : .clear))
+                //                  .onHover(perform: { _ in
+                //                    hoverItem = message.id
+                //                  })
               }
             }.frame(
               minWidth: 0,
@@ -170,18 +169,6 @@ struct CommsView: View {
             }
             .textFieldStyle(RoundedBorderTextFieldStyle())
         }
-      } else {
-        VStack {
-          Spacer()
-          HStack {
-            Spacer()
-            Text("Comms")
-            Spacer()
-          }
-          Spacer()
-        }
-      }
-      if chatOpen != -1 {
         List {
           ForEach(0 ..< chatsList[chatOpen].users.count, id: \.self) { result in
             Button(action: { print("Clicked: " + (chatsList[chatOpen].users[result].user?.username ?? "User's name could not be found")) }) {
@@ -193,6 +180,16 @@ struct CommsView: View {
           }
         }.frame(width: 150)
           .padding(EdgeInsets(top: -8, leading: -10, bottom: -8, trailing: 0))
+      } else {
+        VStack {
+          Spacer()
+          HStack {
+            Spacer()
+            Text("Comms")
+            Spacer()
+          }
+          Spacer()
+        }
       }
     }
     .navigationTitle("Comms")
