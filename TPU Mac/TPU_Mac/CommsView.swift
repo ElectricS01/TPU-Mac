@@ -72,6 +72,19 @@ struct CommsView: View {
         ForEach(0 ..< chatsList.count, id: \.self) { result in
           Button(action: { openChat(chatId: result) }) {
             HStack {
+              if (chatsList[result].recipient?.avatar ?? chatsList[result].icon) != nil && ((chatsList[result].recipient?.avatar?.count ?? chatsList[result].icon?.count) ?? 0) <= 21 {
+                CacheAsyncImage(
+                  url: URL(string: "https://i.electrics01.com/i/" + (chatsList[result].recipient?.avatar ?? chatsList[result].icon ?? ""))
+                ) { image in
+                  image.resizable()
+                } placeholder: {
+                  ProgressView()
+                }
+                .frame(width: 32, height: 32)
+                .cornerRadius(16)
+              } else {
+                Image(systemName: "person.crop.circle").frame(width: 32, height: 32).font(.largeTitle)
+              }
               Text(chatsList[result].recipient?.username ?? chatsList[result].name)
                 .lineLimit(1)
               Spacer()
@@ -169,6 +182,7 @@ struct CommsView: View {
             }
             .textFieldStyle(RoundedBorderTextFieldStyle())
         }
+        .navigationTitle(chatsList[chatOpen].recipient?.username ?? chatsList[chatOpen].name)
         List {
           ForEach(0 ..< chatsList[chatOpen].users.count, id: \.self) { result in
             Button(action: { print("Clicked: " + (chatsList[chatOpen].users[result].user?.username ?? "User's name could not be found")) }) {
