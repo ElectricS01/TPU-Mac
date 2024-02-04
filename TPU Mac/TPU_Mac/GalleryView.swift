@@ -85,7 +85,12 @@ struct GalleryView: View {
             Text("Size: " + formatFileSize(galleryItem.fileSize))
             HStack {
               Button(action: {
+                #if os(iOS)
+                UIPasteboard.general.setValue("https://i.electrics01.com/i/" + galleryItem.attachment,
+                                              forPasteboardType: UTType.plainText.identifier)
+                #elseif os(macOS)
                 NSPasteboard.general.clearContents(); NSPasteboard.general.setString("https://i.electrics01.com/i/" + galleryItem.attachment, forType: .string)
+                #endif
               }) {
                 Text("Copy Link")
               }

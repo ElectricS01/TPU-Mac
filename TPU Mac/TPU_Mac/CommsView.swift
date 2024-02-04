@@ -67,6 +67,7 @@ struct CommsView: View {
   }
   
   var body: some View {
+    #if os(macOS)
     HSplitView {
       List {
         ForEach(0 ..< chatsList.count, id: \.self) { result in
@@ -107,7 +108,7 @@ struct CommsView: View {
             VStack(alignment: .leading, spacing: 6) {
               ForEach(chatMessages.reversed(), id: \.self) { message in
                 HStack(alignment: .top, spacing: 6) {
-                  if (message.user?.avatar) != nil {
+                  if message.user?.avatar != nil && (message.user?.avatar?.count ?? 0) < 21 {
                     CacheAsyncImage(
                       url: URL(string: "https://i.electrics01.com/i/" + (message.user?.avatar ?? ""))
                     ) { image in
@@ -219,5 +220,6 @@ struct CommsView: View {
         }
       }
     }
+    #endif
   }
 }
