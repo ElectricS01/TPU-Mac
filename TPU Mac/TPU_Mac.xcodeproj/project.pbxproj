@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C428DE892B709ADB00A13E4A /* ApolloWebSocket in Frameworks */ = {isa = PBXBuildFile; productRef = C428DE882B709ADB00A13E4A /* ApolloWebSocket */; };
 		C45099152ACFFA7F00FA9247 /* TPU_MacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45099142ACFFA7F00FA9247 /* TPU_MacApp.swift */; };
 		C45099172ACFFA7F00FA9247 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45099162ACFFA7F00FA9247 /* ContentView.swift */; };
 		C45099192ACFFA8100FA9247 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C45099182ACFFA8100FA9247 /* Assets.xcassets */; };
@@ -69,6 +70,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C4569DF12AD17A2A00F17C06 /* PrivateUploaderAPI in Frameworks */,
+				C428DE892B709ADB00A13E4A /* ApolloWebSocket in Frameworks */,
 				C48C2E9E2AD0417B0000A362 /* Apollo in Frameworks */,
 				C4FE71542AD3F085003E4DC0 /* KeychainSwift in Frameworks */,
 			);
@@ -183,6 +185,7 @@
 				C48C2E9D2AD0417B0000A362 /* Apollo */,
 				C4569DF02AD17A2A00F17C06 /* PrivateUploaderAPI */,
 				C4FE71532AD3F085003E4DC0 /* KeychainSwift */,
+				C428DE882B709ADB00A13E4A /* ApolloWebSocket */,
 			);
 			productName = "TPU Mac";
 			productReference = C45099112ACFFA7F00FA9247 /* TPU Mac.app */;
@@ -709,6 +712,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		C428DE882B709ADB00A13E4A /* ApolloWebSocket */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C48C2E9C2AD0417B0000A362 /* XCRemoteSwiftPackageReference "apollo-ios" */;
+			productName = ApolloWebSocket;
+		};
 		C4569DF02AD17A2A00F17C06 /* PrivateUploaderAPI */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PrivateUploaderAPI;
