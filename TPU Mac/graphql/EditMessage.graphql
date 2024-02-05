@@ -1,0 +1,5 @@
+mutation EditMessage($input: EditMessageInput!) {
+  editMessage(input: $input) {
+    id
+  }
+}

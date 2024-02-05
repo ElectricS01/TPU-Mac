@@ -13,7 +13,9 @@ struct CommsView: View {
   @State private var chatsList: [ChatsQuery.Data.Chat] = []
   @State private var chatMessages: [MessagesQuery.Data.Message] = []
   @State private var chatOpen: Int = -1
+  @State private var editingId: Int = -1
   @State private var inputMessage: String = ""
+  @State private var editingMessage: String = ""
 //  @State private var hoverItem = -1
   
   func messages(chat: Int, completion: @escaping (Result<GraphQLResult<MessagesQuery.Data>, Error>) -> Void) {
@@ -56,6 +58,19 @@ struct CommsView: View {
   
   func sendMessage() {
     Network.shared.apollo.perform(mutation: SendMessageMutation(input: SendMessageInput(content: inputMessage, associationId: chatsList[chatOpen].association?.id ?? 0, attachments: []))) { result in
+      switch result {
+      case .success:
+        editingId = -1
+        inputMessage = ""
+      case .failure(let error):
+        print("Failure! Error: \(error)")
+      }
+    }
+  }
+  
+  func editMessage() {
+    let graphQLEditingMessage: GraphQLNullable<String> = .some(editingMessage)
+    Network.shared.apollo.perform(mutation: EditMessageMutation(input: EditMessageInput(content: graphQLEditingMessage, attachments: [], messageId: editingId, associationId: chatsList[chatOpen].association?.id ?? 0))) { result in
       switch result {
       case .success(let graphQLResult):
         print(graphQLResult)
@@ -135,24 +150,40 @@ struct CommsView: View {
                             minHeight: 0,
                             maxHeight: 6,
                             alignment: .topLeading)
-                    Text(.init(message.content ?? "Error"))
-                      .textSelection(.enabled)
-                      .frame(minWidth: 0,
-                             maxWidth: .infinity,
-                             minHeight: 0,
-                             maxHeight: .infinity,
-                             alignment: .topLeading)
-                      .lineLimit(nil)
+                    if editingId != message.id {
+                      Text(.init(message.content ?? "Error"))
+                        .textSelection(.enabled)
+                        .frame(minWidth: 0,
+                               maxWidth: .infinity,
+                               minHeight: 0,
+                               maxHeight: .infinity,
+                               alignment: .topLeading)
+                        .lineLimit(nil)
+                    } else {
+                      TextField("Keep it civil!", text: $editingMessage)
+                        .onSubmit {
+                          editMessage()
+                        }
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                    }
                     ForEach(message.embeds, id: \.self) { embed in
-                      CacheAsyncImage(
-                        url: URL(string: "https://i.electrics01.com" + (embed.media?[0].proxyUrl ?? ""))
-                      ) { image in
-                        image.resizable()
-                          .aspectRatio(contentMode: .fit)
-                      } placeholder: {
-                        ProgressView()
-                      }.frame(minWidth: 0, maxWidth: 400, minHeight: 0, maxHeight: 400, alignment: .topLeading)
+                      if embed.media != [] {
+                        CacheAsyncImage(
+                          url: URL(string: "https://i.electrics01.com" + (embed.media?[0].proxyUrl ?? ""))
+                        ) { image in
+                          image.resizable()
+                            .aspectRatio(contentMode: .fit)
+                        } placeholder: {
+                          ProgressView()
+                        }.frame(minWidth: 0, maxWidth: 400, minHeight: 0, maxHeight: 400, alignment: .topLeading)
+                      }
                     }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
+                  }
+                  Button(action: {
+                    editingId = message.id
+                    editingMessage = message.content ?? ""
+                  }) {
+                    Image(systemName: "pencil").frame(width: 16, height: 16)
                   }
                 }.padding(4)
                   .id(message.id)
