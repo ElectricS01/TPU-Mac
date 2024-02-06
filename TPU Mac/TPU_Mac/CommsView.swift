@@ -14,6 +14,7 @@ struct CommsView: View {
   @State private var chatMessages: [MessagesQuery.Data.Message] = []
   @State private var chatOpen: Int = -1
   @State private var editingId: Int = -1
+  @State private var replyingId: GraphQLNullable<Int> = nil
   @State private var inputMessage: String = ""
   @State private var editingMessage: String = ""
 //  @State private var hoverItem = -1
@@ -57,9 +58,11 @@ struct CommsView: View {
   }
   
   func sendMessage() {
-    Network.shared.apollo.perform(mutation: SendMessageMutation(input: SendMessageInput(content: inputMessage, associationId: chatsList[chatOpen].association?.id ?? 0, attachments: []))) { result in
+    Network.shared.apollo.perform(mutation: SendMessageMutation(input: SendMessageInput(content: inputMessage, associationId: chatsList[chatOpen].association?.id ?? 0, attachments: [], replyId: replyingId))) { result in
       switch result {
       case .success:
+        print(result)
+        replyingId = nil
         editingId = -1
         inputMessage = ""
       case .failure(let error):
@@ -69,8 +72,7 @@ struct CommsView: View {
   }
   
   func editMessage() {
-    let graphQLEditingMessage: GraphQLNullable<String> = .some(editingMessage)
-    Network.shared.apollo.perform(mutation: EditMessageMutation(input: EditMessageInput(content: graphQLEditingMessage, attachments: [], messageId: editingId, associationId: chatsList[chatOpen].association?.id ?? 0))) { result in
+    Network.shared.apollo.perform(mutation: EditMessageMutation(input: EditMessageInput(content: GraphQLNullable<String>(stringLiteral: editingMessage), attachments: [], messageId: editingId, associationId: chatsList[chatOpen].association?.id ?? 0))) { result in
       switch result {
       case .success(let graphQLResult):
         print(graphQLResult)
@@ -122,20 +124,11 @@ struct CommsView: View {
           ScrollView {
             VStack(alignment: .leading, spacing: 6) {
               ForEach(chatMessages.reversed(), id: \.self) { message in
+                if message.reply != nil {
+                  Text(message.reply?.content ?? "Error")
+                }
                 HStack(alignment: .top, spacing: 6) {
-                  if message.user?.avatar != nil && (message.user?.avatar?.count ?? 0) < 21 {
-                    CacheAsyncImage(
-                      url: URL(string: "https://i.electrics01.com/i/" + (message.user?.avatar ?? ""))
-                    ) { image in
-                      image.resizable()
-                    } placeholder: {
-                      ProgressView()
-                    }
-                    .frame(width: 32, height: 32)
-                    .cornerRadius(16)
-                  } else {
-                    Image(systemName: "person.crop.circle").frame(width: 32, height: 32).font(.largeTitle)
-                  }
+                  ProfilePicture(avatar: message.user?.avatar ?? "", size: 32)
                   VStack {
                     HStack {
                       Text(message.user?.username ?? "Error")
@@ -178,6 +171,11 @@ struct CommsView: View {
                         }.frame(minWidth: 0, maxWidth: 400, minHeight: 0, maxHeight: 400, alignment: .topLeading)
                       }
                     }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
+                  }
+                  Button(action: {
+                    replyingId = message.id ?? nil
+                  }) {
+                    Image(systemName: "arrowshape.turn.up.left.fill").frame(width: 16, height: 16)
                   }
                   Button(action: {
                     editingId = message.id
