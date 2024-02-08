@@ -11,28 +11,71 @@ import PrivateUploaderAPI
 import SwiftUI
 
 struct GalleryView: View {
+  @State private var galleryData: GalleryItemsQuery.Data.Gallery?
   @State private var galleryItems: [GalleryItemsQuery.Data.Gallery.Item] = []
   @State private var isPlaying: Int = -1
-  @State private var page: Int = 1
+  @State private var currentPage: Int = 1
+  @State private var inputSearch: String = ""
+  @State private var showImages: Bool = true
+  @State private var showVideos: Bool = true
+  @State private var showOther: Bool = true
 
-  func gallery(completion: @escaping (Result<GraphQLResult<GalleryItemsQuery.Data>, Error>) -> Void) {
-    Network.shared.apollo.fetch(query: GalleryItemsQuery(input: GalleryInput(InputDict(["page": page, "limit": 30]))), cachePolicy: .fetchIgnoringCacheData) { result in
+  func getGallery() {
+    var filters: [String] = []
+    if showImages { filters.append("IMAGES") }
+    if showVideos { filters.append("VIDEOS") }
+    if showOther { filters.append("OTHER") }
+    if filters.count == 3 { filters = [] }
+    Network.shared.apollo.fetch(query: GalleryItemsQuery(input: GalleryInput(InputDict([
+      "search": inputSearch,
+      "page": currentPage,
+      "limit": 36,
+      "filters": filters
+    ]))), cachePolicy: .fetchIgnoringCacheData) { result in
       switch result {
-      case .success:
-        completion(result)
+      case .success(let graphQLResult):
+        print(graphQLResult)
+        if let unwrapped = graphQLResult.data {
+          galleryData = unwrapped.gallery
+          galleryItems = unwrapped.gallery.items
+        }
       case .failure(let error):
-        print("Failure! Error: \(error)")
-        completion(result)
+        print(error)
       }
     }
   }
 
   var body: some View {
+    HStack {
+      TextField("Search the Gallery", text: $inputSearch)
+        .onSubmit {
+          currentPage = 1
+          getGallery()
+        }.textFieldStyle(RoundedBorderTextFieldStyle())
+      Toggle(isOn: $showImages) {
+        Text("Images")
+      }
+      .onChange(of: showImages) {
+        getGallery()
+      }
+      Toggle(isOn: $showVideos) {
+        Text("Video")
+      }
+      .onChange(of: showVideos) {
+        getGallery()
+      }
+      Toggle(isOn: $showOther) {
+        Text("Other")
+      }
+      .onChange(of: showOther) {
+        getGallery()
+      }
+    }.padding(EdgeInsets(top: 10, leading: 10, bottom: -8, trailing: 10))
     ScrollView {
       LazyVGrid(columns: [GridItem(.adaptive(minimum: 316))], spacing: 20) {
         ForEach(galleryItems, id: \.self) { galleryItem in
           VStack(alignment: .leading) {
-            Text(galleryItem.name ?? "Unknown").font(.title2)
+            Text(galleryItem.name ?? "Unknown").font(.title2).lineLimit(1)
             HStack(alignment: .center) {
               if galleryItem.type == "image" {
                 CacheAsyncImage(
@@ -118,8 +161,7 @@ struct GalleryView: View {
               Button(action: {
                 Network.shared.apollo.perform(mutation: DeleteUploadsMutation(input: DeleteUploadInput(items: [Double(galleryItem.id)]))) { result in
                   switch result {
-                  case .success(let graphQLResult):
-                    print(graphQLResult)
+                  case .success:
                     galleryItems.remove(at: galleryItems.firstIndex(of: galleryItem)!)
                   case .failure(let error):
                     print("Failure! Error: \(error)")
@@ -138,52 +180,28 @@ struct GalleryView: View {
       }
       .padding(EdgeInsets(top: 10, leading: 10, bottom: 0, trailing: 10))
       HStack {
+        Text("Pages: " + String(galleryData?.pager.totalPages ?? 0))
         Button(action: {
-          page -= 1
-          gallery { result in
-            switch result {
-            case .success(let graphQLResult):
-              if let unwrapped = graphQLResult.data {
-                galleryItems = unwrapped.gallery.items
-              }
-            case .failure(let error):
-              print(error)
-            }
-          }
+          currentPage -= 1
+          getGallery()
         }) {
           Text("Last Page")
         }
-        .disabled(page < 2)
+        .disabled(currentPage < 2)
         Button(action: {
-          page += 1
-          gallery { result in
-            switch result {
-            case .success(let graphQLResult):
-              if let unwrapped = graphQLResult.data {
-                galleryItems = unwrapped.gallery.items
-              }
-            case .failure(let error):
-              print(error)
-            }
-          }
+          currentPage += 1
+          getGallery()
         }) {
           Text("Next Page")
         }
+        .disabled(currentPage >= galleryData?.pager.totalPages ?? 0)
+        Text("Page: " + String(currentPage))
       }
       .padding(EdgeInsets(top: 0, leading: 0, bottom: 10, trailing: 0))
     }
     .navigationTitle("Gallery")
     .onAppear {
-      gallery { result in
-        switch result {
-        case .success(let graphQLResult):
-          if let unwrapped = graphQLResult.data {
-            galleryItems = unwrapped.gallery.items
-          }
-        case .failure(let error):
-          print(error)
-        }
-      }
+      getGallery()
     }
   }
 }

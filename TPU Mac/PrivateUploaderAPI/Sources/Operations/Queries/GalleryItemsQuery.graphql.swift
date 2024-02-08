@@ -7,7 +7,7 @@ public class GalleryItemsQuery: GraphQLQuery {
   public static let operationName: String = "GalleryItems"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GalleryItems($input: GalleryInput!) { gallery(input: $input) { __typename items { __typename id attachment type fileSize name textMetadata createdAt } } }"#
+      #"query GalleryItems($input: GalleryInput!) { gallery(input: $input) { __typename pager { __typename totalItems totalPages endPage } items { __typename id attachment type fileSize name textMetadata createdAt } } }"#
     ))
 
   public var input: GalleryInput
@@ -39,10 +39,32 @@ public class GalleryItemsQuery: GraphQLQuery {
       public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PaginatedUploadResponse }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
+        .field("pager", Pager.self),
         .field("items", [Item].self),
       ] }
 
+      public var pager: Pager { __data["pager"] }
       public var items: [Item] { __data["items"] }
+
+      /// Gallery.Pager
+      ///
+      /// Parent Type: `Pager`
+      public struct Pager: PrivateUploaderAPI.SelectionSet {
+        public let __data: DataDict
+        public init(_dataDict: DataDict) { __data = _dataDict }
+
+        public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Pager }
+        public static var __selections: [ApolloAPI.Selection] { [
+          .field("__typename", String.self),
+          .field("totalItems", Int.self),
+          .field("totalPages", Int.self),
+          .field("endPage", Int.self),
+        ] }
+
+        public var totalItems: Int { __data["totalItems"] }
+        public var totalPages: Int { __data["totalPages"] }
+        public var endPage: Int { __data["endPage"] }
+      }
 
       /// Gallery.Item
       ///

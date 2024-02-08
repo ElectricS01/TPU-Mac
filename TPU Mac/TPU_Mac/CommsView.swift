@@ -19,7 +19,7 @@ struct CommsView: View {
   @State private var editingMessage: String = ""
 //  @State private var hoverItem = -1
   
-  func messages(chat: Int, completion: @escaping (Result<GraphQLResult<MessagesQuery.Data>, Error>) -> Void) {
+  func getMessages(chat: Int, completion: @escaping (Result<GraphQLResult<MessagesQuery.Data>, Error>) -> Void) {
     Network.shared.apollo.fetch(query: MessagesQuery(input: InfiniteMessagesInput(associationId: chat, position: GraphQLNullable(ScrollPosition.top), limit: 50)), cachePolicy: .fetchIgnoringCacheData) { result in
       switch result {
       case .success:
@@ -31,8 +31,8 @@ struct CommsView: View {
     }
   }
   
-  func openChat(chatId: Int?) {
-    messages(chat: chatsList[chatId ?? 0].association?.id ?? 0) { result in
+  func getChat(chatId: Int?) {
+    getMessages(chat: chatsList[chatId ?? 0].association?.id ?? 0) { result in
       switch result {
       case .success(let graphQLResult):
         if let unwrapped = graphQLResult.data {
@@ -46,7 +46,7 @@ struct CommsView: View {
   }
   
   func chats(completion: @escaping (Result<GraphQLResult<ChatsQuery.Data>, Error>) -> Void) {
-    Network.shared.apollo.fetch(query: ChatsQuery()) { result in
+    Network.shared.apollo.fetch(query: ChatsQuery(), cachePolicy: .fetchIgnoringCacheData) { result in
       switch result {
       case .success:
         completion(result)
@@ -88,7 +88,7 @@ struct CommsView: View {
     HSplitView {
       List {
         ForEach(0 ..< chatsList.count, id: \.self) { result in
-          Button(action: { openChat(chatId: result) }) {
+          Button(action: { getChat(chatId: result) }) {
             HStack {
               if (chatsList[result].recipient?.avatar ?? chatsList[result].icon) != nil && ((chatsList[result].recipient?.avatar?.count ?? chatsList[result].icon?.count) ?? 0) <= 21 {
                 CacheAsyncImage(

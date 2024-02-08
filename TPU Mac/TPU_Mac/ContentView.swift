@@ -177,7 +177,7 @@ struct AboutView: View {
     #else
     Text("TPU iOS").font(.system(size: 24, weight: .semibold))
     #endif
-    Text("Version 0.0.20 (6/2/2024)")
+    Text("Version 0.0.21 (8/2/2024)")
     Text("Made by ElectricS01")
     Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
   }

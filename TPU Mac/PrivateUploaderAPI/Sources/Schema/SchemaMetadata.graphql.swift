@@ -27,6 +27,7 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "LoginUser": return PrivateUploaderAPI.Objects.LoginUser
     case "Query": return PrivateUploaderAPI.Objects.Query
     case "PaginatedUploadResponse": return PrivateUploaderAPI.Objects.PaginatedUploadResponse
+    case "Pager": return PrivateUploaderAPI.Objects.Pager
     case "Upload": return PrivateUploaderAPI.Objects.Upload
     case "GenericSuccessObject": return PrivateUploaderAPI.Objects.GenericSuccessObject
     case "Chat": return PrivateUploaderAPI.Objects.Chat
@@ -40,7 +41,6 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "EmbedMetadata": return PrivateUploaderAPI.Objects.EmbedMetadata
     case "ReadReceipt": return PrivateUploaderAPI.Objects.ReadReceipt
     case "PaginatedMessageResponse": return PrivateUploaderAPI.Objects.PaginatedMessageResponse
-    case "Pager": return PrivateUploaderAPI.Objects.Pager
     default: return nil
     }
   }

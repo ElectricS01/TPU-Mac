@@ -1,5 +1,10 @@
 query GalleryItems($input: GalleryInput!) {
   gallery(input: $input) {
+    pager {
+      totalItems
+      totalPages
+      endPage
+    }
     items {
       id
       attachment
