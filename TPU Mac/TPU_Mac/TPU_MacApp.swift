@@ -18,11 +18,11 @@ struct TPU_MacApp: App {
 }
 
 struct ProfilePicture: View {
-  var avatar: String
+  var avatar: String?
   var size: CGFloat
 
   var body: some View {
-    if avatar.count < 21 {
+    if let avatar = avatar, avatar.count < 21 {
       CacheAsyncImage(
         url: URL(string: "https://i.electrics01.com/i/" + avatar)
       ) { image in

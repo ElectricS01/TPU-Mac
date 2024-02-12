@@ -36,6 +36,98 @@ fragment StandardEmbed on EmbedDataV2 {
   }
 }
 
+subscription NewMessage {
+  onMessage {
+    mention
+    message {
+      id
+      createdAt
+      updatedAt
+      chatId
+      userId
+      content
+      type
+      emoji {
+        name
+        icon
+        id
+        chatId
+      }
+      embeds {
+        ...StandardEmbed
+      }
+      reply {
+        readReceipts {
+          associationId
+          user {
+            id
+            avatar
+            username
+            legacy
+          }
+          messageId
+        }
+        content
+        userId
+        id
+        legacyUserId
+        embeds {
+          metadata {
+            type
+          }
+          media {
+            type
+          }
+        }
+        legacyUser {
+          username
+          id
+          avatar
+        }
+        user {
+          username
+          id
+          avatar
+        }
+      }
+      legacyUser {
+        username
+        id
+        avatar
+      }
+      user {
+        username
+        id
+        avatar
+      }
+      edited
+      editedAt
+      replyId
+      legacyUserId
+      pinned
+      readReceipts {
+        associationId
+        user {
+          id
+          avatar
+          username
+          legacy
+        }
+        messageId
+      }
+    }
+    associationId
+    chat {
+      id
+      recipient {
+        id
+        username
+      }
+      type
+    }
+  }
+}
+
 fragment StandardMessage on Message {
   id
   createdAt
@@ -114,13 +206,11 @@ fragment StandardMessage on Message {
   }
 }
 
-
 query Messages($input: InfiniteMessagesInput!) {
   messages(input: $input) {
     ...StandardMessage
   }
 }
-
 
 query PagedMessages($input: PagedMessagesInput!) {
   messagesPaged(input: $input) {

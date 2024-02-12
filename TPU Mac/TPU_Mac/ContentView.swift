@@ -152,11 +152,16 @@ struct HomeView: View {
   @Binding var showingLogin: Bool
 
   var body: some View {
-    Text("Welcome to TPU Mac")
-      .navigationTitle("Home")
+    Text("Welcome to")
+    #if os(macOS)
+      Text("TPU Mac").font(.system(size: 24, weight: .semibold))
+    #else
+      Text("TPU iOS").font(.system(size: 24, weight: .semibold))
+    #endif
     Button("Backup Login") {
       showingLogin = true
     }
+    .navigationTitle("Home")
   }
 }
 
@@ -169,15 +174,19 @@ struct SettingsView: View {
 }
 
 struct AboutView: View {
+  var appVersion: String? {
+    return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+  }
+
   var body: some View {
     Text("About")
       .navigationTitle("About")
     #if os(macOS)
-    Text("TPU Mac").font(.system(size: 24, weight: .semibold))
+      Text("TPU Mac").font(.system(size: 24, weight: .semibold))
     #else
-    Text("TPU iOS").font(.system(size: 24, weight: .semibold))
+      Text("TPU iOS").font(.system(size: 24, weight: .semibold))
     #endif
-    Text("Version 0.0.21 (8/2/2024)")
+    Text("Version " + (appVersion ?? "") + " (13/2/2024)")
     Text("Made by ElectricS01")
     Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
   }

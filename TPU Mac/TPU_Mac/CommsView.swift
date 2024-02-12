@@ -90,19 +90,9 @@ struct CommsView: View {
         ForEach(0 ..< chatsList.count, id: \.self) { result in
           Button(action: { getChat(chatId: result) }) {
             HStack {
-              if (chatsList[result].recipient?.avatar ?? chatsList[result].icon) != nil && ((chatsList[result].recipient?.avatar?.count ?? chatsList[result].icon?.count) ?? 0) <= 21 {
-                CacheAsyncImage(
-                  url: URL(string: "https://i.electrics01.com/i/" + (chatsList[result].recipient?.avatar ?? chatsList[result].icon ?? ""))
-                ) { image in
-                  image.resizable()
-                } placeholder: {
-                  ProgressView()
-                }
-                .frame(width: 32, height: 32)
-                .cornerRadius(16)
-              } else {
-                Image(systemName: "person.crop.circle").frame(width: 32, height: 32).font(.largeTitle)
-              }
+              ProfilePicture(
+                avatar: (chatsList[result].recipient?.avatar ?? chatsList[result].icon), size: 32
+              )
               Text(chatsList[result].recipient?.username ?? chatsList[result].name)
                 .lineLimit(1)
               Spacer()
@@ -125,10 +115,14 @@ struct CommsView: View {
             VStack(alignment: .leading, spacing: 6) {
               ForEach(chatMessages.reversed(), id: \.self) { message in
                 if message.reply != nil {
-                  Text(message.reply?.content ?? "Error")
+                  HStack {
+                    Image(systemName: "arrow.turn.up.right").frame(width: 16, height: 16)
+                    Text(message.reply?.user?.username ?? "Error")
+                    Text(message.reply?.content ?? "Error")
+                  }.padding(EdgeInsets(top: 0, leading: 18, bottom: 0, trailing: 0))
                 }
                 HStack(alignment: .top, spacing: 6) {
-                  ProfilePicture(avatar: message.user?.avatar ?? "", size: 32)
+                  ProfilePicture(avatar: message.user?.avatar, size: 32)
                   VStack {
                     HStack {
                       Text(message.user?.username ?? "Error")
@@ -189,7 +183,7 @@ struct CommsView: View {
                 //                  .onHover(perform: { _ in
                 //                    hoverItem = message.id
                 //                  })
-              }
+              }.padding(EdgeInsets(top: 0, leading: 8, bottom: 0, trailing: 12))
             }.frame(
               minWidth: 0,
               maxWidth: .infinity,
@@ -246,6 +240,158 @@ struct CommsView: View {
           }
         case .failure(let error):
           print(error)
+        }
+      }
+    }
+    #else
+    List {
+      ForEach(0 ..< chatsList.count, id: \.self) { result in
+        Button(action: { getChat(chatId: result) }) {
+          HStack {
+            ProfilePicture(
+              avatar: (chatsList[result].recipient?.avatar ?? chatsList[result].icon), size: 32
+            )
+            Text(chatsList[result].recipient?.username ?? chatsList[result].name)
+              .lineLimit(1)
+            Spacer()
+            if chatsList[result].unread != 0 {
+              Text(String(chatsList[result].unread!))
+                .frame(minWidth: 16, minHeight: 16)
+                .background(Color.red)
+                .cornerRadius(10)
+            }
+          }.contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+      }
+    }
+    .padding(EdgeInsets(top: -8, leading: -10, bottom: -8, trailing: 0))
+    if chatOpen != -1 {
+      ScrollViewReader { proxy in
+        ScrollView {
+          VStack(alignment: .leading, spacing: 6) {
+            ForEach(chatMessages.reversed(), id: \.self) { message in
+              if message.reply != nil {
+                Text(message.reply?.content ?? "Error")
+              }
+              HStack(alignment: .top, spacing: 6) {
+                ProfilePicture(avatar: message.user?.avatar, size: 32)
+                VStack {
+                  HStack {
+                    Text(message.user?.username ?? "Error")
+                    if let date = inputDateFormatter.date(from: message.createdAt) {
+                      let formattedDate = outputDateFormatter.string(from: date)
+                      Text(formattedDate)
+                    } else {
+                      Text("Invalid Date")
+                    }
+                  }.frame(minWidth: 0,
+                          maxWidth: .infinity,
+                          minHeight: 0,
+                          maxHeight: 6,
+                          alignment: .topLeading)
+                  if editingId != message.id {
+                    Text(.init(message.content ?? "Error"))
+                      .textSelection(.enabled)
+                      .frame(minWidth: 0,
+                             maxWidth: .infinity,
+                             minHeight: 0,
+                             maxHeight: .infinity,
+                             alignment: .topLeading)
+                      .lineLimit(nil)
+                  } else {
+                    TextField("Keep it civil!", text: $editingMessage)
+                      .onSubmit {
+                        editMessage()
+                      }
+                      .textFieldStyle(RoundedBorderTextFieldStyle())
+                  }
+                  ForEach(message.embeds, id: \.self) { embed in
+                    if embed.media != [] {
+                      CacheAsyncImage(
+                        url: URL(string: "https://i.electrics01.com" + (embed.media?[0].proxyUrl ?? ""))
+                      ) { image in
+                        image.resizable()
+                          .aspectRatio(contentMode: .fit)
+                      } placeholder: {
+                        ProgressView()
+                      }.frame(minWidth: 0, maxWidth: 400, minHeight: 0, maxHeight: 400, alignment: .topLeading)
+                    }
+                  }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
+                }
+                Button(action: {
+                  replyingId = message.id ?? nil
+                }) {
+                  Image(systemName: "arrowshape.turn.up.left.fill").frame(width: 16, height: 16)
+                }
+                Button(action: {
+                  editingId = message.id
+                  editingMessage = message.content ?? ""
+                }) {
+                  Image(systemName: "pencil").frame(width: 16, height: 16)
+                }
+              }.padding(4)
+                .id(message.id)
+              //                  .background(Color(hoverItem == message.id ? Color.primary : .clear))
+              //                  .onHover(perform: { _ in
+              //                    hoverItem = message.id
+              //                  })
+            }
+          }.frame(
+            minWidth: 0,
+            maxWidth: .infinity,
+            minHeight: 0,
+            maxHeight: .infinity,
+            alignment: .topLeading
+          )
+          .onAppear {
+            if chatMessages.count != 0 {
+              proxy.scrollTo(chatMessages.first?.id)
+            }
+          }
+          .onChange(of: chatMessages) {
+            proxy.scrollTo(chatMessages.first?.id)
+          }
+        }
+        TextField("Keep it civil!", text: $inputMessage)
+          .onSubmit {
+            sendMessage()
+          }
+          .textFieldStyle(RoundedBorderTextFieldStyle())
+      }
+      .navigationTitle(chatsList[chatOpen].recipient?.username ?? chatsList[chatOpen].name)
+      List {
+        ForEach(0 ..< chatsList[chatOpen].users.count, id: \.self) { result in
+          Button(action: { print("Clicked: " + (chatsList[chatOpen].users[result].user?.username ?? "User's name could not be found")) }) {
+            HStack {
+              Text(chatsList[chatOpen].users[result].user?.username ?? "User's name could not be found")
+              Spacer()
+            }.contentShape(Rectangle())
+          }.buttonStyle(.plain)
+        }
+      }
+      .padding(EdgeInsets(top: -8, leading: -10, bottom: -8, trailing: 0))
+    } else {
+      VStack {
+        Spacer()
+        HStack {
+          Spacer()
+          Text("Comms")
+          Spacer()
+        }
+        Spacer()
+      }
+      .navigationTitle("Comms")
+      .onAppear {
+        chats { result in
+          switch result {
+          case .success(let graphQLResult):
+            if let unwrapped = graphQLResult.data {
+              chatsList = unwrapped.chats
+            }
+          case .failure(let error):
+            print(error)
+          }
         }
       }
     }
