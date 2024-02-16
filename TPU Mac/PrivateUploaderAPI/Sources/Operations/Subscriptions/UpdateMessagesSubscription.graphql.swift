@@ -3,11 +3,11 @@
 
 @_exported import ApolloAPI
 
-public class NewMessageSubscription: GraphQLSubscription {
-  public static let operationName: String = "NewMessage"
+public class UpdateMessagesSubscription: GraphQLSubscription {
+  public static let operationName: String = "UpdateMessages"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"subscription NewMessage { onMessage { __typename mention message { __typename id createdAt updatedAt chatId userId content type emoji { __typename name icon id chatId } embeds { __typename ...StandardEmbed } reply { __typename readReceipts { __typename associationId user { __typename id avatar username legacy } messageId } content userId id legacyUserId embeds { __typename metadata { __typename type } media { __typename type } } legacyUser { __typename username id avatar } user { __typename username id avatar } } legacyUser { __typename username id avatar } user { __typename username id avatar } edited editedAt replyId legacyUserId pinned readReceipts { __typename associationId user { __typename id avatar username legacy } messageId } } associationId chat { __typename id recipient { __typename id username } type } } }"#,
+      #"subscription UpdateMessages { onMessage { __typename mention message { __typename id createdAt updatedAt chatId userId content type emoji { __typename name icon id chatId } embeds { __typename ...StandardEmbed } reply { __typename readReceipts { __typename associationId user { __typename id avatar username legacy } messageId } content userId id legacyUserId embeds { __typename metadata { __typename type } media { __typename type } } legacyUser { __typename username id avatar } user { __typename username id avatar } } legacyUser { __typename username id avatar } user { __typename username id avatar } edited editedAt replyId legacyUserId pinned readReceipts { __typename associationId user { __typename id avatar username legacy } messageId } } associationId chat { __typename id recipient { __typename id username } type } } }"#,
       fragments: [StandardEmbed.self]
     ))
 

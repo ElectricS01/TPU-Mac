@@ -22,7 +22,6 @@
 		C4B732B32B5B7A0C009EC113 /* CacheAsyncImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B732B22B5B7A0C009EC113 /* CacheAsyncImage.swift */; };
 		C4D7E5062AF4D4FC008308CA /* CommsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D7E5052AF4D4FC008308CA /* CommsView.swift */; };
 		C4FE71542AD3F085003E4DC0 /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C4FE71532AD3F085003E4DC0 /* KeychainSwift */; };
-		C4FE71562AD3F41B003E4DC0 /* AuthorisationInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4FE71552AD3F41B003E4DC0 /* AuthorisationInterceptor.swift */; };
 		C4FE71582AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4FE71572AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift */; };
 /* End PBXBuildFile section */
 
@@ -60,7 +59,6 @@
 		C48D5DB72AF4D2DB00067554 /* graphql */ = {isa = PBXFileReference; lastKnownFileType = folder; path = graphql; sourceTree = "<group>"; };
 		C4B732B22B5B7A0C009EC113 /* CacheAsyncImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheAsyncImage.swift; sourceTree = "<group>"; };
 		C4D7E5052AF4D4FC008308CA /* CommsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommsView.swift; sourceTree = "<group>"; };
-		C4FE71552AD3F41B003E4DC0 /* AuthorisationInterceptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorisationInterceptor.swift; sourceTree = "<group>"; };
 		C4FE71572AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkInterceptorProvider.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -120,7 +118,6 @@
 			children = (
 				C45099142ACFFA7F00FA9247 /* TPU_MacApp.swift */,
 				C4569DF62AD1828300F17C06 /* Network.swift */,
-				C4FE71552AD3F41B003E4DC0 /* AuthorisationInterceptor.swift */,
 				C4FE71572AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift */,
 				C45099162ACFFA7F00FA9247 /* ContentView.swift */,
 				C4D7E5052AF4D4FC008308CA /* CommsView.swift */,
@@ -309,7 +306,6 @@
 				C4569DF72AD1828300F17C06 /* Network.swift in Sources */,
 				C45099172ACFFA7F00FA9247 /* ContentView.swift in Sources */,
 				C4FE71582AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift in Sources */,
-				C4FE71562AD3F41B003E4DC0 /* AuthorisationInterceptor.swift in Sources */,
 				C4D7E5062AF4D4FC008308CA /* CommsView.swift in Sources */,
 				C4B732B32B5B7A0C009EC113 /* CacheAsyncImage.swift in Sources */,
 				C45099152ACFFA7F00FA9247 /* TPU_MacApp.swift in Sources */,
