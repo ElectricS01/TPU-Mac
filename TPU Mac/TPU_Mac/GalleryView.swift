@@ -11,6 +11,7 @@ import PrivateUploaderAPI
 import SwiftUI
 
 struct GalleryView: View {
+  @Environment(\.openURL) var openURL
   @State private var galleryData: GalleryItemsQuery.Data.Gallery?
   @State private var galleryItems: [GalleryItemsQuery.Data.Gallery.Item] = []
   @State private var isPlaying: Int = -1
@@ -72,10 +73,17 @@ struct GalleryView: View {
       }
     }.padding(EdgeInsets(top: 10, leading: 10, bottom: -8, trailing: 10))
     ScrollView {
-      LazyVGrid(columns: [GridItem(.adaptive(minimum: 316))], spacing: 20) {
+      LazyVGrid(columns: [GridItem(.adaptive(minimum: 316))], spacing: 10) {
         ForEach(galleryItems, id: \.self) { galleryItem in
           VStack(alignment: .leading) {
-            Text(galleryItem.name ?? "Unknown").font(.title2).lineLimit(1)
+            HStack {
+              Text(galleryItem.name ?? "Unknown").font(.title2).lineLimit(1)
+              Spacer()
+              Image(systemName: galleryItem.starred == nil ? "star" : "star.fill")
+                .resizable()
+                .frame(width: 16, height: 16)
+                .foregroundColor(.white)
+            }
             HStack(alignment: .center) {
               if galleryItem.type == "image" {
                 CacheAsyncImage(
@@ -86,23 +94,18 @@ struct GalleryView: View {
                 } placeholder: {
                   ProgressView()
                 }
-                .frame(minWidth: 268, maxWidth: .infinity, minHeight: 140, maxHeight: 140)
+                .frame(minWidth: 268, maxWidth: .infinity, minHeight: 160, maxHeight: 160)
               } else if galleryItem.type == "video" {
                 if isPlaying != galleryItem.id {
                   Button(action: {
-                    if isPlaying == galleryItem.id {
-                      isPlaying = -1
-                    } else {
-                      isPlaying = galleryItem.id
-                    }
+                    isPlaying = galleryItem.id
                   }) {
                     Image(systemName: "play.circle.fill")
                       .resizable()
-                      .frame(width: 112, height: 112)
+                      .frame(width: 160, height: 160)
                       .foregroundColor(.white)
                   }
-                }
-                if isPlaying == galleryItem.id {
+                } else {
                   let player = AVPlayer(url: URL(string: "https://i.electrics01.com/i/" + galleryItem.attachment)!)
                   VideoPlayer(player: player)
                     .onAppear {
@@ -110,7 +113,7 @@ struct GalleryView: View {
                     }
                 }
               } else if galleryItem.type == "binary" {
-                Image(systemName: "doc.zipper").resizable().aspectRatio(contentMode: .fit).frame(width: 64, height: 64).font(.largeTitle).padding(38)
+                Image(systemName: "doc.zipper").resizable().aspectRatio(contentMode: .fit).frame(width: 84, height: 84).font(.largeTitle).padding(38)
               }
             }
             .frame(
@@ -127,17 +130,18 @@ struct GalleryView: View {
             }
             Text("Size: " + formatFileSize(galleryItem.fileSize))
             HStack {
-              Button(action: {
+              Button("Copy Link") {
                 #if os(iOS)
                 UIPasteboard.general.setValue("https://i.electrics01.com/i/" + galleryItem.attachment,
                                               forPasteboardType: UTType.plainText.identifier)
                 #elseif os(macOS)
                 NSPasteboard.general.clearContents(); NSPasteboard.general.setString("https://i.electrics01.com/i/" + galleryItem.attachment, forType: .string)
                 #endif
-              }) {
-                Text("Copy Link")
               }
-              Button(action: {
+              Button("Open image") {
+                openURL(URL(string: "https://i.electrics01.com/i/" + galleryItem.attachment)!)
+              }
+              Button("Download") {
                 let downloadTask = URLSession.shared.downloadTask(with: URL(string: "https://i.electrics01.com/i/" + galleryItem.attachment)!) { location, _, error in
                   guard let location = location else {
                     if let error = error {
@@ -155,10 +159,8 @@ struct GalleryView: View {
                   }
                 }
                 downloadTask.resume()
-              }) {
-                Text("Download file")
               }
-              Button(action: {
+              Button("Delete") {
                 Network.shared.apollo.perform(mutation: DeleteUploadsMutation(input: DeleteUploadInput(items: [Double(galleryItem.id)]))) { result in
                   switch result {
                   case .success:
@@ -167,8 +169,6 @@ struct GalleryView: View {
                     print("Failure! Error: \(error)")
                   }
                 }
-              }) {
-                Text("Delete")
               }
             }
           }
@@ -181,18 +181,14 @@ struct GalleryView: View {
       .padding(EdgeInsets(top: 10, leading: 10, bottom: 0, trailing: 10))
       HStack {
         Text("Pages: " + String(galleryData?.pager.totalPages ?? 0))
-        Button(action: {
+        Button("Last Page") {
           currentPage -= 1
           getGallery()
-        }) {
-          Text("Last Page")
         }
         .disabled(currentPage < 2)
-        Button(action: {
+        Button("Next Page") {
           currentPage += 1
           getGallery()
-        }) {
-          Text("Next Page")
         }
         .disabled(currentPage >= galleryData?.pager.totalPages ?? 0)
         Text("Page: " + String(currentPage))

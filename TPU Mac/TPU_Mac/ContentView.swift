@@ -182,7 +182,7 @@ struct AboutView: View {
     #else
       Text("TPU iOS").font(.system(size: 24, weight: .semibold))
     #endif
-    Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (17/2/2024)")
+    Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (20/2/2024)")
     Text("Made by ElectricS01")
     Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
   }

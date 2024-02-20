@@ -1,70 +1,76 @@
 {
   "images" : [
     {
-      "filename" : "tpu1024 1.png",
+      "filename" : "TPU Mac.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
     },
     {
-      "filename" : "tpu16.png",
+      "filename" : "TPU Mac 1.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "16x16"
     },
     {
-      "filename" : "tpu32 1.png",
+      "filename" : "TPU Mac 2.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "16x16"
     },
     {
-      "filename" : "tpu32.png",
+      "filename" : "TPU Mac 3.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "32x32"
     },
     {
-      "filename" : "tpu64.png",
+      "filename" : "TPU Mac 4.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "32x32"
     },
     {
-      "filename" : "tpu128.png",
+      "filename" : "TPU Mac 5.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "128x128"
     },
     {
-      "filename" : "tpu256 1.png",
+      "filename" : "TPU Mac 6.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "128x128"
     },
     {
-      "filename" : "tpu256.png",
+      "filename" : "TPU Mac 8.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "256x256"
     },
     {
-      "filename" : "tpu512 1.png",
+      "filename" : "TPU Mac 7.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "256x256"
     },
     {
-      "filename" : "tpu512.png",
+      "filename" : "TPU Mac 9.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "512x512"
     },
     {
-      "filename" : "tpu1024.png",
+      "filename" : "TPU Mac 10.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "512x512"
+    },
+    {
+      "filename" : "TPU Mac 11.png",
+      "idiom" : "universal",
+      "platform" : "watchos",
+      "size" : "1024x1024"
     }
   ],
   "info" : {

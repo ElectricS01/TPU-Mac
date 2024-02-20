@@ -12,6 +12,9 @@ query GalleryItems($input: GalleryInput!) {
       fileSize
       name
       textMetadata
+      starred {
+        id
+      }
       createdAt
     }
   }

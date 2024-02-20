@@ -75,7 +75,7 @@ struct CommsView: View {
   func editMessage() {
     Network.shared.apollo.perform(mutation: EditMessageMutation(input: EditMessageInput(content: GraphQLNullable<String>(stringLiteral: editingMessage), attachments: [], messageId: editingId, associationId: chatsList[chatOpen].association?.id ?? 0))) { result in
       switch result {
-      case .success(let graphQLResult):
+      case .success:
         replyingId = -1
         editingId = -1
         inputMessage = ""
@@ -120,7 +120,7 @@ struct CommsView: View {
                   HStack {
                     Image(systemName: "arrow.turn.up.right").frame(width: 16, height: 16)
                     Text(message.reply?.user?.username ?? "User has been deleted")
-                    Text(message.reply?.content ?? "Message has been deleted").textSelection(.enabled)
+                    Text((message.reply?.content ?? "Message has been deleted").replacingOccurrences(of: "\n", with: "")).textSelection(.enabled).lineLimit(1)
                   }.padding(EdgeInsets(top: 0, leading: 18, bottom: 0, trailing: 0))
                 }
                 HStack(alignment: .top, spacing: 6) {
@@ -305,7 +305,7 @@ struct CommsView: View {
                 HStack {
                   Image(systemName: "arrow.turn.up.right").frame(width: 16, height: 16)
                   Text(message.reply?.user?.username ?? "User has been deleted")
-                  Text(message.reply?.content ?? "Message has been deleted").textSelection(.enabled)
+                  Text((message.reply?.content ?? "Message has been deleted").replacingOccurrences(of: "\n", with: "")).textSelection(.enabled).lineLimit(1)
                 }.padding(EdgeInsets(top: 0, leading: 18, bottom: 0, trailing: 0))
               }
               HStack(alignment: .top, spacing: 6) {

@@ -7,7 +7,7 @@ public class GalleryItemsQuery: GraphQLQuery {
   public static let operationName: String = "GalleryItems"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GalleryItems($input: GalleryInput!) { gallery(input: $input) { __typename pager { __typename totalItems totalPages endPage } items { __typename id attachment type fileSize name textMetadata createdAt } } }"#
+      #"query GalleryItems($input: GalleryInput!) { gallery(input: $input) { __typename pager { __typename totalItems totalPages endPage } items { __typename id attachment type fileSize name textMetadata starred { __typename id } createdAt } } }"#
     ))
 
   public var input: GalleryInput
@@ -82,6 +82,7 @@ public class GalleryItemsQuery: GraphQLQuery {
           .field("fileSize", Double.self),
           .field("name", String?.self),
           .field("textMetadata", String?.self),
+          .field("starred", Starred?.self),
           .field("createdAt", PrivateUploaderAPI.Date.self),
         ] }
 
@@ -92,7 +93,24 @@ public class GalleryItemsQuery: GraphQLQuery {
         public var name: String? { __data["name"] }
         /// This is used for OCR scanned text from images.
         public var textMetadata: String? { __data["textMetadata"] }
+        public var starred: Starred? { __data["starred"] }
         public var createdAt: PrivateUploaderAPI.Date { __data["createdAt"] }
+
+        /// Gallery.Item.Starred
+        ///
+        /// Parent Type: `Star`
+        public struct Starred: PrivateUploaderAPI.SelectionSet {
+          public let __data: DataDict
+          public init(_dataDict: DataDict) { __data = _dataDict }
+
+          public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Star }
+          public static var __selections: [ApolloAPI.Selection] { [
+            .field("__typename", String.self),
+            .field("id", Int.self),
+          ] }
+
+          public var id: Int { __data["id"] }
+        }
       }
     }
   }
