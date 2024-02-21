@@ -24,13 +24,6 @@ let outputDateFormatter: DateFormatter = {
   return formatter
 }()
 
-func formatFileSize(_ size: Double) -> String {
-  let byteCountFormatter = ByteCountFormatter()
-  byteCountFormatter.allowedUnits = [.useKB, .useMB, .useGB]
-  byteCountFormatter.countStyle = .file
-  return byteCountFormatter.string(fromByteCount: Int64(size))
-}
-
 struct ContentView: View {
   @State var showingLogin = false
 
@@ -75,28 +68,18 @@ struct LoginSheet: View {
   @State private var totp: String = ""
   @State private var errorMessage = ""
 
-  func login(username: String, password: String, totp: String, completion: @escaping (Result<String, Error>) -> Void) {
+  func loginDetails() {
     Network.shared.apollo.perform(mutation: LoginMutation(input: LoginInput(username: username, password: password, totp: GraphQLNullable(stringLiteral: totp)))) { result in
       switch result {
       case .success(let graphQLResult):
-        completion(.success(graphQLResult.errors?[0].message ?? "Success"))
-        keychain.set(graphQLResult.data?.login.token ?? "", forKey: "token")
+        if graphQLResult.errors?[0].message == nil {
+          keychain.set(graphQLResult.data?.login.token ?? "", forKey: "token")
+          dismiss()
+          return
+        }
+        errorMessage = graphQLResult.errors?[0].localizedDescription ?? "Error"
       case .failure(let error):
         print("Failure! Error: \(error)")
-        completion(.failure(error))
-      }
-    }
-  }
-
-  func loginDetails() {
-    login(username: username, password: password, totp: totp) { result in
-      switch result {
-      case .success(let message):
-        errorMessage = message
-        if errorMessage == "Success" {
-          dismiss()
-        }
-      case .failure(let error):
         errorMessage = error.localizedDescription
       }
     }
@@ -182,7 +165,7 @@ struct AboutView: View {
     #else
       Text("TPU iOS").font(.system(size: 24, weight: .semibold))
     #endif
-    Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (20/2/2024)")
+    Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (21/2/2024)")
     Text("Made by ElectricS01")
     Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
   }

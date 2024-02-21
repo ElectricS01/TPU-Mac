@@ -1,16 +1,10 @@
 query ChatsQuery {
   chats {
     id
-    background
-    description
     type
     name
     unread
-    userId
     icon
-    createdAt
-    updatedAt
-    legacyUserId
     association {
       id
       chatId

@@ -13,6 +13,7 @@ struct CommsView: View {
   @State private var chatsList: [ChatsQuery.Data.Chat] = []
   @State private var chatMessages: [MessagesQuery.Data.Message] = []
   @State private var chatOpen: Int = -1
+  @State private var unreadId: Int = -1
   @State private var editingId: Int = -1
   @State private var replyingId: Int = -1
   @State private var inputMessage: String = ""
@@ -38,6 +39,13 @@ struct CommsView: View {
         if let unwrapped = graphQLResult.data {
           chatMessages = unwrapped.messages
           chatOpen = chatId ?? -1
+          if chatsList[chatOpen].unread != 0 {
+            if let unreadMessageIndex = chatMessages.firstIndex(where: { $0.id == chatsList[chatOpen].association?.lastRead }) {
+              unreadId = chatMessages[unreadMessageIndex - 1].id
+            } else {
+              unreadId = -1
+            }
+          }
         }
       case .failure(let error):
         print(error)
@@ -116,6 +124,13 @@ struct CommsView: View {
           ScrollView {
             VStack(alignment: .leading, spacing: 6) {
               ForEach(chatMessages.reversed(), id: \.self) { message in
+                if message.id == unreadId {
+                  HStack {
+                    VStack { Divider().background(.red) }
+                    Text("New Message").foregroundStyle(.red)
+                    VStack { Divider().background(.red) }
+                  }
+                }
                 if message.reply != nil {
                   HStack {
                     Image(systemName: "arrow.turn.up.right").frame(width: 16, height: 16)
@@ -301,6 +316,13 @@ struct CommsView: View {
         ScrollView {
           VStack(alignment: .leading, spacing: 6) {
             ForEach(chatMessages.reversed(), id: \.self) { message in
+              if message.id == unreadId {
+                HStack {
+                  VStack { Divider().background(.red) }
+                  Text("New Message").foregroundStyle(.red)
+                  VStack { Divider().background(.red) }
+                }
+              }
               if message.reply != nil {
                 HStack {
                   Image(systemName: "arrow.turn.up.right").frame(width: 16, height: 16)

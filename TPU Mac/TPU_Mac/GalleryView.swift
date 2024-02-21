@@ -46,6 +46,13 @@ struct GalleryView: View {
     }
   }
 
+  func formatFileSize(_ size: Double) -> String {
+    let byteCountFormatter = ByteCountFormatter()
+    byteCountFormatter.allowedUnits = [.useKB, .useMB, .useGB]
+    byteCountFormatter.countStyle = .file
+    return byteCountFormatter.string(fromByteCount: Int64(size))
+  }
+
   var body: some View {
     HStack {
       TextField("Search the Gallery", text: $inputSearch)
@@ -114,6 +121,8 @@ struct GalleryView: View {
                 }
               } else if galleryItem.type == "binary" {
                 Image(systemName: "doc.zipper").resizable().aspectRatio(contentMode: .fit).frame(width: 84, height: 84).font(.largeTitle).padding(38)
+              } else if galleryItem.type == "text" {
+                Image(systemName: "doc.plaintext").resizable().aspectRatio(contentMode: .fit).frame(width: 84, height: 84).font(.largeTitle).padding(38)
               }
             }
             .frame(
