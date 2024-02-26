@@ -53,7 +53,7 @@ struct CommsView: View {
     }
   }
   
-  func chats(completion: @escaping (Result<GraphQLResult<ChatsQuery.Data>, Error>) -> Void) {
+  func getChats(completion: @escaping (Result<GraphQLResult<ChatsQuery.Data>, Error>) -> Void) {
     Network.shared.apollo.fetch(query: ChatsQuery(), cachePolicy: .fetchIgnoringCacheData) { result in
       switch result {
       case .success:
@@ -277,7 +277,7 @@ struct CommsView: View {
     }
     .navigationTitle("Comms")
     .onAppear {
-      chats { result in
+      getChats { result in
         switch result {
         case .success(let graphQLResult):
           if let unwrapped = graphQLResult.data {
@@ -467,7 +467,7 @@ struct CommsView: View {
       }
       .navigationTitle("Comms")
       .onAppear {
-        chats { result in
+        getChats { result in
           switch result {
           case .success(let graphQLResult):
             if let unwrapped = graphQLResult.data {

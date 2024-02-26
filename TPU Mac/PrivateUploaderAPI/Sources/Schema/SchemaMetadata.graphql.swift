@@ -22,10 +22,15 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
 
   public static func objectType(forTypename typename: String) -> Object? {
     switch typename {
+    case "Query": return PrivateUploaderAPI.Objects.Query
+    case "CoreState": return PrivateUploaderAPI.Objects.CoreState
+    case "Connection": return PrivateUploaderAPI.Objects.Connection
+    case "Announcement": return PrivateUploaderAPI.Objects.Announcement
+    case "PartialUserBase": return PrivateUploaderAPI.Objects.PartialUserBase
+    case "CoreStats": return PrivateUploaderAPI.Objects.CoreStats
     case "Mutation": return PrivateUploaderAPI.Objects.Mutation
     case "LoginResponse": return PrivateUploaderAPI.Objects.LoginResponse
     case "LoginUser": return PrivateUploaderAPI.Objects.LoginUser
-    case "Query": return PrivateUploaderAPI.Objects.Query
     case "PaginatedUploadResponse": return PrivateUploaderAPI.Objects.PaginatedUploadResponse
     case "Pager": return PrivateUploaderAPI.Objects.Pager
     case "Upload": return PrivateUploaderAPI.Objects.Upload
@@ -33,7 +38,6 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "GenericSuccessObject": return PrivateUploaderAPI.Objects.GenericSuccessObject
     case "Chat": return PrivateUploaderAPI.Objects.Chat
     case "ChatAssociation": return PrivateUploaderAPI.Objects.ChatAssociation
-    case "PartialUserBase": return PrivateUploaderAPI.Objects.PartialUserBase
     case "Message": return PrivateUploaderAPI.Objects.Message
     case "Subscription": return PrivateUploaderAPI.Objects.Subscription
     case "MessageSubscription": return PrivateUploaderAPI.Objects.MessageSubscription

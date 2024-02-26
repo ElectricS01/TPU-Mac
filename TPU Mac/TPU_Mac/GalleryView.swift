@@ -35,7 +35,6 @@ struct GalleryView: View {
     ]))), cachePolicy: .fetchIgnoringCacheData) { result in
       switch result {
       case .success(let graphQLResult):
-        print(graphQLResult)
         if let unwrapped = graphQLResult.data {
           galleryData = unwrapped.gallery
           galleryItems = unwrapped.gallery.items

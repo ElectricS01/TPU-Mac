@@ -7,7 +7,7 @@ public class ChatsQuery: GraphQLQuery {
   public static let operationName: String = "ChatsQuery"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query ChatsQuery { chats { __typename id type name unread icon association { __typename id chatId userId rank lastRead notifications legacyUserId user { __typename username id createdAt administrator moderator avatar } } users { __typename id chatId userId rank lastRead notifications legacyUserId user { __typename username id createdAt administrator moderator avatar } } _redisSortDate recipient { __typename username id createdAt administrator moderator avatar } } }"#
+      #"query ChatsQuery { chats { __typename id type name unread icon association { __typename id chatId userId rank lastRead notifications } users { __typename id chatId userId rank lastRead notifications user { __typename username id createdAt administrator moderator avatar } } _redisSortDate recipient { __typename username id createdAt administrator moderator avatar } } }"#
     ))
 
   public init() {}
@@ -70,8 +70,6 @@ public class ChatsQuery: GraphQLQuery {
           .field("rank", String.self),
           .field("lastRead", Int?.self),
           .field("notifications", String.self),
-          .field("legacyUserId", Int?.self),
-          .field("user", User?.self),
         ] }
 
         public var id: Int { __data["id"] }
@@ -81,36 +79,6 @@ public class ChatsQuery: GraphQLQuery {
         public var rank: String { __data["rank"] }
         public var lastRead: Int? { __data["lastRead"] }
         public var notifications: String { __data["notifications"] }
-        /// Used for legacy Colubrina accounts.
-        @available(*, deprecated, message: "Use `userId` instead.")
-        public var legacyUserId: Int? { __data["legacyUserId"] }
-        public var user: User? { __data["user"] }
-
-        /// Chat.Association.User
-        ///
-        /// Parent Type: `PartialUserBase`
-        public struct User: PrivateUploaderAPI.SelectionSet {
-          public let __data: DataDict
-          public init(_dataDict: DataDict) { __data = _dataDict }
-
-          public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PartialUserBase }
-          public static var __selections: [ApolloAPI.Selection] { [
-            .field("__typename", String.self),
-            .field("username", String.self),
-            .field("id", Int.self),
-            .field("createdAt", PrivateUploaderAPI.Date.self),
-            .field("administrator", Bool.self),
-            .field("moderator", Bool.self),
-            .field("avatar", String?.self),
-          ] }
-
-          public var username: String { __data["username"] }
-          public var id: Int { __data["id"] }
-          public var createdAt: PrivateUploaderAPI.Date { __data["createdAt"] }
-          public var administrator: Bool { __data["administrator"] }
-          public var moderator: Bool { __data["moderator"] }
-          public var avatar: String? { __data["avatar"] }
-        }
       }
 
       /// Chat.User
@@ -129,7 +97,6 @@ public class ChatsQuery: GraphQLQuery {
           .field("rank", String.self),
           .field("lastRead", Int?.self),
           .field("notifications", String.self),
-          .field("legacyUserId", Int?.self),
           .field("user", User?.self),
         ] }
 
@@ -140,9 +107,6 @@ public class ChatsQuery: GraphQLQuery {
         public var rank: String { __data["rank"] }
         public var lastRead: Int? { __data["lastRead"] }
         public var notifications: String { __data["notifications"] }
-        /// Used for legacy Colubrina accounts.
-        @available(*, deprecated, message: "Use `userId` instead.")
-        public var legacyUserId: Int? { __data["legacyUserId"] }
         public var user: User? { __data["user"] }
 
         /// Chat.User.User

@@ -25,12 +25,26 @@ let outputDateFormatter: DateFormatter = {
 }()
 
 struct ContentView: View {
-  @State var showingLogin = false
+  @State private var showingLogin = false
+  @State private var coreState: StateQuery.Data.CoreState?
+
+  func getState() {
+    Network.shared.apollo.fetch(query: StateQuery(), cachePolicy: .fetchIgnoringCacheData) { result in
+      switch result {
+      case .success(let graphQLResult):
+        if let unwrapped = graphQLResult.data {
+          coreState = unwrapped.coreState
+        }
+      case .failure(let error):
+        print("Failure! Error: \(error)")
+      }
+    }
+  }
 
   var body: some View {
     NavigationSplitView {
       List {
-        NavigationLink(destination: HomeView(showingLogin: $showingLogin)
+        NavigationLink(destination: HomeView(showingLogin: $showingLogin, coreState: $coreState)
           .sheet(isPresented: $showingLogin) {
             LoginSheet()
           }) {
@@ -49,14 +63,17 @@ struct ContentView: View {
           Label("About", systemImage: "info.circle")
         }
       }
+      .onAppear {
+        showingLogin = (keychain.get("token") == nil || keychain.get("token") == "")
+        if !showingLogin {
+          getState()
+        }
+      }
     } detail: {
-      HomeView(showingLogin: $showingLogin)
+      HomeView(showingLogin: $showingLogin, coreState: $coreState)
         .sheet(isPresented: $showingLogin) {
           LoginSheet()
         }
-    }
-    .onAppear {
-      showingLogin = (keychain.get("token") == nil || keychain.get("token") == "")
     }
   }
 }
@@ -131,23 +148,6 @@ struct LoginSheet: View {
   }
 }
 
-struct HomeView: View {
-  @Binding var showingLogin: Bool
-
-  var body: some View {
-    Text("Welcome to")
-    #if os(macOS)
-      Text("TPU Mac").font(.system(size: 24, weight: .semibold))
-    #else
-      Text("TPU iOS").font(.system(size: 24, weight: .semibold))
-    #endif
-    Button("Backup Login") {
-      showingLogin = true
-    }
-    .navigationTitle("Home")
-  }
-}
-
 struct SettingsView: View {
   var body: some View {
     Text("Settings")
@@ -165,7 +165,7 @@ struct AboutView: View {
     #else
       Text("TPU iOS").font(.system(size: 24, weight: .semibold))
     #endif
-    Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (21/2/2024)")
+    Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (26/2/2024)")
     Text("Made by ElectricS01")
     Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
   }

@@ -12,15 +12,6 @@ query ChatsQuery {
       rank
       lastRead
       notifications
-      legacyUserId
-      user {
-        username
-        id
-        createdAt
-        administrator
-        moderator
-        avatar
-      }
     }
     users {
       id
@@ -29,7 +20,6 @@ query ChatsQuery {
       rank
       lastRead
       notifications
-      legacyUserId
       user {
         username
         id
