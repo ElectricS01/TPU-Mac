@@ -37,11 +37,11 @@ struct CommsView: View {
       switch result {
       case .success(let graphQLResult):
         if let unwrapped = graphQLResult.data {
-          chatMessages = unwrapped.messages
+          chatMessages = unwrapped.messages.reversed()
           chatOpen = chatId ?? -1
           if chatsList[chatOpen].unread != 0 {
             if let unreadMessageIndex = chatMessages.firstIndex(where: { $0.id == chatsList[chatOpen].association?.lastRead }) {
-              unreadId = chatMessages[unreadMessageIndex - 1].id
+              unreadId = chatMessages[unreadMessageIndex + 1].id
             } else {
               unreadId = -1
             }
@@ -93,6 +93,14 @@ struct CommsView: View {
     }
   }
   
+  func merge(message: MessagesQuery.Data.Message, previousMessage: MessagesQuery.Data.Message?) -> Bool {
+    print(message.content)
+    if message.userId == previousMessage?.userId && message.replyId == nil {
+      return false
+    }
+    return true
+  }
+    
   var body: some View {
     #if os(macOS)
     HSplitView {
@@ -123,7 +131,7 @@ struct CommsView: View {
         ScrollViewReader { proxy in
           ScrollView {
             VStack(alignment: .leading, spacing: 6) {
-              ForEach(chatMessages.reversed(), id: \.self) { message in
+              ForEach(Array(chatMessages.enumerated()), id: \.element) { index, message in
                 if message.id == unreadId {
                   HStack {
                     VStack { Divider().background(.red) }
@@ -139,21 +147,27 @@ struct CommsView: View {
                   }.padding(EdgeInsets(top: 0, leading: 18, bottom: 0, trailing: 0))
                 }
                 HStack(alignment: .top, spacing: 6) {
-                  ProfilePicture(avatar: message.user?.avatar, size: 32)
+                  if merge(message: message, previousMessage: index != 0 ? chatMessages[index - 1] : nil) {
+                    ProfilePicture(avatar: message.user?.avatar, size: 32)
+                  } else {
+                    Spacer().frame(width: 32)
+                  }
                   VStack {
-                    HStack {
-                      Text(message.user?.username ?? "User has been deleted")
-                      if let date = inputDateFormatter.date(from: message.createdAt) {
-                        let formattedDate = outputDateFormatter.string(from: date)
-                        Text(formattedDate)
-                      } else {
-                        Text("Invalid Date")
-                      }
-                    }.frame(minWidth: 0,
-                            maxWidth: .infinity,
-                            minHeight: 0,
-                            maxHeight: 6,
-                            alignment: .topLeading)
+                    if merge(message: message, previousMessage: index != 0 ? chatMessages[index - 1] : nil) {
+                      HStack {
+                        Text(message.user?.username ?? "User has been deleted")
+                        if let date = inputDateFormatter.date(from: message.createdAt) {
+                          let formattedDate = outputDateFormatter.string(from: date)
+                          Text(formattedDate)
+                        } else {
+                          Text("Invalid Date")
+                        }
+                      }.frame(minWidth: 0,
+                              maxWidth: .infinity,
+                              minHeight: 0,
+                              maxHeight: 6,
+                              alignment: .topLeading)
+                    }
                     if editingId != message.id {
                       Text(.init(message.content ?? "Message has been deleted"))
                         .textSelection(.enabled)
@@ -179,7 +193,7 @@ struct CommsView: View {
                             .aspectRatio(contentMode: .fit)
                             .onAppear {
                               if chatMessages.count != 0 {
-                                proxy.scrollTo(chatMessages.first?.id)
+                                proxy.scrollTo(chatMessages.last?.id)
                               }
                             }
                         } placeholder: {
@@ -220,23 +234,23 @@ struct CommsView: View {
             )
             .onAppear {
               if chatMessages.count != 0 {
-                proxy.scrollTo(chatMessages.first?.id)
+                proxy.scrollTo(chatMessages.last?.id)
               }
             }
             .onChange(of: chatMessages) {
-              proxy.scrollTo(chatMessages.first?.id)
+              proxy.scrollTo(chatMessages.last?.id)
             }
           }
           if replyingId != -1 {
             HStack {
               Image(systemName: "arrow.turn.up.right").frame(width: 16, height: 16)
-              Text(chatMessages.first(where: { $0.id == replyingId })?.user?.username ?? "User has been deleted")
-              Text(chatMessages.first(where: { $0.id == replyingId })?.content ?? "Message has been deleted")
+              Text(chatMessages.last(where: { $0.id == replyingId })?.user?.username ?? "User has been deleted")
+              Text(chatMessages.last(where: { $0.id == replyingId })?.content ?? "Message has been deleted")
                 .textSelection(.enabled)
                 .lineLimit(1)
                 .onAppear {
                   if chatMessages.count != 0 {
-                    proxy.scrollTo(chatMessages.first?.id)
+                    proxy.scrollTo(chatMessages.last?.id)
                   }
                 }
             }.padding(EdgeInsets(top: 0, leading: 18, bottom: 0, trailing: 0))
@@ -310,12 +324,13 @@ struct CommsView: View {
         .buttonStyle(.plain)
       }
     }
+    .frame(width: 150)
     .padding(EdgeInsets(top: -8, leading: -10, bottom: -8, trailing: 0))
     if chatOpen != -1 {
       ScrollViewReader { proxy in
         ScrollView {
           VStack(alignment: .leading, spacing: 6) {
-            ForEach(chatMessages.reversed(), id: \.self) { message in
+            ForEach(Array(chatMessages.enumerated()), id: \.element) { index, message in
               if message.id == unreadId {
                 HStack {
                   VStack { Divider().background(.red) }
@@ -331,21 +346,27 @@ struct CommsView: View {
                 }.padding(EdgeInsets(top: 0, leading: 18, bottom: 0, trailing: 0))
               }
               HStack(alignment: .top, spacing: 6) {
-                ProfilePicture(avatar: message.user?.avatar, size: 32)
+                if merge(message: message, previousMessage: index != 0 ? chatMessages[index - 1] : nil) {
+                  ProfilePicture(avatar: message.user?.avatar, size: 32)
+                } else {
+                  Spacer().frame(width: 32)
+                }
                 VStack {
-                  HStack {
-                    Text(message.user?.username ?? "User has been deleted")
-                    if let date = inputDateFormatter.date(from: message.createdAt) {
-                      let formattedDate = outputDateFormatter.string(from: date)
-                      Text(formattedDate)
-                    } else {
-                      Text("Invalid Date")
-                    }
-                  }.frame(minWidth: 0,
-                          maxWidth: .infinity,
-                          minHeight: 0,
-                          maxHeight: 6,
-                          alignment: .topLeading)
+                  if merge(message: message, previousMessage: index != 0 ? chatMessages[index - 1] : nil) {
+                    HStack {
+                      Text(message.user?.username ?? "User has been deleted")
+                      if let date = inputDateFormatter.date(from: message.createdAt) {
+                        let formattedDate = outputDateFormatter.string(from: date)
+                        Text(formattedDate)
+                      } else {
+                        Text("Invalid Date")
+                      }
+                    }.frame(minWidth: 0,
+                            maxWidth: .infinity,
+                            minHeight: 0,
+                            maxHeight: 6,
+                            alignment: .topLeading)
+                  }
                   if editingId != message.id {
                     Text(.init(message.content ?? "Message has been deleted"))
                       .textSelection(.enabled)
@@ -371,7 +392,7 @@ struct CommsView: View {
                           .aspectRatio(contentMode: .fit)
                           .onAppear {
                             if chatMessages.count != 0 {
-                              proxy.scrollTo(chatMessages.first?.id)
+                              proxy.scrollTo(chatMessages.last?.id)
                             }
                           }
                       } placeholder: {
@@ -412,23 +433,23 @@ struct CommsView: View {
           )
           .onAppear {
             if chatMessages.count != 0 {
-              proxy.scrollTo(chatMessages.first?.id)
+              proxy.scrollTo(chatMessages.last?.id)
             }
           }
           .onChange(of: chatMessages) {
-            proxy.scrollTo(chatMessages.first?.id)
+            proxy.scrollTo(chatMessages.last?.id)
           }
         }
         if replyingId != -1 {
           HStack {
             Image(systemName: "arrow.turn.up.right").frame(width: 16, height: 16)
-            Text(chatMessages.first(where: { $0.id == replyingId })?.user?.username ?? "User has been deleted")
-            Text(chatMessages.first(where: { $0.id == replyingId })?.content ?? "Message has been deleted")
+            Text(chatMessages.last(where: { $0.id == replyingId })?.user?.username ?? "User has been deleted")
+            Text(chatMessages.last(where: { $0.id == replyingId })?.content ?? "Message has been deleted")
               .textSelection(.enabled)
               .lineLimit(1)
               .onAppear {
                 if chatMessages.count != 0 {
-                  proxy.scrollTo(chatMessages.first?.id)
+                  proxy.scrollTo(chatMessages.last?.id)
                 }
               }
           }.padding(EdgeInsets(top: 0, leading: 18, bottom: 0, trailing: 0))
@@ -453,8 +474,8 @@ struct CommsView: View {
             }.contentShape(Rectangle())
           }.buttonStyle(.plain)
         }
-      }
-      .padding(EdgeInsets(top: -8, leading: -10, bottom: -8, trailing: 0))
+      }.frame(width: 150)
+        .padding(EdgeInsets(top: -8, leading: -10, bottom: -8, trailing: 0))
     } else {
       VStack {
         Spacer()
