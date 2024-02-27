@@ -53,8 +53,11 @@ struct ContentView: View {
         NavigationLink(destination: SettingsView()) {
           Label("Settings", systemImage: "gear")
         }
-        NavigationLink(destination: GalleryView()) {
+        NavigationLink(destination: GalleryView(stars: .constant(false))) {
           Label("Gallery", systemImage: "photo.on.rectangle")
+        }
+        NavigationLink(destination: GalleryView(stars: .constant(true))) {
+          Label("Stars", systemImage: "star")
         }
         NavigationLink(destination: CommsView()) {
           Label("Comms", systemImage: "message")
@@ -165,7 +168,7 @@ struct AboutView: View {
     #else
       Text("TPU iOS").font(.system(size: 24, weight: .semibold))
     #endif
-    Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (26/2/2024)")
+    Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (27/2/2024)")
     Text("Made by ElectricS01")
     Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
   }

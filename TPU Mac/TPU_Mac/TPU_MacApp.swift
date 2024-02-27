@@ -5,6 +5,7 @@
 //  Created by ElectricS01  on 6/10/2023.
 //
 
+import NukeUI
 import PrivateUploaderAPI
 import SwiftUI
 
@@ -23,12 +24,14 @@ struct ProfilePicture: View {
 
   var body: some View {
     if let avatar = avatar, avatar.count < 21 {
-      CacheAsyncImage(
-        url: URL(string: "https://i.electrics01.com/i/" + avatar)
-      ) { image in
-        image.resizable()
-      } placeholder: {
-        ProgressView()
+      LazyImage(url: URL(string: "https://i.electrics01.com/i/" + avatar)) { state in
+        if let image = state.image {
+          image.resizable().aspectRatio(contentMode: .fill)
+        } else if state.error != nil {
+          Color.red
+        } else {
+          ProgressView()
+        }
       }
       .frame(width: size, height: size)
       .cornerRadius(size / 2)

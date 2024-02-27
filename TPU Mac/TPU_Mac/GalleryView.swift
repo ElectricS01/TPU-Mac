@@ -7,10 +7,12 @@
 
 import Apollo
 import AVKit
+import NukeUI
 import PrivateUploaderAPI
 import SwiftUI
 
 struct GalleryView: View {
+  @Binding var stars: Bool
   @Environment(\.openURL) var openURL
   @State private var galleryData: GalleryItemsQuery.Data.Gallery?
   @State private var galleryItems: [GalleryItemsQuery.Data.Gallery.Item] = []
@@ -31,6 +33,7 @@ struct GalleryView: View {
       "search": inputSearch,
       "page": currentPage,
       "limit": 36,
+      "type": stars == true ? "STARRED" : nil,
       "filters": filters
     ]))), cachePolicy: .fetchIgnoringCacheData) { result in
       switch result {
@@ -92,13 +95,14 @@ struct GalleryView: View {
             }
             HStack(alignment: .center) {
               if galleryItem.type == "image" {
-                CacheAsyncImage(
-                  url: URL(string: "https://i.electrics01.com/i/" + galleryItem.attachment)
-                ) { image in
-                  image.resizable()
-                    .aspectRatio(contentMode: .fit)
-                } placeholder: {
-                  ProgressView()
+                LazyImage(url: URL(string: "https://i.electrics01.com/i/" + galleryItem.attachment)) { state in
+                  if let image = state.image {
+                    image.resizable().aspectRatio(contentMode: .fit)
+                  } else if state.error != nil {
+                    Color.red
+                  } else {
+                    ProgressView()
+                  }
                 }
                 .frame(minWidth: 268, maxWidth: .infinity, minHeight: 160, maxHeight: 160)
               } else if galleryItem.type == "video" {
@@ -205,6 +209,10 @@ struct GalleryView: View {
     }
     .navigationTitle("Gallery")
     .onAppear {
+      getGallery()
+    }
+    .onChange(of: stars) {
+      print("ee")
       getGallery()
     }
   }

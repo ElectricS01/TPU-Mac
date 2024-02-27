@@ -6,6 +6,7 @@
 //
 
 import Apollo
+import NukeUI
 import PrivateUploaderAPI
 import SwiftUI
 
@@ -186,19 +187,20 @@ struct CommsView: View {
                     }
                     ForEach(message.embeds, id: \.self) { embed in
                       if embed.media != [] {
-                        CacheAsyncImage(
-                          url: URL(string: "https://i.electrics01.com" + (embed.media?[0].proxyUrl ?? ""))
-                        ) { image in
-                          image.resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .onAppear {
-                              if chatMessages.count != 0 {
-                                proxy.scrollTo(chatMessages.last?.id)
-                              }
+                        LazyImage(url: URL(string: embed.media?[0].attachment == nil ? ("https://i.electrics01.com" + (embed.media?[0].proxyUrl ?? "")) : ("https://i.electrics01.com/i/" + (embed.media?[0].attachment ?? "")))) { state in
+                          if let image = state.image {
+                            image.resizable().aspectRatio(contentMode: .fill)
+                          } else if state.error != nil {
+                            Color.red
+                          } else {
+                            ProgressView()
+                          }
+                        }.frame(minWidth: 0, maxWidth: 400, minHeight: 0, maxHeight: 400)
+                          .onAppear {
+                            if chatMessages.count != 0 {
+                              proxy.scrollTo(chatMessages.last?.id)
                             }
-                        } placeholder: {
-                          ProgressView()
-                        }.frame(minWidth: 0, maxWidth: 400, minHeight: 0, maxHeight: 400, alignment: .topLeading)
+                          }
                       }
                     }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
                   }
@@ -385,19 +387,20 @@ struct CommsView: View {
                   }
                   ForEach(message.embeds, id: \.self) { embed in
                     if embed.media != [] {
-                      CacheAsyncImage(
-                        url: URL(string: "https://i.electrics01.com" + (embed.media?[0].proxyUrl ?? ""))
-                      ) { image in
-                        image.resizable()
-                          .aspectRatio(contentMode: .fit)
-                          .onAppear {
-                            if chatMessages.count != 0 {
-                              proxy.scrollTo(chatMessages.last?.id)
-                            }
+                      LazyImage(url: URL(string: embed.media?[0].attachment == nil ? ("https://i.electrics01.com" + (embed.media?[0].proxyUrl ?? "")) : ("https://i.electrics01.com/i/" + (embed.media?[0].attachment ?? "")))) { state in
+                        if let image = state.image {
+                          image.resizable().aspectRatio(contentMode: .fill)
+                        } else if state.error != nil {
+                          Color.red
+                        } else {
+                          ProgressView()
+                        }
+                      }.frame(minWidth: 0, maxWidth: 400, minHeight: 0, maxHeight: 400)
+                        .onAppear {
+                          if chatMessages.count != 0 {
+                            proxy.scrollTo(chatMessages.last?.id)
                           }
-                      } placeholder: {
-                        ProgressView()
-                      }.frame(minWidth: 0, maxWidth: 400, minHeight: 0, maxHeight: 400, alignment: .topLeading)
+                        }
                     }
                   }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
                 }
