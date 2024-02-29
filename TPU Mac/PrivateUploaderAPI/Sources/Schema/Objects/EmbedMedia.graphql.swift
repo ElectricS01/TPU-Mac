@@ -4,7 +4,7 @@
 import ApolloAPI
 
 public extension Objects {
-  static let EmbedMedia = Object(
+  static let EmbedMedia = ApolloAPI.Object(
     typename: "EmbedMedia",
     implementedInterfaces: []
   )

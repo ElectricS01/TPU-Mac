@@ -88,9 +88,9 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
       .fragment(StandardEmbed.self),
     ] }
 
-    public var media: [StandardEmbed.Medium]? { __data["media"] }
-    public var text: [StandardEmbed.Text]? { __data["text"] }
-    public var metadata: StandardEmbed.Metadata { __data["metadata"] }
+    public var media: [Medium]? { __data["media"] }
+    public var text: [Text]? { __data["text"] }
+    public var metadata: Metadata { __data["metadata"] }
 
     public struct Fragments: FragmentContainer {
       public let __data: DataDict
@@ -98,6 +98,12 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
 
       public var standardEmbed: StandardEmbed { _toFragment() }
     }
+
+    public typealias Medium = StandardEmbed.Medium
+
+    public typealias Text = StandardEmbed.Text
+
+    public typealias Metadata = StandardEmbed.Metadata
   }
 
   /// Reply

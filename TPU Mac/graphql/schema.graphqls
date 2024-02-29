@@ -1,4 +1,4 @@
- type Query {
+type Query {
   currentUser: User
   user(input: UserProfileInput!): PartialUserPublic
   trackedUsers: [PartialUserFriend!]!
@@ -9,6 +9,7 @@
   weather: Weather!
   collections(input: UserCollectionsInput): PaginatedCollectionResponse
   collection(input: CollectionInput!): Collection
+
   """
   Return the number of pending invitations for collections for the current user
   """
@@ -57,11 +58,13 @@ type User {
   subdomainId: Float @deprecated(reason: "Subdomains are no longer available as of TPUv2/NEXT.")
   domainId: Float!
   totpEnable: Boolean!
+
   """How much the user has uploaded in bytes."""
   quota: Float!
   uploadNameHidden: Boolean! @deprecated(reason: "Hidden upload usernames are no longer available as of TPUv2/NEXT.")
   invisibleURLs: Boolean! @deprecated(reason: "Invisible URLs are no longer available as of TPUv2/NEXT.")
   moderator: Boolean!
+
   """
   Subscriptions are no longer used as they were in TPUv1, and are now used to store metadata for permanent Gold subscriptions.
   """
@@ -69,12 +72,16 @@ type User {
   fakePath: String @deprecated(reason: "Fake paths are no longer available as of TPUv2/NEXT.")
   themeId: Float! @deprecated(reason: "Replaced with `themeEngine`, used in legacy clients such as legacy.privateuploader.com.")
   itemsPerPage: Float!
+
   """UserV2 banner."""
   banner: String
+
   """Ability to login with more then 1 password with different scopes."""
   alternatePasswords: [AlternatePassword!]
+
   """User status/presence shown to other users."""
   status: UserStatus!
+
   """
   User status/presence that has `invisible` and is shown to the current user.
   """
@@ -83,32 +90,42 @@ type User {
   themeEngine: JSON
   insights: UserInsights!
   profileLayout: JSON
+
   """Collections that are excluded from the Collections filter in Gallery."""
   excludedCollections: [Float!]
   language: String!
   publicProfile: Boolean!
+
   """
   How much the user has donated to PrivateUploader. (Likely unused in unofficial instances.)
   """
   xp: Float!
   privacyPolicyAccepted: Boolean
+
   """The user's name color in Communications."""
   nameColor: String @deprecated(reason: "Replaced by ranks")
+
   """Whether the user has TPU Pulse Telemetry enabled."""
   pulse: Boolean!
+
   """Whether the user can be added directly into groups."""
   groupPrivacy: UserGroupPrivacy!
+
   """Whether the user can be sent a friend request."""
   friendRequests: UserFriendRequestPrivacy!
+
   """Whether the user is a bot user."""
   bot: Boolean!
   homeWidgets: HomeWidgets
+  dateOfBirth: Date
+  pendingDeletionDate: Date
   plan: Plan
   domain: Domain
   subscription: TPUSubscription
   experiments: [Experiment!]
   badges: [Badge!]!
   autoCollectRules: [AutoCollectRule!]!
+
   """
   The user's scopes assigned to the API key used. In format like `user.view,user.modify` which belong to `Scope`.
   """
@@ -119,9 +136,12 @@ type User {
   integrations: [Integration!]!
   notifications: [Notification!]!
   sessions(input: SessionInput): [Session!]!
+
   """How many AutoCollect approvals the user needs to approve/reject."""
   pendingAutoCollects: Float
   legacy: Boolean!
+  forceAgeVerification: Boolean!
+  canAccessRestrictedContent: Boolean!
   friends: [Friend!]!
   mutualCollections: [Collection!]!
   friend: FriendStatus!
@@ -157,7 +177,7 @@ enum UserStoredStatus {
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
-scalar JSON @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
+scalar JSON
 
 """Insights privacy preference."""
 enum UserInsights {
@@ -185,6 +205,7 @@ type HomeWidgets {
 
 type HomeRow {
   widgets: [HomeWidget!]!
+
   """In UUID format."""
   id: String!
 }
@@ -192,6 +213,7 @@ type HomeRow {
 type HomeWidget {
   type: HomeWidgetType!
   props: JSON
+
   """In UUID format."""
   id: String!
 }
@@ -236,6 +258,7 @@ type Domain {
   customUserEligibility: [Int!] @deprecated(reason: "Granular user control was removed in TPUv2.")
   restricted: String! @deprecated(reason: "Granular user control was removed in TPUv2.")
   user: PartialUserBase!
+
   """Only populated in some admin contexts"""
   users: [PartialUserBase!]
 }
@@ -344,21 +367,26 @@ type SubRule {
 }
 
 type Stats {
-  users: Float!
-  announcements: Float!
-  usage: Float
-  collections: Float!
-  collectionItems: Float!
+  users: Int!
+  announcements: Int!
+  usage: BigInt
+  collections: Int!
+  collectionItems: Int!
   uploadGraph: DataLabelsGraph
   messageGraph: DataLabelsGraph
   pulseGraph: DataLabelsGraph
-  uploads: Float!
-  pulse: Float!
-  pulses: Float!
-  docs: Float!
+  uploads: Int!
+  pulse: Int!
+  pulses: Int!
+  docs: Int!
   hours: JSON
-  messages: Float!
+  messages: Int!
 }
+
+"""
+The `BigInt` scalar type represents non-fractional signed whole numeric values.
+"""
+scalar BigInt
 
 type DataLabelsGraph {
   data: [Float!]!
@@ -416,6 +444,7 @@ type Collection {
   createdAt: Date!
   updatedAt: Date!
   name: String!
+
   """
   Please use field `banner` instead if you want to obtain the banner for a collection.
   """
@@ -423,6 +452,7 @@ type Collection {
   userId: Float!
   shareLink: String
   avatar: String
+
   """
   The recommended way to obtain the banner for a collection, it uses field `image`, and if null, falls back to the last added image preview.
   """
@@ -436,6 +466,7 @@ type Collection {
   itemCount: Int
   attachments: [Upload!]!
   permissionsMetadata: PermissionsMetadata!
+
   """Used for the frontend for new collections on WebSocket event."""
   new: Boolean
 }
@@ -445,6 +476,7 @@ type CollectionItem {
   collectionId: Float!
   attachmentId: Float!
   userId: Float!
+
   """
   Used to prevent duplicates by forming `uploadId-collectionId`. Can be null for items created before October 2022.
   """
@@ -468,10 +500,12 @@ type Upload {
   type: String!
   urlRedirect: String @deprecated(reason: "URL redirects were removed in TPUv2/NEXT.")
   fileSize: Float!
+
   """
   Non-deletable items are used for profile pictures, banners, etc and are not visible in the Gallery page by default, and cannot be deleted.
   """
   deletable: Boolean!
+
   """This is used for OCR scanned text from images."""
   textMetadata: String
   user: PartialUserBase
@@ -562,6 +596,7 @@ type Experiment {
 
 type Session {
   id: Int!
+
   """Only populated for `API` type sessions on `currentUser`."""
   token: String
   createdAt: Date
@@ -677,6 +712,7 @@ input UserProfileInput {
 type CoreState {
   connection: Connection!
   name: String!
+
   """Whether the app is running in production mode."""
   release: String!
   hostname: String!
@@ -685,18 +721,23 @@ type CoreState {
   stats: CoreStats!
   maintenance: Maintenance!
   registrations: Boolean!
+
   """
   Whether the TPU instance is the officially run instance on privateuploader.com. This can be enabled on any instance but can enable unwanted features.
   """
   officialInstance: Boolean!
   providers: Providers!
+
   """Workspaces Note ID for the Terms of Service."""
   termsNoteId: String
+
   """Workspaces Note ID for the Privacy Policy."""
   privacyNoteId: String
+
   """List of enabled features for TPU instance"""
   features: Features!
   inviteAFriend: Boolean!
+
   """
   List of domains that are pre-trusted for user-generated hyperlinks such as Communications messages which don't require a confirmation to proceed.
   """
@@ -706,11 +747,18 @@ type CoreState {
   server: String!
   finishedSetup: Boolean!
   domain: String!
+
   """Uptime of the TPU Server in seconds."""
   uptime: Float!
+
   """Uptime of the system in seconds."""
   uptimeSys: Float!
   commitVersion: String!
+
+  """
+  If finishedSetup is false, this will be the step the setup is on. If the setup is completed, it will return `-1`
+  """
+  step: Int!
   weather: Weather!
 }
 
@@ -730,23 +778,23 @@ type Announcement {
 }
 
 type CoreStats {
-  users: Float!
-  announcements: Float!
-  usage: Float
-  collections: Float!
-  collectionItems: Float!
+  users: Int!
+  announcements: Int!
+  usage: BigInt
+  collections: Int!
+  collectionItems: Int!
   uploadGraph: DataLabelsGraph
   messageGraph: DataLabelsGraph
   pulseGraph: DataLabelsGraph
-  uploads: Float!
-  pulse: Float!
-  pulses: Float!
-  docs: Float!
+  uploads: Int!
+  pulse: Int!
+  pulses: Int!
+  docs: Int!
   hours: JSON
-  messages: Float!
-  invites: Float!
-  inviteMilestone: Float!
-  chats: Float!
+  messages: Int!
+  invites: Int!
+  inviteMilestone: Int!
+  chats: Int!
 }
 
 type Maintenance {
@@ -850,8 +898,10 @@ input GalleryInput {
   sort: GallerySort = CREATED_AT
   order: GalleryOrder = DESC
   type: GalleryType = PERSONAL
+
   """Requires Type to be COLLECTION"""
   collectionId: Int
+
   """Requires Type to be COLLECTION"""
   shareLink: String
   advanced: [SearchModeInput!]
@@ -924,6 +974,7 @@ type Chat {
   id: Int!
   type: String!
   name: String!
+
   """
   Null if the chat is owned by a Colubrina legacy user, or the account was deleted.
   """
@@ -931,12 +982,15 @@ type Chat {
   icon: String
   createdAt: DateTimeISO!
   updatedAt: DateTimeISO!
+
   """This is used if the chat is owned by a Colubrina legacy user."""
   legacyUserId: Float @deprecated(reason: "Use userId instead.")
+
   """
   Null if the chat is owned by a Colubrina legacy user, or the account was deleted.
   """
   user: PartialUserBase
+
   """This is used if the chat is owned by a Colubrina legacy user."""
   legacyUser: PartialUserBase @deprecated(reason: "Use user instead.")
   association: ChatAssociation
@@ -947,6 +1001,7 @@ type Chat {
   _redisSortDate: String
   ranks: [ChatRank!]!
   messages: [Message!]!
+
   """
   Array is empty if you don't have the `OVERVIEW` permission in the chat.
   """
@@ -964,16 +1019,20 @@ type ChatAssociation {
   lastRead: Int
   createdAt: Date!
   notifications: String!
+
   """Used for legacy Colubrina accounts."""
   legacyUserId: Int @deprecated(reason: "Use `userId` instead.")
+
   """
   Only true/false for current user, null for other ChatAssociations. This determines whether the chat is visible in the sidebar (open or closed).
   """
   hidden: Boolean
   inviteUsed: String
   invite: ChatInvite
+
   """Used for user virtual which falls back to a Colubrina account."""
   tpuUser: PartialUserBase
+
   """Used for legacy Colubrina accounts."""
   legacyUser: PartialUserBase @deprecated(reason: "Use `user` instead.")
   user: PartialUserBase
@@ -986,6 +1045,7 @@ type ChatInvite {
   id: String!
   userId: Int!
   chatId: Int!
+
   """
   Automatically assigns rank to user when joining. If unset the backend will set the `managed` Members role.
   """
@@ -1088,6 +1148,7 @@ type EmbedMedia {
   upload: Upload
   mimeType: String
   type: EmbedMediaType!
+
   """Used for trusted video embed sources, such as YouTube."""
   videoEmbedUrl: String
 }
@@ -1112,8 +1173,10 @@ type EmbedMetadata {
   siteIcon: String
   footer: String
   type: Float!
+
   """Used for chat invites, and other embeds."""
   id: String
+
   """Used for NSFW embeds and content."""
   restricted: Boolean
 }
@@ -1237,6 +1300,7 @@ type WorkspaceUser {
   accepted: Boolean!
   recipientId: Int!
   senderId: Int!
+
   """The unique identifier between the User and the Workspace."""
   identifier: String
   workspace: Workspace!
@@ -1294,6 +1358,7 @@ type BlockedUser {
   createdAt: Date!
   updatedAt: Date!
   blockedUserId: Int!
+
   """
   To the blocked user it appears as though they're unblocked, however the blocker will not receive any messages from them, and their messages will be hidden inside of group chats.
   """
@@ -1429,6 +1494,7 @@ type Mutation {
   changeUserEmail(input: ChangeEmailInput!): Boolean!
   verifyEmail(token: String!): Boolean!
   resendVerificationEmail: Boolean!
+  confirmDateOfBirth(dateOfBirth: String!): Boolean!
   login(input: LoginInput!): LoginResponse!
   logout: Boolean!
   register(input: RegisterInput!): LoginResponse!
@@ -1457,17 +1523,21 @@ type Mutation {
   joinChatFromInvite(input: JoinChatFromInviteInput!): ChatAssociation!
   addBotToChat(input: AddBotToChatInput!): ChatAssociation!
   readChat(input: ReadChatInput!): GenericSuccessObject!
+
   """Create a new Workspace Folder."""
   createWorkspaceFolder(input: CreateWorkspaceFolderInput!): WorkspaceFolder!
+
   """Create workspace"""
   createWorkspace(
     """Name of workspace"""
     input: String!
   ): Workspace!
+
   """Delete a Note."""
   deleteWorkspaceItem(input: DeleteWorkspaceItemInput!): Boolean!
   saveNote(input: SaveNoteInput!): Note!
   createNote(input: CreateNoteInput!): Note!
+
   """Toggle the ShareLink for a Note."""
   toggleNoteShare(
     """ID of Note"""
@@ -1547,6 +1617,7 @@ input ChangePasswordInput {
 input ChangeUsernameInput {
   """You may use either 2FA token or password to delete the chat."""
   password: String
+
   """
   TOTP/2FA code if enabled. You may use either 2FA token or password to delete the chat.
   """
@@ -1557,6 +1628,7 @@ input ChangeUsernameInput {
 input ChangeEmailInput {
   """You may use either 2FA token or password to delete the chat."""
   password: String
+
   """
   TOTP/2FA code if enabled. You may use either 2FA token or password to delete the chat.
   """
@@ -1579,6 +1651,7 @@ input LoginInput {
   """Username or email"""
   username: String!
   password: String!
+
   """TOTP/2FA code if enabled."""
   totp: String
 }
@@ -1593,6 +1666,7 @@ input RegisterInput {
 input SetExperimentInput {
   key: String!
   value: Int!
+
   """Admin only."""
   userId: Int
 }
@@ -1627,6 +1701,7 @@ input RemoveCollectionUserInput {
 input TransferCollectionOwnershipInput {
   """You may use either 2FA token or password to delete the chat."""
   password: String
+
   """
   TOTP/2FA code if enabled. You may use either 2FA token or password to delete the chat.
   """
@@ -1671,10 +1746,12 @@ input CreateChatInput {
 input UpdateChatInput {
   name: String
   associationId: Int!
+
   """
   Can only be null or undefined to unset or do not modify the group icon respectively. Use the REST API to set one.
   """
   icon: String
+
   """
   Can only be null or undefined to unset or do not modify the group background respectively. Use the REST API to set one.
   """
@@ -1686,6 +1763,7 @@ input UpdateChatInput {
 input DangerZoneChatInput {
   """You may use either 2FA token or password to delete the chat."""
   password: String
+
   """
   TOTP/2FA code if enabled. You may use either 2FA token or password to delete the chat.
   """
@@ -1696,11 +1774,13 @@ input DangerZoneChatInput {
 input TransferOwnershipInput {
   """You may use either 2FA token or password to delete the chat."""
   password: String
+
   """
   TOTP/2FA code if enabled. You may use either 2FA token or password to delete the chat.
   """
   totp: String
   associationId: Int!
+
   """User to transfer to."""
   userId: Int!
 }
@@ -1779,8 +1859,10 @@ input CreateNoteInput {
 input AddFriendInput {
   """Can use `userId` or `username`"""
   userId: Int
+
   """Can use `userId` or `username`"""
   username: String
+
   """If null, it works as a toggle. This is for explicit actions."""
   action: FriendAction
 }
@@ -1844,6 +1926,7 @@ input CreateRank {
 
 input UpdateRankOrder {
   associationId: Int!
+
   """
   Order if the rank, this is actually reversed from expected index value, so rankIds[0] is the highest priority rank.
   """
@@ -1901,6 +1984,7 @@ input BlockUserInput {
 input CreateInviteInput {
   """In hours."""
   expiry: Int
+
   """Auto assign rank on join."""
   rankId: String
   associationId: Int!
@@ -1918,6 +2002,7 @@ type AuthorizeAppResponse {
 input AuthorizeAppInput {
   id: String!
   scopes: String!
+
   """Used for bots."""
   permissions: [String!]
 }
@@ -2032,6 +2117,7 @@ type Subscription {
   onCreateUpload(input: GalleryInput): CreateUploadEvent!
   onTyping: ChatTypingEvent!
   onCancelTyping: ChatTypingEvent!
+
   """Returns the chat association ID"""
   onReadChat: Int!
   onMessage(input: SubscriptionMessageInput): MessageSubscription!

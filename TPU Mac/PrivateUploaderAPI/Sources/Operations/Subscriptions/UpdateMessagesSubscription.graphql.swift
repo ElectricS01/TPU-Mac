@@ -129,9 +129,9 @@ public class UpdateMessagesSubscription: GraphQLSubscription {
             .fragment(StandardEmbed.self),
           ] }
 
-          public var media: [StandardEmbed.Medium]? { __data["media"] }
-          public var text: [StandardEmbed.Text]? { __data["text"] }
-          public var metadata: StandardEmbed.Metadata { __data["metadata"] }
+          public var media: [Medium]? { __data["media"] }
+          public var text: [Text]? { __data["text"] }
+          public var metadata: Metadata { __data["metadata"] }
 
           public struct Fragments: FragmentContainer {
             public let __data: DataDict
@@ -139,6 +139,12 @@ public class UpdateMessagesSubscription: GraphQLSubscription {
 
             public var standardEmbed: StandardEmbed { _toFragment() }
           }
+
+          public typealias Medium = StandardEmbed.Medium
+
+          public typealias Text = StandardEmbed.Text
+
+          public typealias Metadata = StandardEmbed.Metadata
         }
 
         /// OnMessage.Message.Reply

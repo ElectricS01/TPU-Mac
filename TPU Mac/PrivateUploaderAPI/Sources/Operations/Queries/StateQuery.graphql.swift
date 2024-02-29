@@ -127,35 +127,35 @@ public class StateQuery: GraphQLQuery {
         public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.CoreStats }
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
-          .field("users", Double.self),
-          .field("announcements", Double.self),
-          .field("usage", Double?.self),
-          .field("collections", Double.self),
-          .field("collectionItems", Double.self),
-          .field("uploads", Double.self),
-          .field("invites", Double.self),
-          .field("inviteMilestone", Double.self),
-          .field("pulse", Double.self),
-          .field("pulses", Double.self),
-          .field("docs", Double.self),
-          .field("messages", Double.self),
-          .field("chats", Double.self),
+          .field("users", Int.self),
+          .field("announcements", Int.self),
+          .field("usage", PrivateUploaderAPI.BigInt?.self),
+          .field("collections", Int.self),
+          .field("collectionItems", Int.self),
+          .field("uploads", Int.self),
+          .field("invites", Int.self),
+          .field("inviteMilestone", Int.self),
+          .field("pulse", Int.self),
+          .field("pulses", Int.self),
+          .field("docs", Int.self),
+          .field("messages", Int.self),
+          .field("chats", Int.self),
           .field("hours", PrivateUploaderAPI.JSON?.self),
         ] }
 
-        public var users: Double { __data["users"] }
-        public var announcements: Double { __data["announcements"] }
-        public var usage: Double? { __data["usage"] }
-        public var collections: Double { __data["collections"] }
-        public var collectionItems: Double { __data["collectionItems"] }
-        public var uploads: Double { __data["uploads"] }
-        public var invites: Double { __data["invites"] }
-        public var inviteMilestone: Double { __data["inviteMilestone"] }
-        public var pulse: Double { __data["pulse"] }
-        public var pulses: Double { __data["pulses"] }
-        public var docs: Double { __data["docs"] }
-        public var messages: Double { __data["messages"] }
-        public var chats: Double { __data["chats"] }
+        public var users: Int { __data["users"] }
+        public var announcements: Int { __data["announcements"] }
+        public var usage: PrivateUploaderAPI.BigInt? { __data["usage"] }
+        public var collections: Int { __data["collections"] }
+        public var collectionItems: Int { __data["collectionItems"] }
+        public var uploads: Int { __data["uploads"] }
+        public var invites: Int { __data["invites"] }
+        public var inviteMilestone: Int { __data["inviteMilestone"] }
+        public var pulse: Int { __data["pulse"] }
+        public var pulses: Int { __data["pulses"] }
+        public var docs: Int { __data["docs"] }
+        public var messages: Int { __data["messages"] }
+        public var chats: Int { __data["chats"] }
         public var hours: PrivateUploaderAPI.JSON? { __data["hours"] }
       }
     }

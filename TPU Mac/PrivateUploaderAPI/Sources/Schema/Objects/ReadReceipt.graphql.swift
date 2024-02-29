@@ -4,7 +4,7 @@
 import ApolloAPI
 
 public extension Objects {
-  static let ReadReceipt = Object(
+  static let ReadReceipt = ApolloAPI.Object(
     typename: "ReadReceipt",
     implementedInterfaces: []
   )

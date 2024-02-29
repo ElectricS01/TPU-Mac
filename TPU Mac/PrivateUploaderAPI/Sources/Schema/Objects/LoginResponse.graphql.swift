@@ -4,7 +4,7 @@
 import ApolloAPI
 
 public extension Objects {
-  static let LoginResponse = Object(
+  static let LoginResponse = ApolloAPI.Object(
     typename: "LoginResponse",
     implementedInterfaces: []
   )
