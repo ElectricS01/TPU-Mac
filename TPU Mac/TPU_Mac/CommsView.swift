@@ -109,11 +109,8 @@ struct CommsView: View {
         ForEach(0 ..< chatsList.count, id: \.self) { result in
           Button(action: { getChat(chatId: result) }) {
             HStack {
-              ProfilePicture(
-                avatar: (chatsList[result].recipient?.avatar ?? chatsList[result].icon), size: 32
-              )
-              Text(chatsList[result].recipient?.username ?? chatsList[result].name)
-                .lineLimit(1)
+              ProfilePicture(avatar: chatsList[result].recipient?.avatar ?? chatsList[result].icon)
+              Text(chatsList[result].recipient?.username ?? chatsList[result].name).lineLimit(1)
               Spacer()
               if chatsList[result].unread != 0 {
                 Text(String(chatsList[result].unread!))
@@ -122,8 +119,7 @@ struct CommsView: View {
                   .cornerRadius(10)
               }
             }.contentShape(Rectangle())
-          }
-          .buttonStyle(.plain)
+          }.buttonStyle(.plain)
         }
       }
       .frame(width: 150)
@@ -149,7 +145,7 @@ struct CommsView: View {
                 }
                 HStack(alignment: .top, spacing: 6) {
                   if merge(message: message, previousMessage: index != 0 ? chatMessages[index - 1] : nil) {
-                    ProfilePicture(avatar: message.user?.avatar, size: 32)
+                    ProfilePicture(avatar: message.user?.avatar)
                   } else {
                     Spacer().frame(width: 32)
                   }
@@ -189,18 +185,20 @@ struct CommsView: View {
                       if embed.media != [] {
                         LazyImage(url: URL(string: embed.media?[0].attachment == nil ? ("https://i.electrics01.com" + (embed.media?[0].proxyUrl ?? "")) : ("https://i.electrics01.com/i/" + (embed.media?[0].attachment ?? "")))) { state in
                           if let image = state.image {
-                            image.resizable().aspectRatio(contentMode: .fill)
+                            image
+                              .resizable()
+                              .aspectRatio(contentMode: .fill)
+                              .onAppear {
+                                if chatMessages.count != 0 {
+                                  proxy.scrollTo(0, anchor: .bottom)
+                                }
+                              }
                           } else if state.error != nil {
                             Color.red
                           } else {
                             ProgressView()
                           }
                         }.frame(minWidth: 0, maxWidth: 400, minHeight: 0, maxHeight: 400)
-                          .onAppear {
-                            if chatMessages.count != 0 {
-                              proxy.scrollTo(chatMessages.last?.id)
-                            }
-                          }
                       }
                     }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
                   }
@@ -221,13 +219,14 @@ struct CommsView: View {
                     Image(systemName: "pencil").frame(width: 16, height: 16)
                   }
                 }.padding(4)
-                  .id(message.id)
                 //                  .background(Color(hoverItem == message.id ? Color.primary : .clear))
                 //                  .onHover(perform: { _ in
                 //                    hoverItem = message.id
                 //                  })
               }.padding(EdgeInsets(top: 0, leading: 8, bottom: 0, trailing: 12))
-            }.frame(
+            }
+            .id(0)
+            .frame(
               minWidth: 0,
               maxWidth: .infinity,
               minHeight: 0,
@@ -236,11 +235,11 @@ struct CommsView: View {
             )
             .onAppear {
               if chatMessages.count != 0 {
-                proxy.scrollTo(chatMessages.last?.id)
+                proxy.scrollTo(0, anchor: .bottom)
               }
             }
             .onChange(of: chatMessages) {
-              proxy.scrollTo(chatMessages.last?.id)
+              proxy.scrollTo(0, anchor: .bottom)
             }
           }
           if replyingId != -1 {
@@ -252,7 +251,7 @@ struct CommsView: View {
                 .lineLimit(1)
                 .onAppear {
                   if chatMessages.count != 0 {
-                    proxy.scrollTo(chatMessages.last?.id)
+                    proxy.scrollTo(0, anchor: .bottom)
                   }
                 }
             }.padding(EdgeInsets(top: 0, leading: 18, bottom: 0, trailing: 0))
@@ -271,7 +270,7 @@ struct CommsView: View {
           ForEach(0 ..< chatsList[chatOpen].users.count, id: \.self) { result in
             Button(action: { print("Clicked: " + (chatsList[chatOpen].users[result].user?.username ?? "User's name could not be found")) }) {
               HStack {
-                ProfilePicture(avatar: chatsList[chatOpen].users[result].user?.avatar, size: 32)
+                ProfilePicture(avatar: chatsList[chatOpen].users[result].user?.avatar)
                 Text(chatsList[chatOpen].users[result].user?.username ?? "User's name could not be found")
                 Spacer()
               }.contentShape(Rectangle())
@@ -309,9 +308,7 @@ struct CommsView: View {
       ForEach(0 ..< chatsList.count, id: \.self) { result in
         Button(action: { getChat(chatId: result) }) {
           HStack {
-            ProfilePicture(
-              avatar: (chatsList[result].recipient?.avatar ?? chatsList[result].icon), size: 32
-            )
+            ProfilePicture(avatar: (chatsList[result].recipient?.avatar ?? chatsList[result].icon))
             Text(chatsList[result].recipient?.username ?? chatsList[result].name)
               .lineLimit(1)
             Spacer()
@@ -349,7 +346,7 @@ struct CommsView: View {
               }
               HStack(alignment: .top, spacing: 6) {
                 if merge(message: message, previousMessage: index != 0 ? chatMessages[index - 1] : nil) {
-                  ProfilePicture(avatar: message.user?.avatar, size: 32)
+                  ProfilePicture(avatar: message.user?.avatar)
                 } else {
                   Spacer().frame(width: 32)
                 }
@@ -471,7 +468,7 @@ struct CommsView: View {
         ForEach(0 ..< chatsList[chatOpen].users.count, id: \.self) { result in
           Button(action: { print("Clicked: " + (chatsList[chatOpen].users[result].user?.username ?? "User's name could not be found")) }) {
             HStack {
-              ProfilePicture(avatar: chatsList[chatOpen].users[result].user?.avatar, size: 32)
+              ProfilePicture(avatar: chatsList[chatOpen].users[result].user?.avatar)
               Text(chatsList[chatOpen].users[result].user?.username ?? "User's name could not be found")
               Spacer()
             }.contentShape(Rectangle())

@@ -50,7 +50,7 @@ struct ContentView: View {
           }) {
             Label("Home", systemImage: "house")
           }
-        NavigationLink(destination: SettingsView()) {
+        NavigationLink(destination: SettingsView(coreState: $coreState)) {
           Label("Settings", systemImage: "gear")
         }
         NavigationLink(destination: GalleryView(stars: .constant(false))) {
@@ -152,6 +152,7 @@ struct LoginSheet: View {
 }
 
 struct SettingsView: View {
+  @Binding var coreState: StateQuery.Data.CoreState?
   var body: some View {
     Text("Settings")
     Text("Coming soon")
@@ -168,7 +169,7 @@ struct AboutView: View {
     #else
       Text("TPU iOS").font(.system(size: 24, weight: .semibold))
     #endif
-    Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (27/2/2024)")
+    Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (2/3/2024)")
     Text("Made by ElectricS01")
     Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
   }

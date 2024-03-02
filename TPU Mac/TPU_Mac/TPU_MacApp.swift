@@ -20,7 +20,7 @@ struct TPU_MacApp: App {
 
 struct ProfilePicture: View {
   var avatar: String?
-  var size: CGFloat
+  var size: CGFloat = 32
 
   var body: some View {
     if let avatar = avatar, avatar.count < 21 {
