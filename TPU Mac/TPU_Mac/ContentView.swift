@@ -44,13 +44,10 @@ struct ContentView: View {
   var body: some View {
     NavigationSplitView {
       List {
-        NavigationLink(destination: HomeView(showingLogin: $showingLogin, coreState: $coreState)
-          .sheet(isPresented: $showingLogin) {
-            LoginSheet()
-          }) {
-            Label("Home", systemImage: "house")
-          }
-        NavigationLink(destination: SettingsView(coreState: $coreState)) {
+        NavigationLink(destination: HomeView(coreState: $coreState)) {
+          Label("Home", systemImage: "house")
+        }
+        NavigationLink(destination: SettingsView(showingLogin: $showingLogin, coreState: $coreState)) {
           Label("Settings", systemImage: "gear")
         }
         NavigationLink(destination: GalleryView(stars: .constant(false))) {
@@ -73,10 +70,13 @@ struct ContentView: View {
         }
       }
     } detail: {
-      HomeView(showingLogin: $showingLogin, coreState: $coreState)
+      HomeView(coreState: $coreState)
         .sheet(isPresented: $showingLogin) {
           LoginSheet()
         }
+    }
+    .sheet(isPresented: $showingLogin) {
+      LoginSheet()
     }
   }
 }
@@ -148,15 +148,21 @@ struct LoginSheet: View {
         .lineLimit(4)
         .fixedSize(horizontal: false, vertical: true)
     }.padding()
+      .interactiveDismissDisabled()
   }
 }
 
 struct SettingsView: View {
+  @Binding var showingLogin: Bool
   @Binding var coreState: StateQuery.Data.CoreState?
+
   var body: some View {
     Text("Settings")
     Text("Coming soon")
       .navigationTitle("Settings")
+    Button("Log out") {
+      keychain.delete("token")
+    }
   }
 }
 
@@ -165,11 +171,11 @@ struct AboutView: View {
     Text("About")
       .navigationTitle("About")
     #if os(macOS)
-      Text("TPU Mac").font(.system(size: 24, weight: .semibold))
+      Text("TPU Mac").font(.system(size: 32, weight: .semibold))
     #else
-      Text("TPU iOS").font(.system(size: 24, weight: .semibold))
+      Text("TPU iOS").font(.system(size: 32, weight: .semibold))
     #endif
-    Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (2/3/2024)")
+    Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (3/3/2024)")
     Text("Made by ElectricS01")
     Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
   }
