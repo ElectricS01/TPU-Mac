@@ -25,7 +25,7 @@ let outputDateFormatter: DateFormatter = {
 }()
 
 struct ContentView: View {
-  @State private var showingLogin = false
+  @State private var showingLogin = keychain.get("token") == nil || keychain.get("token") == ""
   @State private var coreState: StateQuery.Data.CoreState?
 
   func getState() {
@@ -42,47 +42,65 @@ struct ContentView: View {
   }
 
   var body: some View {
-    NavigationSplitView {
-      List {
-        NavigationLink(destination: HomeView(coreState: $coreState)) {
-          Label("Home", systemImage: "house")
+    if showingLogin {
+      LoginSheet(showingLogin: $showingLogin)
+    } else {
+      #if os(macOS)
+        NavigationSplitView {
+          List {
+            NavigationLink(destination: HomeView(coreState: $coreState)) {
+              Label("Home", systemImage: "house")
+            }
+            NavigationLink(destination: SettingsView(showingLogin: $showingLogin, coreState: $coreState)) {
+              Label("Settings", systemImage: "gear")
+            }
+            NavigationLink(destination: GalleryView(stars: .constant(false))) {
+              Label("Gallery", systemImage: "photo.on.rectangle")
+            }
+            NavigationLink(destination: GalleryView(stars: .constant(true))) {
+              Label("Stars", systemImage: "star")
+            }
+            NavigationLink(destination: CommsView()) {
+              Label("Comms", systemImage: "message")
+            }
+            NavigationLink(destination: AboutView()) {
+              Label("About", systemImage: "info.circle")
+            }
+          }
+        } detail: {
+          HomeView(coreState: $coreState)
         }
-        NavigationLink(destination: SettingsView(showingLogin: $showingLogin, coreState: $coreState)) {
-          Label("Settings", systemImage: "gear")
-        }
-        NavigationLink(destination: GalleryView(stars: .constant(false))) {
-          Label("Gallery", systemImage: "photo.on.rectangle")
-        }
-        NavigationLink(destination: GalleryView(stars: .constant(true))) {
-          Label("Stars", systemImage: "star")
-        }
-        NavigationLink(destination: CommsView()) {
-          Label("Comms", systemImage: "message")
-        }
-        NavigationLink(destination: AboutView()) {
-          Label("About", systemImage: "info.circle")
-        }
-      }
-      .onAppear {
-        showingLogin = (keychain.get("token") == nil || keychain.get("token") == "")
-        if !showingLogin {
+        .onAppear {
           getState()
         }
-      }
-    } detail: {
-      HomeView(coreState: $coreState)
-        .sheet(isPresented: $showingLogin) {
-          LoginSheet()
+      #else
+        TabView {
+          HomeView(coreState: $coreState).tabItem {
+            Label("Home", systemImage: "house")
+          }
+          GalleryView(stars: .constant(false)).tabItem {
+            Label("Gallery", systemImage: "photo.on.rectangle")
+          }
+          GalleryView(stars: .constant(true)).tabItem {
+            Label("Stars", systemImage: "star")
+          }
+          CommsView().tabItem {
+            Label("Comms", systemImage: "message")
+          }
+          SettingsView(showingLogin: $showingLogin, coreState: $coreState).tabItem {
+            Label("Settings", systemImage: "gear")
+          }
         }
-    }
-    .sheet(isPresented: $showingLogin) {
-      LoginSheet()
+        .onAppear {
+          getState()
+        }
+      #endif
     }
   }
 }
 
 struct LoginSheet: View {
-  @Environment(\.dismiss) var dismiss
+  @Binding var showingLogin: Bool
   @State private var username: String = ""
   @State private var password: String = ""
   @State private var totp: String = ""
@@ -94,7 +112,7 @@ struct LoginSheet: View {
       case .success(let graphQLResult):
         if graphQLResult.errors?[0].message == nil {
           keychain.set(graphQLResult.data?.login.token ?? "", forKey: "token")
-          dismiss()
+          showingLogin = false
           return
         }
         errorMessage = graphQLResult.errors?[0].localizedDescription ?? "Error"
@@ -148,7 +166,6 @@ struct LoginSheet: View {
         .lineLimit(4)
         .fixedSize(horizontal: false, vertical: true)
     }.padding()
-      .interactiveDismissDisabled()
   }
 }
 
@@ -157,27 +174,39 @@ struct SettingsView: View {
   @Binding var coreState: StateQuery.Data.CoreState?
 
   var body: some View {
-    Text("Settings")
-    Text("Coming soon")
+    VStack {
+      Text("Settings")
+      #if os(macOS)
+        Text("Coming soon")
+      #else
+        Text("TPU iOS").font(.system(size: 32, weight: .semibold))
+        Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (4/3/2024)")
+        Text("Made by ElectricS01")
+        Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
+      #endif
+      Button("Log out") {
+        keychain.delete("token")
+        showingLogin = true
+      }
       .navigationTitle("Settings")
-    Button("Log out") {
-      keychain.delete("token")
     }
   }
 }
 
 struct AboutView: View {
   var body: some View {
-    Text("About")
-      .navigationTitle("About")
-    #if os(macOS)
-      Text("TPU Mac").font(.system(size: 32, weight: .semibold))
-    #else
-      Text("TPU iOS").font(.system(size: 32, weight: .semibold))
-    #endif
-    Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (3/3/2024)")
-    Text("Made by ElectricS01")
-    Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
+    VStack {
+      Text("About")
+        .navigationTitle("About")
+      #if os(macOS)
+        Text("TPU Mac").font(.system(size: 32, weight: .semibold))
+      #else
+        Text("TPU iOS").font(.system(size: 32, weight: .semibold))
+      #endif
+      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (4/3/2024)")
+      Text("Made by ElectricS01")
+      Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
+    }
   }
 }
 
