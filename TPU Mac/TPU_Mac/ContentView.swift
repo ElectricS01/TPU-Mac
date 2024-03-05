@@ -125,38 +125,28 @@ struct LoginSheet: View {
 
   var body: some View {
     VStack {
-      Text("Login")
-        .font(.title)
-      TextField(
-        "Username",
-        text: $username
-      )
-      .onSubmit {
-        loginDetails()
-      }
-      .frame(width: 200)
-      .textFieldStyle(RoundedBorderTextFieldStyle())
-      .fixedSize(horizontal: true, vertical: false)
-      SecureField(
-        "Password",
-        text: $password
-      )
-      .onSubmit {
-        loginDetails()
-      }
-      .frame(width: 200)
-      .textFieldStyle(RoundedBorderTextFieldStyle())
-      .fixedSize(horizontal: true, vertical: false)
-      TextField(
-        "2FA code",
-        text: $totp
-      )
-      .onSubmit {
-        loginDetails()
-      }
-      .frame(width: 200)
-      .textFieldStyle(RoundedBorderTextFieldStyle())
-      .fixedSize(horizontal: true, vertical: false)
+      Text("Login").font(.title)
+      TextField("Username", text: $username)
+        .onSubmit {
+          loginDetails()
+        }
+        .frame(width: 200)
+        .textFieldStyle(RoundedBorderTextFieldStyle())
+        .fixedSize(horizontal: true, vertical: false)
+      SecureField("Password", text: $password)
+        .onSubmit {
+          loginDetails()
+        }
+        .frame(width: 200)
+        .textFieldStyle(RoundedBorderTextFieldStyle())
+        .fixedSize(horizontal: true, vertical: false)
+      TextField("2FA code", text: $totp)
+        .onSubmit {
+          loginDetails()
+        }
+        .frame(width: 200)
+        .textFieldStyle(RoundedBorderTextFieldStyle())
+        .fixedSize(horizontal: true, vertical: false)
       Button("Login") {
         loginDetails()
       }
@@ -180,7 +170,7 @@ struct SettingsView: View {
         Text("Coming soon")
       #else
         Text("TPU iOS").font(.system(size: 32, weight: .semibold))
-        Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (4/3/2024)")
+        Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (5/3/2024)")
         Text("Made by ElectricS01")
         Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
       #endif
@@ -203,7 +193,7 @@ struct AboutView: View {
       #else
         Text("TPU iOS").font(.system(size: 32, weight: .semibold))
       #endif
-      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (4/3/2024)")
+      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (5/3/2024)")
       Text("Made by ElectricS01")
       Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
     }

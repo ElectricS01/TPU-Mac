@@ -94,6 +94,19 @@ struct CommsView: View {
     }
   }
   
+  func pinMessage(messageId: Int, pinned: Bool) {
+    Network.shared.apollo.perform(mutation: EditMessageMutation(input: EditMessageInput(attachments: [], messageId: messageId, associationId: chatsList[chatOpen].association?.id ?? 0, pinned: GraphQLNullable<Bool>(booleanLiteral: pinned)))) { result in
+      switch result {
+      case .success:
+        replyingId = -1
+        editingId = -1
+        inputMessage = ""
+      case .failure(let error):
+        print("Failure! Error: \(error)")
+      }
+    }
+  }
+  
   func merge(message: MessagesQuery.Data.Message, previousMessage: MessagesQuery.Data.Message?) -> Bool {
     print(message.content)
     if message.userId == previousMessage?.userId && message.replyId == nil {
@@ -142,6 +155,7 @@ struct CommsView: View {
                   if message.reply != nil {
                     HStack {
                       Image(systemName: "arrow.turn.up.right").frame(width: 16, height: 16)
+                      ProfilePicture(avatar: message.reply?.user?.avatar, size: 16)
                       Text(message.reply?.user?.username ?? "User has been deleted")
                       Text((message.reply?.content ?? "Message has been deleted").replacingOccurrences(of: "\n", with: "")).textSelection(.enabled).lineLimit(1)
                     }.padding(EdgeInsets(top: 0, leading: 18, bottom: 0, trailing: 0))
@@ -211,6 +225,11 @@ struct CommsView: View {
                       } else { replyingId = -1 }
                     }) {
                       Image(systemName: "arrowshape.turn.up.left.fill").frame(width: 16, height: 16)
+                    }
+                    Button(action: {
+                      pinMessage(messageId: message.id, pinned: message.pinned)
+                    }) {
+                      Image(systemName: message.pinned ? "pin.slash.fill" : "pin.fill").frame(width: 16, height: 16)
                     }
                     Button(action: {
                       replyingId = -1
@@ -342,6 +361,7 @@ struct CommsView: View {
                 if message.reply != nil {
                   HStack {
                     Image(systemName: "arrow.turn.up.right").frame(width: 16, height: 16)
+                    ProfilePicture(avatar: message.reply?.user?.avatar, size: 16)
                     Text(message.reply?.user?.username ?? "User has been deleted")
                     Text((message.reply?.content ?? "Message has been deleted").replacingOccurrences(of: "\n", with: "")).textSelection(.enabled).lineLimit(1)
                   }.padding(EdgeInsets(top: 0, leading: 18, bottom: 0, trailing: 0))
@@ -411,6 +431,11 @@ struct CommsView: View {
                     } else { replyingId = -1 }
                   }) {
                     Image(systemName: "arrowshape.turn.up.left.fill").frame(width: 16, height: 16)
+                  }
+                  Button(action: {
+                    pinMessage(messageId: message.id, pinned: message.pinned)
+                  }) {
+                    Image(systemName: message.pinned ? "pin.slash.fill" : "pin.fill").frame(width: 16, height: 16)
                   }
                   Button(action: {
                     replyingId = -1
