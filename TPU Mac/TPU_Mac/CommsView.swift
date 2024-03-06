@@ -11,6 +11,7 @@ import PrivateUploaderAPI
 import SwiftUI
 
 struct CommsView: View {
+  @Binding var coreUser: StateQuery.Data.CurrentUser?
   @State private var chatsList: [ChatsQuery.Data.Chat] = []
   @State private var chatMessages: [MessagesQuery.Data.Message] = []
   @State private var chatOpen: Int = -1
@@ -231,14 +232,16 @@ struct CommsView: View {
                     }) {
                       Image(systemName: message.pinned ? "pin.slash.fill" : "pin.fill").frame(width: 16, height: 16)
                     }
-                    Button(action: {
-                      replyingId = -1
-                      if editingId != message.id {
-                        editingId = message.id
-                        editingMessage = message.content ?? ""
-                      } else { editingId = -1 }
-                    }) {
-                      Image(systemName: "pencil").frame(width: 16, height: 16)
+                    if coreUser?.id == message.userId {
+                      Button(action: {
+                        replyingId = -1
+                        if editingId != message.id {
+                          editingId = message.id
+                          editingMessage = message.content ?? ""
+                        } else { editingId = -1 }
+                      }) {
+                        Image(systemName: "pencil").frame(width: 16, height: 16)
+                      }
                     }
                   }.padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4))
                   //                  .background(Color(hoverItem == message.id ? Color.primary : .clear))
@@ -437,14 +440,16 @@ struct CommsView: View {
                   }) {
                     Image(systemName: message.pinned ? "pin.slash.fill" : "pin.fill").frame(width: 16, height: 16)
                   }
-                  Button(action: {
-                    replyingId = -1
-                    if editingId != message.id {
-                      editingId = message.id
-                      editingMessage = message.content ?? ""
-                    } else { editingId = -1 }
-                  }) {
-                    Image(systemName: "pencil").frame(width: 16, height: 16)
+                  if coreUser?.id == message.userId {
+                    Button(action: {
+                      replyingId = -1
+                      if editingId != message.id {
+                        editingId = message.id
+                        editingMessage = message.content ?? ""
+                      } else { editingId = -1 }
+                    }) {
+                      Image(systemName: "pencil").frame(width: 16, height: 16)
+                    }
                   }
                 }.padding(4)
                 //                  .background(Color(hoverItem == message.id ? Color.primary : .clear))

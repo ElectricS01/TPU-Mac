@@ -1,12 +1,5 @@
 query StateQuery {
   coreState {
-    connection {
-      ip
-    }
-    name
-    release
-    hostname
-    hostnameWithProtocol
     announcements {
       userId
       content
@@ -21,21 +14,47 @@ query StateQuery {
     }
     stats {
       users
-      announcements
-      usage
       collections
       collectionItems
       uploads
-      invites
-      inviteMilestone
-      pulse
-      pulses
-      docs
       messages
       chats
-      hours
     }
-    registrations
-    commitVersion
   }
+  currentUser {
+      username
+      description
+      administrator
+      emailVerified
+      banned
+      createdAt
+      avatar
+      moderator
+      banner
+      status
+      storedStatus
+      privacyPolicyAccepted
+      domain {
+        active
+        domain
+        id
+      }
+      badges {
+        color
+        icon
+        id
+        image
+        name
+        priority
+        tooltip
+      }
+      id
+      notifications {
+        id
+        dismissed
+        message
+        route
+        createdAt
+      }
+    }
 }

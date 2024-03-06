@@ -54,8 +54,7 @@ struct HomeView: View {
             }.padding()
           }
         }.frame(maxHeight: .infinity)
-      }
-      .frame(maxWidth: .infinity)
+      }.frame(maxWidth: .infinity)
       LazyVGrid(columns: [GridItem(.adaptive(minimum: 150))], spacing: 10) {
         HomeStat(stat: .constant(String(coreState?.stats.collections ?? 0)), type: .constant("Collections"))
         HomeStat(stat: .constant(String(coreState?.stats.collectionItems ?? 0)), type: .constant("Collection Items"))

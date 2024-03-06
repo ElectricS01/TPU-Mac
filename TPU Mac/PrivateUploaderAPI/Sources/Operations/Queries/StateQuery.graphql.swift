@@ -7,7 +7,7 @@ public class StateQuery: GraphQLQuery {
   public static let operationName: String = "StateQuery"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query StateQuery { coreState { __typename connection { __typename ip } name release hostname hostnameWithProtocol announcements { __typename userId content type id createdAt user { __typename username id avatar } } stats { __typename users announcements usage collections collectionItems uploads invites inviteMilestone pulse pulses docs messages chats hours } registrations commitVersion } }"#
+      #"query StateQuery { coreState { __typename announcements { __typename userId content type id createdAt user { __typename username id avatar } } stats { __typename users collections collectionItems uploads messages chats } } currentUser { __typename username description administrator emailVerified banned createdAt avatar moderator banner status storedStatus privacyPolicyAccepted domain { __typename active domain id } badges { __typename color icon id image name priority tooltip } id notifications { __typename id dismissed message route createdAt } } }"#
     ))
 
   public init() {}
@@ -19,9 +19,11 @@ public class StateQuery: GraphQLQuery {
     public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
       .field("coreState", CoreState.self),
+      .field("currentUser", CurrentUser?.self),
     ] }
 
     public var coreState: CoreState { __data["coreState"] }
+    public var currentUser: CurrentUser? { __data["currentUser"] }
 
     /// CoreState
     ///
@@ -33,43 +35,12 @@ public class StateQuery: GraphQLQuery {
       public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.CoreState }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
-        .field("connection", Connection.self),
-        .field("name", String.self),
-        .field("release", String.self),
-        .field("hostname", String.self),
-        .field("hostnameWithProtocol", String.self),
         .field("announcements", [Announcement].self),
         .field("stats", Stats.self),
-        .field("registrations", Bool.self),
-        .field("commitVersion", String.self),
       ] }
 
-      public var connection: Connection { __data["connection"] }
-      public var name: String { __data["name"] }
-      /// Whether the app is running in production mode.
-      public var release: String { __data["release"] }
-      public var hostname: String { __data["hostname"] }
-      public var hostnameWithProtocol: String { __data["hostnameWithProtocol"] }
       public var announcements: [Announcement] { __data["announcements"] }
       public var stats: Stats { __data["stats"] }
-      public var registrations: Bool { __data["registrations"] }
-      public var commitVersion: String { __data["commitVersion"] }
-
-      /// CoreState.Connection
-      ///
-      /// Parent Type: `Connection`
-      public struct Connection: PrivateUploaderAPI.SelectionSet {
-        public let __data: DataDict
-        public init(_dataDict: DataDict) { __data = _dataDict }
-
-        public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Connection }
-        public static var __selections: [ApolloAPI.Selection] { [
-          .field("__typename", String.self),
-          .field("ip", String.self),
-        ] }
-
-        public var ip: String { __data["ip"] }
-      }
 
       /// CoreState.Announcement
       ///
@@ -128,35 +99,140 @@ public class StateQuery: GraphQLQuery {
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("users", Int.self),
-          .field("announcements", Int.self),
-          .field("usage", PrivateUploaderAPI.BigInt?.self),
           .field("collections", Int.self),
           .field("collectionItems", Int.self),
           .field("uploads", Int.self),
-          .field("invites", Int.self),
-          .field("inviteMilestone", Int.self),
-          .field("pulse", Int.self),
-          .field("pulses", Int.self),
-          .field("docs", Int.self),
           .field("messages", Int.self),
           .field("chats", Int.self),
-          .field("hours", PrivateUploaderAPI.JSON?.self),
         ] }
 
         public var users: Int { __data["users"] }
-        public var announcements: Int { __data["announcements"] }
-        public var usage: PrivateUploaderAPI.BigInt? { __data["usage"] }
         public var collections: Int { __data["collections"] }
         public var collectionItems: Int { __data["collectionItems"] }
         public var uploads: Int { __data["uploads"] }
-        public var invites: Int { __data["invites"] }
-        public var inviteMilestone: Int { __data["inviteMilestone"] }
-        public var pulse: Int { __data["pulse"] }
-        public var pulses: Int { __data["pulses"] }
-        public var docs: Int { __data["docs"] }
         public var messages: Int { __data["messages"] }
         public var chats: Int { __data["chats"] }
-        public var hours: PrivateUploaderAPI.JSON? { __data["hours"] }
+      }
+    }
+
+    /// CurrentUser
+    ///
+    /// Parent Type: `User`
+    public struct CurrentUser: PrivateUploaderAPI.SelectionSet {
+      public let __data: DataDict
+      public init(_dataDict: DataDict) { __data = _dataDict }
+
+      public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.User }
+      public static var __selections: [ApolloAPI.Selection] { [
+        .field("__typename", String.self),
+        .field("username", String.self),
+        .field("description", String?.self),
+        .field("administrator", Bool.self),
+        .field("emailVerified", Bool.self),
+        .field("banned", Bool.self),
+        .field("createdAt", PrivateUploaderAPI.Date.self),
+        .field("avatar", String?.self),
+        .field("moderator", Bool.self),
+        .field("banner", String?.self),
+        .field("status", GraphQLEnum<PrivateUploaderAPI.UserStatus>.self),
+        .field("storedStatus", GraphQLEnum<PrivateUploaderAPI.UserStoredStatus>.self),
+        .field("privacyPolicyAccepted", Bool?.self),
+        .field("domain", Domain?.self),
+        .field("badges", [Badge].self),
+        .field("id", Int.self),
+        .field("notifications", [Notification].self),
+      ] }
+
+      public var username: String { __data["username"] }
+      public var description: String? { __data["description"] }
+      public var administrator: Bool { __data["administrator"] }
+      public var emailVerified: Bool { __data["emailVerified"] }
+      public var banned: Bool { __data["banned"] }
+      public var createdAt: PrivateUploaderAPI.Date { __data["createdAt"] }
+      public var avatar: String? { __data["avatar"] }
+      public var moderator: Bool { __data["moderator"] }
+      /// UserV2 banner.
+      public var banner: String? { __data["banner"] }
+      /// User status/presence shown to other users.
+      public var status: GraphQLEnum<PrivateUploaderAPI.UserStatus> { __data["status"] }
+      /// User status/presence that has `invisible` and is shown to the current user.
+      public var storedStatus: GraphQLEnum<PrivateUploaderAPI.UserStoredStatus> { __data["storedStatus"] }
+      public var privacyPolicyAccepted: Bool? { __data["privacyPolicyAccepted"] }
+      public var domain: Domain? { __data["domain"] }
+      public var badges: [Badge] { __data["badges"] }
+      public var id: Int { __data["id"] }
+      public var notifications: [Notification] { __data["notifications"] }
+
+      /// CurrentUser.Domain
+      ///
+      /// Parent Type: `Domain`
+      public struct Domain: PrivateUploaderAPI.SelectionSet {
+        public let __data: DataDict
+        public init(_dataDict: DataDict) { __data = _dataDict }
+
+        public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Domain }
+        public static var __selections: [ApolloAPI.Selection] { [
+          .field("__typename", String.self),
+          .field("active", Bool.self),
+          .field("domain", String.self),
+          .field("id", Int.self),
+        ] }
+
+        public var active: Bool { __data["active"] }
+        public var domain: String { __data["domain"] }
+        public var id: Int { __data["id"] }
+      }
+
+      /// CurrentUser.Badge
+      ///
+      /// Parent Type: `Badge`
+      public struct Badge: PrivateUploaderAPI.SelectionSet {
+        public let __data: DataDict
+        public init(_dataDict: DataDict) { __data = _dataDict }
+
+        public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Badge }
+        public static var __selections: [ApolloAPI.Selection] { [
+          .field("__typename", String.self),
+          .field("color", String?.self),
+          .field("icon", String?.self),
+          .field("id", Int.self),
+          .field("image", String?.self),
+          .field("name", String.self),
+          .field("priority", Double?.self),
+          .field("tooltip", String?.self),
+        ] }
+
+        public var color: String? { __data["color"] }
+        public var icon: String? { __data["icon"] }
+        public var id: Int { __data["id"] }
+        public var image: String? { __data["image"] }
+        public var name: String { __data["name"] }
+        public var priority: Double? { __data["priority"] }
+        public var tooltip: String? { __data["tooltip"] }
+      }
+
+      /// CurrentUser.Notification
+      ///
+      /// Parent Type: `Notification`
+      public struct Notification: PrivateUploaderAPI.SelectionSet {
+        public let __data: DataDict
+        public init(_dataDict: DataDict) { __data = _dataDict }
+
+        public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Notification }
+        public static var __selections: [ApolloAPI.Selection] { [
+          .field("__typename", String.self),
+          .field("id", Int.self),
+          .field("dismissed", Bool.self),
+          .field("message", String.self),
+          .field("route", String?.self),
+          .field("createdAt", PrivateUploaderAPI.Date.self),
+        ] }
+
+        public var id: Int { __data["id"] }
+        public var dismissed: Bool { __data["dismissed"] }
+        public var message: String { __data["message"] }
+        public var route: String? { __data["route"] }
+        public var createdAt: PrivateUploaderAPI.Date { __data["createdAt"] }
       }
     }
   }

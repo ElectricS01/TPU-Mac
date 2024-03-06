@@ -24,10 +24,13 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     switch typename {
     case "Query": return PrivateUploaderAPI.Objects.Query
     case "CoreState": return PrivateUploaderAPI.Objects.CoreState
-    case "Connection": return PrivateUploaderAPI.Objects.Connection
     case "Announcement": return PrivateUploaderAPI.Objects.Announcement
     case "PartialUserBase": return PrivateUploaderAPI.Objects.PartialUserBase
     case "CoreStats": return PrivateUploaderAPI.Objects.CoreStats
+    case "User": return PrivateUploaderAPI.Objects.User
+    case "Domain": return PrivateUploaderAPI.Objects.Domain
+    case "Badge": return PrivateUploaderAPI.Objects.Badge
+    case "Notification": return PrivateUploaderAPI.Objects.Notification
     case "Mutation": return PrivateUploaderAPI.Objects.Mutation
     case "LoginResponse": return PrivateUploaderAPI.Objects.LoginResponse
     case "LoginUser": return PrivateUploaderAPI.Objects.LoginUser

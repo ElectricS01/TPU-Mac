@@ -27,6 +27,7 @@ let outputDateFormatter: DateFormatter = {
 struct ContentView: View {
   @State private var showingLogin = keychain.get("token") == nil || keychain.get("token") == ""
   @State private var coreState: StateQuery.Data.CoreState?
+  @State private var coreUser: StateQuery.Data.CurrentUser?
 
   func getState() {
     Network.shared.apollo.fetch(query: StateQuery(), cachePolicy: .fetchIgnoringCacheData) { result in
@@ -34,6 +35,7 @@ struct ContentView: View {
       case .success(let graphQLResult):
         if let unwrapped = graphQLResult.data {
           coreState = unwrapped.coreState
+          coreUser = unwrapped.currentUser
         }
       case .failure(let error):
         print("Failure! Error: \(error)")
@@ -60,7 +62,7 @@ struct ContentView: View {
             NavigationLink(destination: GalleryView(stars: .constant(true))) {
               Label("Stars", systemImage: "star")
             }
-            NavigationLink(destination: CommsView()) {
+            NavigationLink(destination: CommsView(coreUser: $coreUser)) {
               Label("Comms", systemImage: "message")
             }
             NavigationLink(destination: AboutView()) {
@@ -84,7 +86,7 @@ struct ContentView: View {
           GalleryView(stars: .constant(true)).tabItem {
             Label("Stars", systemImage: "star")
           }
-          CommsView().tabItem {
+          CommsView(coreUser: $coreUser).tabItem {
             Label("Comms", systemImage: "message")
           }
           SettingsView(showingLogin: $showingLogin, coreState: $coreState).tabItem {
@@ -170,7 +172,7 @@ struct SettingsView: View {
         Text("Coming soon")
       #else
         Text("TPU iOS").font(.system(size: 32, weight: .semibold))
-        Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (5/3/2024)")
+        Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (6/3/2024)")
         Text("Made by ElectricS01")
         Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
       #endif
@@ -193,7 +195,7 @@ struct AboutView: View {
       #else
         Text("TPU iOS").font(.system(size: 32, weight: .semibold))
       #endif
-      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (5/3/2024)")
+      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (6/3/2024)")
       Text("Made by ElectricS01")
       Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
     }
