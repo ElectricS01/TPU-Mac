@@ -12,22 +12,36 @@ import SwiftUI
 
 let keychain = KeychainSwift()
 
-let inputDateFormatter: DateFormatter = {
-  let formatter = DateFormatter()
-  formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
-  return formatter
-}()
+enum DateUtils {
+  static let dateFormat: (String?) -> String = { date in
+    let formatter = DateFormatter()
+    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
+    if let date = formatter.date(from: date ?? "") {
+      formatter.dateFormat = "dd/MM/yyyy HH:mm:ss"
+      return formatter.string(from: date)
+    } else {
+      return "Invalid Date"
+    }
+  }
 
-let outputDateFormatter: DateFormatter = {
-  let formatter = DateFormatter()
-  formatter.dateFormat = "dd/MM/yyyy HH:mm:ss"
-  return formatter
-}()
+  static let relativeFormat: (String?) -> String = { date in
+    let formatter = DateFormatter()
+    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
+    if let date = formatter.date(from: date ?? "") {
+      let formatter = RelativeDateTimeFormatter()
+      formatter.unitsStyle = .full
+      return formatter.localizedString(for: date, relativeTo: Date.now)
+    } else {
+      return "Invalid Date"
+    }
+  }
+}
 
 struct ContentView: View {
   @State private var showingLogin = keychain.get("token") == nil || keychain.get("token") == ""
   @State private var coreState: StateQuery.Data.CoreState?
   @State private var coreUser: StateQuery.Data.CurrentUser?
+  @State var isPopover = false
 
   func getState() {
     Network.shared.apollo.fetch(query: StateQuery(), cachePolicy: .fetchIgnoringCacheData) { result in
@@ -74,6 +88,25 @@ struct ContentView: View {
         }
         .onAppear {
           getState()
+        }
+        .toolbar(id: "nav") {
+          ToolbarItem(id: "bell") {
+            Button(action: { self.isPopover.toggle() }) {
+              Label("Notifications", systemImage: "bell").help("Notifications")
+              Text(String(coreUser?.notifications.filter { $0.dismissed == false }.count ?? 0))
+            }.popover(isPresented: self.$isPopover, arrowEdge: .bottom) {
+              VStack {
+                Text("Notifications").font(.title)
+                ForEach(coreUser?.notifications ?? [], id: \.self) { notification in
+                  Divider()
+                  HStack {
+                    Text(notification.message)
+                    Text(DateUtils.relativeFormat(notification.createdAt)).font(.subheadline).foregroundStyle(.gray)
+                  }.frame(maxWidth: .infinity, alignment: .leading).frame(alignment: .top)
+                }
+              }.padding()
+            }
+          }
         }
       #else
         TabView {
@@ -172,7 +205,7 @@ struct SettingsView: View {
         Text("Coming soon")
       #else
         Text("TPU iOS").font(.system(size: 32, weight: .semibold))
-        Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (6/3/2024)")
+        Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (9/3/2024)")
         Text("Made by ElectricS01")
         Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
       #endif
@@ -195,7 +228,7 @@ struct AboutView: View {
       #else
         Text("TPU iOS").font(.system(size: 32, weight: .semibold))
       #endif
-      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (6/3/2024)")
+      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (9/3/2024)")
       Text("Made by ElectricS01")
       Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
     }

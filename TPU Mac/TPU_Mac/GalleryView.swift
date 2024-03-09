@@ -132,12 +132,7 @@ struct GalleryView: View {
                 )
                 Text("Type: " + (galleryItem.type))
                 Text("Upload name: " + (galleryItem.attachment))
-                if let date = inputDateFormatter.date(from: galleryItem.createdAt) {
-                  let formattedDate = outputDateFormatter.string(from: date)
-                  Text("Created at: " + formattedDate)
-                } else {
-                  Text("Created at: Invalid Date")
-                }
+                Text("Created at: " + DateUtils.dateFormat(galleryItem.createdAt))
                 Text("Size: " + formatFileSize(galleryItem.fileSize))
                 HStack {
                   Button("Copy Link") {

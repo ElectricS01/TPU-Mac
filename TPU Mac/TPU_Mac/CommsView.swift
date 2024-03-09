@@ -171,12 +171,7 @@ struct CommsView: View {
                       if dontMerge {
                         HStack {
                           Text(message.user?.username ?? "User has been deleted")
-                          if let date = inputDateFormatter.date(from: message.createdAt) {
-                            let formattedDate = outputDateFormatter.string(from: date)
-                            Text(formattedDate)
-                          } else {
-                            Text("Invalid Date")
-                          }
+                          Text(DateUtils.dateFormat(message.createdAt))
                         }.frame(minWidth: 0,
                                 maxWidth: .infinity,
                                 minHeight: 0,
@@ -379,12 +374,7 @@ struct CommsView: View {
                     if dontMerge {
                       HStack {
                         Text(message.user?.username ?? "User has been deleted")
-                        if let date = inputDateFormatter.date(from: message.createdAt) {
-                          let formattedDate = outputDateFormatter.string(from: date)
-                          Text(formattedDate)
-                        } else {
-                          Text("Invalid Date")
-                        }
+                        Text(DateUtils.dateFormat(message.createdAt))
                       }.frame(minWidth: 0,
                               maxWidth: .infinity,
                               minHeight: 0,

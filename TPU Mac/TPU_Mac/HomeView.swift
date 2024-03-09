@@ -45,12 +45,7 @@ struct HomeView: View {
               ProfilePicture(avatar: item.user.avatar, size: 48)
               Text(item.user.username).font(.system(size: 16, weight: .semibold))
               Text(item.content).multilineTextAlignment(.center)
-              if let date = inputDateFormatter.date(from: item.createdAt ?? "") {
-                let formattedDate = outputDateFormatter.string(from: date)
-                Text(formattedDate)
-              } else {
-                Text("Invalid Date")
-              }
+              Text(DateUtils.dateFormat(item.createdAt))
             }.padding()
           }
         }.frame(maxHeight: .infinity)
