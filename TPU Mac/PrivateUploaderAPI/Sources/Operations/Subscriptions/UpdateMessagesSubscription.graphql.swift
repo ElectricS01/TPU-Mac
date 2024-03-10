@@ -35,13 +35,13 @@ public class UpdateMessagesSubscription: GraphQLSubscription {
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("mention", Bool.self),
-        .field("message", Message?.self),
+        .field("message", Message.self),
         .field("associationId", Int.self),
         .field("chat", Chat.self),
       ] }
 
       public var mention: Bool { __data["mention"] }
-      public var message: Message? { __data["message"] }
+      public var message: Message { __data["message"] }
       public var associationId: Int { __data["associationId"] }
       public var chat: Chat { __data["chat"] }
 
@@ -187,12 +187,12 @@ public class UpdateMessagesSubscription: GraphQLSubscription {
             public static var __selections: [ApolloAPI.Selection] { [
               .field("__typename", String.self),
               .field("associationId", Int.self),
-              .field("user", User.self),
+              .field("user", User?.self),
               .field("messageId", Int.self),
             ] }
 
             public var associationId: Int { __data["associationId"] }
-            public var user: User { __data["user"] }
+            public var user: User? { __data["user"] }
             public var messageId: Int { __data["messageId"] }
 
             /// OnMessage.Message.Reply.ReadReceipt.User
@@ -360,12 +360,12 @@ public class UpdateMessagesSubscription: GraphQLSubscription {
           public static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
             .field("associationId", Int.self),
-            .field("user", User.self),
+            .field("user", User?.self),
             .field("messageId", Int.self),
           ] }
 
           public var associationId: Int { __data["associationId"] }
-          public var user: User { __data["user"] }
+          public var user: User? { __data["user"] }
           public var messageId: Int { __data["messageId"] }
 
           /// OnMessage.Message.ReadReceipt.User

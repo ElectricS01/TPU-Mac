@@ -115,7 +115,51 @@ struct CommsView: View {
     }
     return true
   }
+  
+  func convertToMessage(subscriptionObject: UpdateMessagesSubscription.Data.OnMessage.Message) -> MessagesQuery.Data.Message {
+    var messageData = DataDict(data: [:], fulfilledFragments: Set<ObjectIdentifier>())
+
+    messageData["id"] = subscriptionObject.id
+    messageData["createdAt"] = subscriptionObject.createdAt
+    messageData["updatedAt"] = subscriptionObject.updatedAt
+    messageData["chatId"] = subscriptionObject.chatId
+    messageData["userId"] = subscriptionObject.userId
+    messageData["content"] = subscriptionObject.content
+    messageData["type"] = subscriptionObject.type
+    messageData["emoji"] = subscriptionObject.emoji
+    messageData["embeds"] = subscriptionObject.embeds
+    messageData["reply"] = subscriptionObject.reply
+    messageData["legacyUser"] = subscriptionObject.legacyUser
+    messageData["user"] = subscriptionObject.user
+    messageData["edited"] = subscriptionObject.edited
+    messageData["editedAt"] = subscriptionObject.editedAt
+    messageData["replyId"] = subscriptionObject.replyId
+    messageData["legacyUserId"] = subscriptionObject.legacyUserId
+    messageData["pinned"] = subscriptionObject.pinned
+    messageData["readReceipts"] = subscriptionObject.readReceipts
     
+    let message = MessagesQuery.Data.Message(_dataDict: messageData)
+
+    return message
+  }
+  
+  func messagesSubscription() {
+    let subscription = UpdateMessagesSubscription()
+
+    let handler = Network.shared.apollo.subscribe(subscription: subscription) { result in
+      switch result {
+      case .success(let graphQLResult):
+        if let message = graphQLResult.data?.onMessage.message {
+          print("Message received \(message.content)")
+          let newMessage = convertToMessage(subscriptionObject: message)
+          chatMessages.append(newMessage)
+        }
+      case .failure(let error):
+        print("Failed to subscribe \(error)")
+      }
+    }
+  }
+
   var body: some View {
     VStack {
       #if os(macOS)
@@ -322,6 +366,7 @@ struct CommsView: View {
             print(error)
           }
         }
+        messagesSubscription()
       }
       #else
       List {

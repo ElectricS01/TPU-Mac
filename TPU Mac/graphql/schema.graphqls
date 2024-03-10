@@ -119,6 +119,8 @@ type User {
   homeWidgets: HomeWidgets
   dateOfBirth: Date
   pendingDeletionDate: Date
+  banReasonType: BanReason
+  banReason: String
   plan: Plan
   domain: Domain
   subscription: TPUSubscription
@@ -232,6 +234,16 @@ enum HomeWidgetType {
   ANNOUNCEMENTS
 }
 
+"""Reasons for banning a user."""
+enum BanReason {
+  OTHER
+  PENDING_MANUAL_ACCOUNT_DELETION
+  ILLEGAL_CONTENT
+  SPAM
+  HARASSMENT
+  UNDER_AGE
+}
+
 type Plan {
   id: Int!
   name: String!
@@ -248,7 +260,7 @@ type Plan {
 type Domain {
   id: Int!
   domain: String!
-  userId: Int!
+  userId: Int
   DNSProvisioned: Boolean! @deprecated(reason: "Use `active` instead.")
   active: Boolean!
   zone: String @deprecated(reason: "Cloudflare integration was removed in TPUv2.")
@@ -257,7 +269,7 @@ type Domain {
   subdomainsCreate: Boolean! @deprecated(reason: "Subdomains were removed in TPUv2.")
   customUserEligibility: [Int!] @deprecated(reason: "Granular user control was removed in TPUv2.")
   restricted: String! @deprecated(reason: "Granular user control was removed in TPUv2.")
-  user: PartialUserBase!
+  user: PartialUserBase
 
   """Only populated in some admin contexts"""
   users: [PartialUserBase!]
@@ -321,7 +333,7 @@ type Integration {
   providerUsername: String
   providerUserCache: JSON
   error: String
-  user: PartialUserBase!
+  user: PartialUserBase
 }
 
 """
@@ -338,7 +350,7 @@ type TPUSubscription {
   expiredAt: DateTimeISO!
   cancelledAt: DateTimeISO!
   metadata: SubscriptionMetadata!
-  user: PartialUserBase!
+  user: PartialUserBase
 }
 
 type SubscriptionMetadata {
@@ -398,7 +410,7 @@ type Friend {
   createdAt: Date!
   updatedAt: Date!
   status: FriendStatus!
-  userId: Int!
+  userId: Int
   friendId: Int!
   user: PartialUserFriend!
   otherUser: PartialUserFriend!
@@ -457,7 +469,7 @@ type Collection {
   The recommended way to obtain the banner for a collection, it uses field `image`, and if null, falls back to the last added image preview.
   """
   banner: String
-  user: PartialUserBase!
+  user: PartialUserBase
   preview: CollectionItem
   users: [CollectionUser!]!
   recipient: CollectionUser
@@ -484,7 +496,7 @@ type CollectionItem {
   createdAt: Date!
   updatedAt: Date!
   pinned: Boolean!
-  user: PartialUserBase!
+  user: PartialUserBase
   collection: Collection!
   attachment: Upload!
 }
@@ -522,7 +534,7 @@ type Star {
   attachmentId: Float!
   createdAt: Date!
   updatedAt: Date!
-  user: PartialUserBase!
+  user: PartialUserBase
   attachment: Upload!
 }
 
@@ -531,7 +543,7 @@ type AutoCollectApproval {
   autoCollectRuleId: Int!
   uploadId: Float!
   collectionId: Int!
-  userId: Int!
+  userId: Int
   approved: Boolean!
   user: PartialUserBase
   collection: Collection
@@ -569,8 +581,8 @@ type FriendNickname {
   updatedAt: Date!
   friendId: Float!
   nickname: String!
-  user: PartialUserBase!
-  friend: PartialUserBase!
+  user: PartialUserBase
+  friend: PartialUserBase
 }
 
 type Platform {
@@ -591,7 +603,7 @@ type Experiment {
   key: String!
   value: String!
   userId: Float!
-  user: PartialUserBase!
+  user: PartialUserBase
 }
 
 type Session {
@@ -769,12 +781,12 @@ type Connection {
 
 type Announcement {
   id: Int!
-  userId: Float!
+  userId: Float
   content: String!
   type: String
   createdAt: Date
   updatedAt: Date
-  user: PartialUserBase!
+  user: PartialUserBase
 }
 
 type CoreStats {
@@ -1043,7 +1055,7 @@ type ChatAssociation {
 
 type ChatInvite {
   id: String!
-  userId: Int!
+  userId: Int
   chatId: Int!
 
   """
@@ -1054,7 +1066,7 @@ type ChatInvite {
   updatedAt: Date!
   expiredAt: Date
   invalidated: Boolean!
-  user: PartialUserBase!
+  user: PartialUserBase
   chat: Chat!
   rank: ChatRank
 }
@@ -1063,7 +1075,7 @@ type ChatRank {
   id: String!
   color: String
   name: String!
-  userId: Int!
+  userId: Int
   createdAt: Date
   chatId: Int!
   updatedAt: Date
@@ -1191,12 +1203,12 @@ type ReadReceipt {
   chatId: Int!
   associationId: Int!
   messageId: Int!
-  user: PartialUserBase!
+  user: PartialUserBase
 }
 
 type ChatEmoji {
   id: String!
-  userId: Int!
+  userId: Int
   chatId: Int!
   icon: String
   name: String
@@ -1233,11 +1245,11 @@ input LookupPrefixInput {
 type Workspace {
   id: Int!
   name: String!
-  userId: Int!
+  userId: Int
   createdAt: Date!
   updatedAt: Date!
   icon: String
-  user: PartialUserBase!
+  user: PartialUserBase
   folders: [WorkspaceFolder!]!
   users: [WorkspaceUser!]!
 }
@@ -1279,7 +1291,7 @@ type WorkspaceNoteMetadata {
 type NoteVersion {
   id: String!
   noteId: Int!
-  userId: Int!
+  userId: Int
   data: WorkspaceNote
 }
 
@@ -1304,8 +1316,8 @@ type WorkspaceUser {
   """The unique identifier between the User and the Workspace."""
   identifier: String
   workspace: Workspace!
-  user: PartialUserBase!
-  sender: PartialUserBase!
+  user: PartialUserBase
+  sender: PartialUserBase
 }
 
 input NoteInput {
@@ -1354,7 +1366,7 @@ input PagedMessagesInput {
 
 type BlockedUser {
   id: String!
-  userId: Int!
+  userId: Int
   createdAt: Date!
   updatedAt: Date!
   blockedUserId: Int!
@@ -1400,7 +1412,7 @@ type OauthApp {
   userId: Float!
   botId: Float
   private: Boolean!
-  user: PartialUserBase!
+  user: PartialUserBase
   bot: PartialUserBase
   oauthUsers: [OauthUser!]!
   oauthUser: OauthUser!
@@ -1415,7 +1427,7 @@ type OauthUser {
   createdAt: Date!
   updatedAt: Date!
   manage: Boolean!
-  user: PartialUserBase!
+  user: PartialUserBase
 }
 
 input MyAppInput {
@@ -1434,7 +1446,7 @@ type OauthConsentApp {
   userId: Float!
   botId: Float
   private: Boolean!
-  user: PartialUserBase!
+  user: PartialUserBase
   bot: PartialUserBase
   token: String
 }
@@ -1446,7 +1458,7 @@ type PaginatedChatAuditLogResponse {
 
 type ChatAuditLog {
   id: String!
-  userId: Int!
+  userId: Int
   chatId: Int!
   category: AuditLogCategory!
   actionType: AuditLogActionType!
@@ -1495,9 +1507,12 @@ type Mutation {
   verifyEmail(token: String!): Boolean!
   resendVerificationEmail: Boolean!
   confirmDateOfBirth(dateOfBirth: String!): Boolean!
+  deleteAccount(input: DangerZoneInput!): Boolean!
+  deleteGallery(input: DangerZoneInput!): Boolean!
   login(input: LoginInput!): LoginResponse!
   logout: Boolean!
   register(input: RegisterInput!): LoginResponse!
+  reactivateAccount: Boolean!
   setExperiment(input: SetExperimentInput!): Experiment!
   createCollection(input: CreateCollectionInput!): Collection!
   updateCollection(input: UpdateCollectionInput!): Collection!
@@ -1636,15 +1651,34 @@ input ChangeEmailInput {
   email: String!
 }
 
+"""Used for dangerous operations."""
+input DangerZoneInput {
+  """You may use either 2FA token or password to delete the chat."""
+  password: String
+
+  """
+  TOTP/2FA code if enabled. You may use either 2FA token or password to delete the chat.
+  """
+  totp: String
+}
+
 type LoginResponse {
   token: String!
   user: LoginUser!
+  ban: BanResponse
 }
 
 type LoginUser {
   id: Float!
   username: String!
   email: String!
+  banned: Boolean!
+}
+
+type BanResponse {
+  message: String
+  type: String!
+  pendingDeletionDate: Date
 }
 
 input LoginInput {
@@ -2149,7 +2183,7 @@ type ChatTypingEvent {
 }
 
 type MessageSubscription {
-  message: Message
+  message: Message!
   associationId: Int!
   mention: Boolean!
   chat: Chat!

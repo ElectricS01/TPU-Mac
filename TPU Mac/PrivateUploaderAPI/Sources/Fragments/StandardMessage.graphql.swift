@@ -146,12 +146,12 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("associationId", Int.self),
-        .field("user", User.self),
+        .field("user", User?.self),
         .field("messageId", Int.self),
       ] }
 
       public var associationId: Int { __data["associationId"] }
-      public var user: User { __data["user"] }
+      public var user: User? { __data["user"] }
       public var messageId: Int { __data["messageId"] }
 
       /// Reply.ReadReceipt.User
@@ -319,12 +319,12 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("__typename", String.self),
       .field("associationId", Int.self),
-      .field("user", User.self),
+      .field("user", User?.self),
       .field("messageId", Int.self),
     ] }
 
     public var associationId: Int { __data["associationId"] }
-    public var user: User { __data["user"] }
+    public var user: User? { __data["user"] }
     public var messageId: Int { __data["messageId"] }
 
     /// ReadReceipt.User

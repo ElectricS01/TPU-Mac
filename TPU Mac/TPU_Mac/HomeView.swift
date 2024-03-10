@@ -42,8 +42,8 @@ struct HomeView: View {
           Text("Announcments").font(.system(size: 24, weight: .semibold))
           ScrollView {
             ForEach(coreState?.announcements ?? [], id: \.self) { item in
-              ProfilePicture(avatar: item.user.avatar, size: 48)
-              Text(item.user.username).font(.system(size: 16, weight: .semibold))
+              ProfilePicture(avatar: item.user?.avatar, size: 48)
+              Text(item.user?.username ?? "Deleted User").font(.system(size: 16, weight: .semibold))
               Text(item.content).multilineTextAlignment(.center)
               Text(DateUtils.dateFormat(item.createdAt))
             }.padding()

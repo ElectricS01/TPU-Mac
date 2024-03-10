@@ -52,20 +52,20 @@ public class StateQuery: GraphQLQuery {
         public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Announcement }
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
-          .field("userId", Double.self),
+          .field("userId", Double?.self),
           .field("content", String.self),
           .field("type", String?.self),
           .field("id", Int.self),
           .field("createdAt", PrivateUploaderAPI.Date?.self),
-          .field("user", User.self),
+          .field("user", User?.self),
         ] }
 
-        public var userId: Double { __data["userId"] }
+        public var userId: Double? { __data["userId"] }
         public var content: String { __data["content"] }
         public var type: String? { __data["type"] }
         public var id: Int { __data["id"] }
         public var createdAt: PrivateUploaderAPI.Date? { __data["createdAt"] }
-        public var user: User { __data["user"] }
+        public var user: User? { __data["user"] }
 
         /// CoreState.Announcement.User
         ///

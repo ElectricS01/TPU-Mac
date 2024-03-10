@@ -17,7 +17,7 @@ class Network {
   private lazy var webSocketTransport: WebSocketTransport = {
     let url = URL(string: "https://privateuploader.com/graphql")!
     let webSocketClient = WebSocket(url: url, protocol: .graphql_transport_ws)
-    let authPayload = ["authToken": KeychainSwift().get("token")]
+    let authPayload = ["token": KeychainSwift().get("token")]
     let config = WebSocketTransport.Configuration(connectingPayload: authPayload)
     let transport = WebSocketTransport(websocket: webSocketClient, config: config)
 
