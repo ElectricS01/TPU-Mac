@@ -486,7 +486,7 @@ struct CommsView: View {
                       Image(systemName: "pencil").frame(width: 16, height: 16)
                     }
                   }
-                }.padding(4)
+                }.padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4))
                 //                  .background(Color(hoverItem == message.id ? Color.primary : .clear))
                 //                  .onHover(perform: { _ in
                 //                    hoverItem = message.id
@@ -544,8 +544,7 @@ struct CommsView: View {
               }.contentShape(Rectangle())
             }.buttonStyle(.plain)
           }
-        }
-        .padding(EdgeInsets(top: -8, leading: -10, bottom: -8, trailing: 0))
+        }.padding(EdgeInsets(top: -8, leading: -10, bottom: -8, trailing: 0))
       } else {
         VStack {
           Spacer()
@@ -568,6 +567,7 @@ struct CommsView: View {
               print(error)
             }
           }
+          messagesSubscription()
         }
       }
       #endif
