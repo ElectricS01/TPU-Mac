@@ -186,7 +186,7 @@ struct CommsView: View {
         if chatOpen != -1 {
           ScrollViewReader { proxy in
             ScrollView {
-              VStack(alignment: .leading, spacing: 0) {
+              LazyVStack(alignment: .leading, spacing: 0) {
                 ForEach(Array(chatMessages.enumerated()), id: \.element) { index, message in
                   let dontMerge = merge(message: message, previousMessage: index != 0 ? chatMessages[index - 1] : nil)
                   Spacer(minLength: dontMerge ? 16 : 0)
@@ -390,7 +390,7 @@ struct CommsView: View {
       if chatOpen != -1 {
         ScrollViewReader { proxy in
           ScrollView {
-            VStack(alignment: .leading, spacing: 6) {
+            LazyVStack(alignment: .leading, spacing: 0) {
               ForEach(Array(chatMessages.enumerated()), id: \.element) { index, message in
                 let dontMerge = merge(message: message, previousMessage: index != 0 ? chatMessages[index - 1] : nil)
                 Spacer(minLength: dontMerge ? 16 : 0)
