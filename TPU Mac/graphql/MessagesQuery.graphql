@@ -58,19 +58,16 @@ subscription UpdateMessages {
       }
       reply {
         readReceipts {
-          associationId
           user {
             id
             avatar
             username
             legacy
           }
-          messageId
         }
         content
         userId
         id
-        legacyUserId
         embeds {
           metadata {
             type
@@ -79,21 +76,11 @@ subscription UpdateMessages {
             type
           }
         }
-        legacyUser {
-          username
-          id
-          avatar
-        }
         user {
           username
           id
           avatar
         }
-      }
-      legacyUser {
-        username
-        id
-        avatar
       }
       user {
         username
@@ -103,20 +90,16 @@ subscription UpdateMessages {
       edited
       editedAt
       replyId
-      legacyUserId
       pinned
       readReceipts {
-        associationId
         user {
           id
           avatar
           username
           legacy
         }
-        messageId
       }
     }
-    associationId
     chat {
       id
       recipient {
@@ -127,6 +110,30 @@ subscription UpdateMessages {
     }
   }
 }
+
+subscription EditedMessage {
+    onEditMessage {
+      message {
+        content
+        userId
+        pending
+        error
+        edited
+        id
+        pinned
+        editedAt
+        embeds {
+          ...StandardEmbed
+        }
+        emoji {
+          id
+          chatId
+          name
+          icon
+        }
+      }
+    }
+  }
 
 fragment StandardMessage on Message {
   id
@@ -147,19 +154,16 @@ fragment StandardMessage on Message {
   }
   reply {
     readReceipts {
-      associationId
       user {
         id
         avatar
         username
         legacy
       }
-      messageId
     }
     content
     userId
     id
-    legacyUserId
     embeds {
       metadata {
         type
@@ -168,21 +172,11 @@ fragment StandardMessage on Message {
         type
       }
     }
-    legacyUser {
-      username
-      id
-      avatar
-    }
     user {
       username
       id
       avatar
     }
-  }
-  legacyUser {
-    username
-    id
-    avatar
   }
   user {
     username
@@ -192,17 +186,14 @@ fragment StandardMessage on Message {
   edited
   editedAt
   replyId
-  legacyUserId
   pinned
   readReceipts {
-    associationId
     user {
       id
       avatar
       username
       legacy
     }
-    messageId
   }
 }
 

@@ -53,12 +53,10 @@ public class MessagesQuery: GraphQLQuery {
       public var emoji: [Emoji]? { __data["emoji"] }
       public var embeds: [Embed] { __data["embeds"] }
       public var reply: Reply? { __data["reply"] }
-      public var legacyUser: LegacyUser? { __data["legacyUser"] }
       public var user: User? { __data["user"] }
       public var edited: Bool { __data["edited"] }
       public var editedAt: PrivateUploaderAPI.Date? { __data["editedAt"] }
       public var replyId: Int? { __data["replyId"] }
-      public var legacyUserId: Int? { __data["legacyUserId"] }
       public var pinned: Bool { __data["pinned"] }
       public var readReceipts: [ReadReceipt] { __data["readReceipts"] }
 
@@ -99,8 +97,6 @@ public class MessagesQuery: GraphQLQuery {
       }
 
       public typealias Reply = StandardMessage.Reply
-
-      public typealias LegacyUser = StandardMessage.LegacyUser
 
       public typealias User = StandardMessage.User
 
