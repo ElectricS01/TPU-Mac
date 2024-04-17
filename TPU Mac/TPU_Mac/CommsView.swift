@@ -129,17 +129,40 @@ struct CommsView: View {
     messageData["emoji"] = subscriptionObject.emoji
     messageData["embeds"] = subscriptionObject.embeds
     messageData["reply"] = subscriptionObject.reply
-    messageData["legacyUser"] = subscriptionObject.legacyUser
     messageData["user"] = subscriptionObject.user
     messageData["edited"] = subscriptionObject.edited
     messageData["editedAt"] = subscriptionObject.editedAt
     messageData["replyId"] = subscriptionObject.replyId
-    messageData["legacyUserId"] = subscriptionObject.legacyUserId
     messageData["pinned"] = subscriptionObject.pinned
     messageData["readReceipts"] = subscriptionObject.readReceipts
     
     let message = MessagesQuery.Data.Message(_dataDict: messageData)
 
+    return message
+  }
+  
+  func editToMessage(messageObject: MessagesQuery.Data.Message, editObject: EditedMessageSubscription.Data.OnEditMessage.Message) -> MessagesQuery.Data.Message {
+    var messageData = DataDict(data: [:], fulfilledFragments: Set<ObjectIdentifier>())
+    
+    messageData["id"] = editObject.id
+    messageData["createdAt"] = messageObject.createdAt
+    messageData["updatedAt"] = messageObject.updatedAt
+    messageData["chatId"] = messageObject.chatId
+    messageData["userId"] = editObject.userId
+    messageData["content"] = editObject.content
+    messageData["type"] = messageObject.type
+    messageData["emoji"] = editObject.emoji
+    messageData["embeds"] = editObject.embeds
+    messageData["reply"] = messageObject.reply
+    messageData["user"] = messageObject.user
+    messageData["edited"] = editObject.edited
+    messageData["editedAt"] = editObject.editedAt
+    messageData["replyId"] = messageObject.replyId
+    messageData["pinned"] = editObject.pinned
+    messageData["readReceipts"] = messageObject.readReceipts
+    
+    let message = MessagesQuery.Data.Message(_dataDict: messageData)
+    
     return message
   }
   
@@ -153,6 +176,24 @@ struct CommsView: View {
           print("Message received \(message.content)")
           let newMessage = convertToMessage(subscriptionObject: message)
           chatMessages.append(newMessage)
+        }
+      case .failure(let error):
+        print("Failed to subscribe \(error)")
+      }
+    }
+  }
+  
+  func editingSubscription() {
+    let subscription = EditedMessageSubscription()
+    
+    let handler = Network.shared.apollo.subscribe(subscription: subscription) { result in
+      switch result {
+      case .success(let graphQLResult):
+        if let message = graphQLResult.data?.onEditMessage.message {
+          print("Message received \(message.content)")
+          let index = chatMessages.firstIndex(where: {$0.id == message.id})
+          let newMessage = editToMessage(messageObject: chatMessages[index ?? 0], editObject: message)
+          chatMessages[index ?? 0] = newMessage
         }
       case .failure(let error):
         print("Failed to subscribe \(error)")
@@ -367,6 +408,7 @@ struct CommsView: View {
           }
         }
         messagesSubscription()
+        editingSubscription()
       }
       #else
       List {
@@ -568,6 +610,7 @@ struct CommsView: View {
             }
           }
           messagesSubscription()
+          editingSubscription()
         }
       }
       #endif

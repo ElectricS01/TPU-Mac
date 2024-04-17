@@ -32,6 +32,7 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "Badge": return PrivateUploaderAPI.Objects.Badge
     case "Notification": return PrivateUploaderAPI.Objects.Notification
     case "Mutation": return PrivateUploaderAPI.Objects.Mutation
+    case "Message": return PrivateUploaderAPI.Objects.Message
     case "LoginResponse": return PrivateUploaderAPI.Objects.LoginResponse
     case "LoginUser": return PrivateUploaderAPI.Objects.LoginUser
     case "PaginatedUploadResponse": return PrivateUploaderAPI.Objects.PaginatedUploadResponse
@@ -41,7 +42,6 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "GenericSuccessObject": return PrivateUploaderAPI.Objects.GenericSuccessObject
     case "Chat": return PrivateUploaderAPI.Objects.Chat
     case "ChatAssociation": return PrivateUploaderAPI.Objects.ChatAssociation
-    case "Message": return PrivateUploaderAPI.Objects.Message
     case "Subscription": return PrivateUploaderAPI.Objects.Subscription
     case "MessageSubscription": return PrivateUploaderAPI.Objects.MessageSubscription
     case "ChatEmoji": return PrivateUploaderAPI.Objects.ChatEmoji
@@ -50,6 +50,7 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "EmbedText": return PrivateUploaderAPI.Objects.EmbedText
     case "EmbedMetadata": return PrivateUploaderAPI.Objects.EmbedMetadata
     case "ReadReceipt": return PrivateUploaderAPI.Objects.ReadReceipt
+    case "EditMessageEvent": return PrivateUploaderAPI.Objects.EditMessageEvent
     case "PaginatedMessageResponse": return PrivateUploaderAPI.Objects.PaginatedMessageResponse
     default: return nil
     }
