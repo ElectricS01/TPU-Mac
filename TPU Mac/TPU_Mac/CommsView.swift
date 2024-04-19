@@ -9,6 +9,7 @@ import Apollo
 import NukeUI
 import PrivateUploaderAPI
 import SwiftUI
+import UserNotifications
 
 struct CommsView: View {
   @Binding var coreUser: StateQuery.Data.CurrentUser?
@@ -166,16 +167,34 @@ struct CommsView: View {
     return message
   }
   
+  func scheduleNotification(title: String, body: String) {
+    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) {_,_ in
+    }
+    let content = UNMutableNotificationContent()
+    content.title = title
+    content.body = body
+    content.sound = UNNotificationSound.default
+    
+    let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+    UNUserNotificationCenter.current().add(request) { error in
+      if let error = error {
+        print("Error scheduling notification: \(error)")
+      }
+    }
+  }
+  
   func messagesSubscription() {
-    let subscription = UpdateMessagesSubscription()
-
-    let handler = Network.shared.apollo.subscribe(subscription: subscription) { result in
+    _ = Network.shared.apollo.subscribe(subscription: UpdateMessagesSubscription()) { result in
       switch result {
       case .success(let graphQLResult):
         if let message = graphQLResult.data?.onMessage.message {
-          print("Message received \(message.content)")
-          let newMessage = convertToMessage(subscriptionObject: message)
-          chatMessages.append(newMessage)
+          if chatsList[chatOpen].id == message.chatId {
+            let newMessage = convertToMessage(subscriptionObject: message)
+            chatMessages.append(newMessage)
+          }
+          if !NSApplication.shared.isActive && message.user?.id != coreUser?.id {
+            scheduleNotification(title: message.user?.username ?? "Unknown User", body: message.content ?? "Unknown Message")
+          }
         }
       case .failure(let error):
         print("Failed to subscribe \(error)")
@@ -184,13 +203,10 @@ struct CommsView: View {
   }
   
   func editingSubscription() {
-    let subscription = EditedMessageSubscription()
-    
-    let handler = Network.shared.apollo.subscribe(subscription: subscription) { result in
+    _ = Network.shared.apollo.subscribe(subscription: EditedMessageSubscription()) { result in
       switch result {
       case .success(let graphQLResult):
         if let message = graphQLResult.data?.onEditMessage.message {
-          print("Message received \(message.content)")
           let index = chatMessages.firstIndex(where: {$0.id == message.id})
           let newMessage = editToMessage(messageObject: chatMessages[index ?? 0], editObject: message)
           chatMessages[index ?? 0] = newMessage
