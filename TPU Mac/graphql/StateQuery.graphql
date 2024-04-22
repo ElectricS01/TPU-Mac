@@ -57,4 +57,21 @@ query StateQuery {
         createdAt
       }
     }
+    trackedUsers {
+      username
+      id
+      avatar
+      blocked
+      status
+      bot
+      nickname {
+        nickname
+      }
+      friends {
+        friendId
+        id
+        status
+        userId
+      }
+    }
 }

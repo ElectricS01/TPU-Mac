@@ -31,6 +31,9 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "Domain": return PrivateUploaderAPI.Objects.Domain
     case "Badge": return PrivateUploaderAPI.Objects.Badge
     case "Notification": return PrivateUploaderAPI.Objects.Notification
+    case "PartialUserFriend": return PrivateUploaderAPI.Objects.PartialUserFriend
+    case "FriendNickname": return PrivateUploaderAPI.Objects.FriendNickname
+    case "Friend": return PrivateUploaderAPI.Objects.Friend
     case "Mutation": return PrivateUploaderAPI.Objects.Mutation
     case "Message": return PrivateUploaderAPI.Objects.Message
     case "LoginResponse": return PrivateUploaderAPI.Objects.LoginResponse
