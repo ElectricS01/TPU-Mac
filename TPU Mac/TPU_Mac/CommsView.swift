@@ -13,6 +13,7 @@ import UserNotifications
 
 struct CommsView: View {
   @Binding var coreUser: StateQuery.Data.CurrentUser?
+  @Binding var coreUsers: [StateQuery.Data.TrackedUser]?
   @State private var chatsList: [ChatsQuery.Data.Chat] = []
   @State private var chatMessages: [MessagesQuery.Data.Message] = []
   @State private var chatOpen: Int = -1
@@ -168,7 +169,7 @@ struct CommsView: View {
   }
   
   func scheduleNotification(title: String, body: String) {
-    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) {_,_ in
+    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { _, _ in
     }
     let content = UNMutableNotificationContent()
     content.title = title
@@ -207,7 +208,7 @@ struct CommsView: View {
       switch result {
       case .success(let graphQLResult):
         if let message = graphQLResult.data?.onEditMessage.message {
-          let index = chatMessages.firstIndex(where: {$0.id == message.id})
+          let index = chatMessages.firstIndex(where: { $0.id == message.id })
           let newMessage = editToMessage(messageObject: chatMessages[index ?? 0], editObject: message)
           chatMessages[index ?? 0] = newMessage
         }
@@ -302,11 +303,11 @@ struct CommsView: View {
                               image
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
-                                .onAppear {
-                                  if chatMessages.count != 0 {
-                                    proxy.scrollTo(0, anchor: .bottom)
-                                  }
-                                }
+//                                .onAppear {
+                              ////                                  if chatMessages.count != 0 {
+                              ////                                    proxy.scrollTo(0, anchor: .bottom)
+                              ////                                  }
+//                                }
                             } else if state.error != nil {
                               Color.red
                             } else {
@@ -389,13 +390,24 @@ struct CommsView: View {
           .navigationTitle(chatsList[chatOpen].recipient?.username ?? chatsList[chatOpen].name)
           List {
             ForEach(0 ..< chatsList[chatOpen].users.count, id: \.self) { result in
+              let user = coreUsers.unsafelyUnwrapped.first(where: { $0.id == chatsList[chatOpen].users[result].user?.id })
               Button(action: { print("Clicked: " + (chatsList[chatOpen].users[result].user?.username ?? "User's name could not be found")) }) {
                 HStack {
+                  Circle().fill(user?.status.value != .offline ? user?.status.value != .online ? user?.status.value == .busy ? .red : .yellow : .green : .gray).frame(width: 6, height: 6)
                   ProfilePicture(avatar: chatsList[chatOpen].users[result].user?.avatar)
-                  Text(chatsList[chatOpen].users[result].user?.username ?? "User's name could not be found")
+                  Text(chatsList[chatOpen].users[result].user?.username ?? "User's name could not be found").foregroundStyle(user?.status.value == .offline ? .gray : .white)
                   Spacer()
                 }.contentShape(Rectangle())
               }.buttonStyle(.plain)
+                .contextMenu {
+                  Button {
+                    print("action for context menu item 1")
+                  } label: {
+                    if user?.status.rawValue == "ACCEPTED" {
+                      Label("Add friend", systemImage: "person.badge.plus")
+                    }
+                  }
+                }
             }
           }.frame(width: 150)
             .padding(EdgeInsets(top: -8, leading: -10, bottom: -8, trailing: 0))
