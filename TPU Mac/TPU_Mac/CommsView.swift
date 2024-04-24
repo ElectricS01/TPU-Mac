@@ -57,14 +57,15 @@ struct CommsView: View {
     }
   }
   
-  func getChats(completion: @escaping (Result<GraphQLResult<ChatsQuery.Data>, Error>) -> Void) {
+  func getChats() {
     Network.shared.apollo.fetch(query: ChatsQuery(), cachePolicy: .fetchIgnoringCacheData) { result in
       switch result {
-      case .success:
-        completion(result)
+      case .success(let graphQLResult):
+        if let unwrapped = graphQLResult.data {
+          chatsList = unwrapped.chats
+        }
       case .failure(let error):
         print("Failure! Error: \(error)")
-        completion(result)
       }
     }
   }
@@ -256,12 +257,16 @@ struct CommsView: View {
                     }
                   }
                   if message.reply != nil {
-                    HStack {
-                      Image(systemName: "arrow.turn.up.right").frame(width: 16, height: 16)
-                      ProfilePicture(avatar: message.reply?.user?.avatar, size: 16)
-                      Text(message.reply?.user?.username ?? "User has been deleted")
-                      Text((message.reply?.content ?? "Message has been deleted").replacingOccurrences(of: "\n", with: "")).textSelection(.enabled).lineLimit(1)
-                    }.padding(EdgeInsets(top: 0, leading: 18, bottom: 0, trailing: 0))
+                    Button(action: {
+                      proxy.scrollTo(message.replyId)
+                    }) {
+                      HStack {
+                        Image(systemName: "arrow.turn.up.right").frame(width: 16, height: 16)
+                        ProfilePicture(avatar: message.reply?.user?.avatar, size: 16)
+                        Text(message.reply?.user?.username ?? "User has been deleted")
+                        Text((message.reply?.content ?? "Message has been deleted").replacingOccurrences(of: "\n", with: "")).textSelection(.enabled).lineLimit(1)
+                      }.padding(EdgeInsets(top: 0, leading: 18, bottom: 0, trailing: 0))
+                    }.buttonStyle(.plain)
                   }
                   HStack(alignment: .top, spacing: 6) {
                     if dontMerge {
@@ -340,7 +345,7 @@ struct CommsView: View {
                         Image(systemName: "pencil").frame(width: 16, height: 16)
                       }
                     }
-                  }.padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4))
+                  }.padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4)).id(message.id)
                   //                  .background(Color(hoverItem == message.id ? Color.primary : .clear))
                   //                  .onHover(perform: { _ in
                   //                    hoverItem = message.id
@@ -425,16 +430,7 @@ struct CommsView: View {
       }
       .navigationTitle("Comms")
       .onAppear {
-        getChats { result in
-          switch result {
-          case .success(let graphQLResult):
-            if let unwrapped = graphQLResult.data {
-              chatsList = unwrapped.chats
-            }
-          case .failure(let error):
-            print(error)
-          }
-        }
+        getChats()
         messagesSubscription()
         editingSubscription()
       }
@@ -627,16 +623,7 @@ struct CommsView: View {
         }
         .navigationTitle("Comms")
         .onAppear {
-          getChats { result in
-            switch result {
-            case .success(let graphQLResult):
-              if let unwrapped = graphQLResult.data {
-                chatsList = unwrapped.chats
-              }
-            case .failure(let error):
-              print(error)
-            }
-          }
+          getChats()
           messagesSubscription()
           editingSubscription()
         }

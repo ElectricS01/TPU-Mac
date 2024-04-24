@@ -153,14 +153,6 @@ fragment StandardMessage on Message {
     ...StandardEmbed
   }
   reply {
-    readReceipts {
-      user {
-        id
-        avatar
-        username
-        legacy
-      }
-    }
     content
     userId
     id
