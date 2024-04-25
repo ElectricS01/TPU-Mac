@@ -22,6 +22,7 @@ struct GalleryView: View {
   @State private var showImages: Bool = true
   @State private var showVideos: Bool = true
   @State private var showOther: Bool = true
+  @State private var showingSheet: Bool = false
 
   func getGallery() {
     var filters: [String] = []
@@ -63,24 +64,118 @@ struct GalleryView: View {
             currentPage = 1
             getGallery()
           }.textFieldStyle(RoundedBorderTextFieldStyle())
-        Toggle(isOn: $showImages) {
-          Text("Images")
-        }
-        .onChange(of: showImages) {
-          getGallery()
-        }
-        Toggle(isOn: $showVideos) {
-          Text("Video")
-        }
-        .onChange(of: showVideos) {
-          getGallery()
-        }
-        Toggle(isOn: $showOther) {
-          Text("Other")
-        }
-        .onChange(of: showOther) {
-          getGallery()
-        }
+        #if os(macOS)
+          Toggle(isOn: $showImages) {
+            Text("Images")
+          }.onChange(of: showImages) {
+            getGallery()
+          }
+          Toggle(isOn: $showVideos) {
+            Text("Video")
+          }.onChange(of: showVideos) {
+            getGallery()
+          }
+          Toggle(isOn: $showOther) {
+            Text("Other")
+          }.onChange(of: showOther) {
+            getGallery()
+          }
+        #else
+          Button(action: { showingSheet.toggle() }) {
+            Circle()
+              .fill(showImages && showVideos && showOther ? .gray.opacity(0.15) : .blue)
+              .frame(width: 30, height: 30)
+              .overlay {
+                Image(systemName: "line.3.horizontal.decrease")
+                  .font(.system(size: 13.0, weight: .semibold))
+                  .foregroundColor(showImages && showVideos && showOther ? .blue : .primary)
+              }.sheet(isPresented: $showingSheet) {
+                NavigationView {
+                  Form {
+                    Button(action: {
+                      showImages = true
+                      showVideos = true
+                      showOther = true
+                      getGallery()
+                    }) {
+                      HStack {
+                        Label {
+                          Text("All Items").foregroundColor(.primary)
+                        } icon: {
+                          Image(systemName: "photo.on.rectangle")
+                        }
+                        if showImages && showVideos && showOther {
+                          Spacer()
+                          Image(systemName: "checkmark").foregroundColor(.blue)
+                        }
+                      }
+                    }
+                    Section(header: Text("Show")) {
+                      Button(action: {
+                        showImages.toggle()
+                        getGallery()
+                      }) {
+                        HStack {
+                          Label {
+                            Text("Images").foregroundColor(.primary)
+                          } icon: {
+                            Image(systemName: "photo")
+                          }
+                          if showImages {
+                            Spacer()
+                            Image(systemName: "checkmark").foregroundColor(.blue)
+                          }
+                        }
+                      }
+                      Button(action: {
+                        showVideos.toggle()
+                        getGallery()
+                      }) {
+                        HStack {
+                          Label {
+                            Text("Videos").foregroundColor(.primary)
+                          } icon: {
+                            Image(systemName: "video")
+                          }
+                          if showVideos {
+                            Spacer()
+                            Image(systemName: "checkmark").foregroundColor(.blue)
+                          }
+                        }
+                      }
+                      Button(action: {
+                        showOther.toggle()
+                        getGallery()
+                      }) {
+                        HStack {
+                          Label {
+                            Text("Other").foregroundColor(.primary)
+                          } icon: {
+                            Image(systemName: "doc")
+                          }
+                          if showOther {
+                            Spacer()
+                            Image(systemName: "checkmark").foregroundColor(.blue)
+                          }
+                        }
+                      }
+                    }
+                  }
+                  .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                      Button(action: {
+                        self.showingSheet = false
+                      }) {
+                        Text("Done").bold()
+                      }
+                    }
+                  }
+                  .navigationTitle("Filter")
+                  .navigationBarTitleDisplayMode(.inline)
+                }
+              }
+          }
+        #endif
       }.padding(EdgeInsets(top: 10, leading: 10, bottom: -8, trailing: 10))
       ScrollViewReader { proxy in
         ScrollView {

@@ -194,9 +194,11 @@ struct CommsView: View {
             let newMessage = convertToMessage(subscriptionObject: message)
             chatMessages.append(newMessage)
           }
-          if !NSApplication.shared.isActive && message.user?.id != coreUser?.id {
+          #if os(macOS)
+          if !NSApplication.shared.isActive, message.user?.id != coreUser?.id {
             scheduleNotification(title: message.user?.username ?? "Unknown User", body: message.content ?? "Unknown Message")
           }
+          #endif
         }
       case .failure(let error):
         print("Failed to subscribe \(error)")
