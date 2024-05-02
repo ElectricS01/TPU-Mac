@@ -284,7 +284,7 @@ struct CommsView: View {
                         }.frame(minWidth: 0,
                                 maxWidth: .infinity,
                                 minHeight: 0,
-                                maxHeight: 6,
+                                maxHeight: 10,
                                 alignment: .topLeading)
                       }
                       if editingId != message.id {
@@ -292,9 +292,7 @@ struct CommsView: View {
                           .textSelection(.enabled)
                           .frame(minWidth: 0,
                                  maxWidth: .infinity,
-                                 minHeight: 0,
-                                 maxHeight: .infinity,
-                                 alignment: .topLeading)
+                                 alignment: .leading)
                           .lineLimit(nil)
                       } else {
                         TextField("Keep it civil!", text: $editingMessage)
@@ -307,9 +305,7 @@ struct CommsView: View {
                         if embed.media != [] {
                           LazyImage(url: URL(string: embed.media?[0].attachment == nil ? ("https://i.electrics01.com" + (embed.media?[0].proxyUrl ?? "")) : ("https://i.electrics01.com/i/" + (embed.media?[0].attachment ?? "")))) { state in
                             if let image = state.image {
-                              image
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
+                              image.resizable().aspectRatio(contentMode: .fit)
 //                                .onAppear {
                               ////                                  if chatMessages.count != 0 {
                               ////                                    proxy.scrollTo(0, anchor: .bottom)
@@ -320,7 +316,7 @@ struct CommsView: View {
                             } else {
                               ProgressView()
                             }
-                          }.frame(minWidth: 0, maxWidth: 400, minHeight: 0, maxHeight: 400)
+                          }.frame(minWidth: 0, maxWidth: 600, minHeight: 0, maxHeight: 400)
                         }
                       }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
                     }
@@ -396,25 +392,57 @@ struct CommsView: View {
           }
           .navigationTitle(chatsList[chatOpen].recipient?.username ?? chatsList[chatOpen].name)
           List {
-            ForEach(0 ..< chatsList[chatOpen].users.count, id: \.self) { result in
-              let user = coreUsers.unsafelyUnwrapped.first(where: { $0.id == chatsList[chatOpen].users[result].user?.id })
-              Button(action: { print("Clicked: " + (chatsList[chatOpen].users[result].user?.username ?? "User's name could not be found")) }) {
-                HStack {
-                  Circle().fill(user?.status.value != .offline ? user?.status.value != .online ? user?.status.value == .busy ? .red : .yellow : .green : .gray).frame(width: 6, height: 6)
-                  ProfilePicture(avatar: chatsList[chatOpen].users[result].user?.avatar)
-                  Text(chatsList[chatOpen].users[result].user?.username ?? "User's name could not be found").foregroundStyle(user?.status.value == .offline ? .gray : .white)
-                  Spacer()
-                }.contentShape(Rectangle())
-              }.buttonStyle(.plain)
-                .contextMenu {
-                  Button {
-                    print("action for context menu item 1")
-                  } label: {
-                    if user?.status.rawValue == "ACCEPTED" {
-                      Label("Add friend", systemImage: "person.badge.plus")
+            Section(header: Text("Online")) {
+              ForEach(0 ..< chatsList[chatOpen].users.count, id: \.self) { index in
+                let user = coreUsers.unsafelyUnwrapped.first { $0.id == chatsList[chatOpen].users[index].user?.id }
+                if let user = user, user.status.value != .offline {
+                  Button(action: {
+                    print(user.username)
+                  }) {
+                    HStack {
+                      Circle().fill(user.status.value != .online ? user.status.value == .busy ? .red : .yellow : .green).frame(width: 6, height: 6)
+                      ProfilePicture(avatar: user.avatar)
+                      Text(user.username)
+                      Spacer()
+                    }.contentShape(Rectangle())
+                  }.buttonStyle(.plain)
+                    .contextMenu {
+                      if user.status.rawValue == "ACCEPTED" {
+                        Button {
+                          print("Action for context menu item 1")
+                        } label: {
+                          Label("Add friend", systemImage: "person.badge.plus")
+                        }
+                      }
                     }
-                  }
                 }
+              }
+            }
+            Section(header: Text("Offline")) {
+              ForEach(0 ..< chatsList[chatOpen].users.count, id: \.self) { index in
+                let user = coreUsers.unsafelyUnwrapped.first { $0.id == chatsList[chatOpen].users[index].user?.id }
+                if let user = user, user.status.value == .offline {
+                  Button(action: {
+                    print("Clicked: " + (user.username))
+                  }) {
+                    HStack {
+                      Circle().fill(.gray).frame(width: 6, height: 6)
+                      ProfilePicture(avatar: user.avatar)
+                      Text(user.username).foregroundStyle(.gray)
+                      Spacer()
+                    }.contentShape(Rectangle())
+                  }.buttonStyle(.plain)
+                    .contextMenu {
+                      if user.status.rawValue == "ACCEPTED" {
+                        Button {
+                          print("Action for context menu item 1")
+                        } label: {
+                          Label("Add friend", systemImage: "person.badge.plus")
+                        }
+                      }
+                    }
+                }
+              }
             }
           }.frame(width: 150)
             .padding(EdgeInsets(top: -8, leading: -10, bottom: -8, trailing: 0))
@@ -470,12 +498,16 @@ struct CommsView: View {
                   }
                 }
                 if message.reply != nil {
-                  HStack {
-                    Image(systemName: "arrow.turn.up.right").frame(width: 16, height: 16)
-                    ProfilePicture(avatar: message.reply?.user?.avatar, size: 16)
-                    Text(message.reply?.user?.username ?? "User has been deleted")
-                    Text((message.reply?.content ?? "Message has been deleted").replacingOccurrences(of: "\n", with: "")).textSelection(.enabled).lineLimit(1)
-                  }.padding(EdgeInsets(top: 0, leading: 18, bottom: 0, trailing: 0))
+                  Button(action: {
+                    proxy.scrollTo(message.replyId)
+                  }) {
+                    HStack {
+                      Image(systemName: "arrow.turn.up.right").frame(width: 16, height: 16)
+                      ProfilePicture(avatar: message.reply?.user?.avatar, size: 16)
+                      Text(message.reply?.user?.username ?? "User has been deleted")
+                      Text((message.reply?.content ?? "Message has been deleted").replacingOccurrences(of: "\n", with: "")).textSelection(.enabled).lineLimit(1)
+                    }.padding(EdgeInsets(top: 0, leading: 18, bottom: 0, trailing: 0))
+                  }.buttonStyle(.plain)
                 }
                 HStack(alignment: .top, spacing: 6) {
                   if dontMerge {
@@ -491,7 +523,7 @@ struct CommsView: View {
                       }.frame(minWidth: 0,
                               maxWidth: .infinity,
                               minHeight: 0,
-                              maxHeight: 6,
+                              maxHeight: 10,
                               alignment: .topLeading)
                     }
                     if editingId != message.id {
@@ -499,9 +531,7 @@ struct CommsView: View {
                         .textSelection(.enabled)
                         .frame(minWidth: 0,
                                maxWidth: .infinity,
-                               minHeight: 0,
-                               maxHeight: .infinity,
-                               alignment: .topLeading)
+                               alignment: .leading)
                         .lineLimit(nil)
                     } else {
                       TextField("Keep it civil!", text: $editingMessage)
@@ -514,20 +544,18 @@ struct CommsView: View {
                       if embed.media != [] {
                         LazyImage(url: URL(string: embed.media?[0].attachment == nil ? ("https://i.electrics01.com" + (embed.media?[0].proxyUrl ?? "")) : ("https://i.electrics01.com/i/" + (embed.media?[0].attachment ?? "")))) { state in
                           if let image = state.image {
-                            image
-                              .resizable()
-                              .aspectRatio(contentMode: .fill)
-                              .onAppear {
-                                if chatMessages.count != 0 {
-                                  proxy.scrollTo(0, anchor: .bottom)
-                                }
-                              }
+                            image.resizable().aspectRatio(contentMode: .fit)
+                            //                                .onAppear {
+                            ////                                  if chatMessages.count != 0 {
+                            ////                                    proxy.scrollTo(0, anchor: .bottom)
+                            ////                                  }
+                            //                                }
                           } else if state.error != nil {
                             Color.red
                           } else {
                             ProgressView()
                           }
-                        }.frame(minWidth: 0, maxWidth: 400, minHeight: 0, maxHeight: 400)
+                        }.frame(minWidth: 0, maxWidth: 600, minHeight: 0, maxHeight: 400)
                       }
                     }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
                   }
@@ -554,7 +582,7 @@ struct CommsView: View {
                       Image(systemName: "pencil").frame(width: 16, height: 16)
                     }
                   }
-                }.padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4))
+                }.padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4)).id(message.id)
                 //                  .background(Color(hoverItem == message.id ? Color.primary : .clear))
                 //                  .onHover(perform: { _ in
                 //                    hoverItem = message.id
@@ -603,14 +631,57 @@ struct CommsView: View {
         }
         .navigationTitle(chatsList[chatOpen].recipient?.username ?? chatsList[chatOpen].name)
         List {
-          ForEach(0 ..< chatsList[chatOpen].users.count, id: \.self) { result in
-            Button(action: { print("Clicked: " + (chatsList[chatOpen].users[result].user?.username ?? "User's name could not be found")) }) {
-              HStack {
-                ProfilePicture(avatar: chatsList[chatOpen].users[result].user?.avatar)
-                Text(chatsList[chatOpen].users[result].user?.username ?? "User's name could not be found")
-                Spacer()
-              }.contentShape(Rectangle())
-            }.buttonStyle(.plain)
+          Section(header: Text("Online")) {
+            ForEach(0 ..< chatsList[chatOpen].users.count, id: \.self) { index in
+              let user = coreUsers.unsafelyUnwrapped.first { $0.id == chatsList[chatOpen].users[index].user?.id }
+              if let user = user, user.status.value != .offline {
+                Button(action: {
+                  print(user.username)
+                }) {
+                  HStack {
+                    Circle().fill(user.status.value != .online ? user.status.value == .busy ? .red : .yellow : .green).frame(width: 6, height: 6)
+                    ProfilePicture(avatar: user.avatar)
+                    Text(user.username)
+                    Spacer()
+                  }.contentShape(Rectangle())
+                }.buttonStyle(.plain)
+                  .contextMenu {
+                    if user.status.rawValue == "ACCEPTED" {
+                      Button {
+                        print("Action for context menu item 1")
+                      } label: {
+                        Label("Add friend", systemImage: "person.badge.plus")
+                      }
+                    }
+                  }
+              }
+            }
+          }
+          Section(header: Text("Offline")) {
+            ForEach(0 ..< chatsList[chatOpen].users.count, id: \.self) { index in
+              let user = coreUsers.unsafelyUnwrapped.first { $0.id == chatsList[chatOpen].users[index].user?.id }
+              if let user = user, user.status.value == .offline {
+                Button(action: {
+                  print("Clicked: " + (user.username))
+                }) {
+                  HStack {
+                    Circle().fill(.gray).frame(width: 6, height: 6)
+                    ProfilePicture(avatar: user.avatar)
+                    Text(user.username).foregroundStyle(.gray)
+                    Spacer()
+                  }.contentShape(Rectangle())
+                }.buttonStyle(.plain)
+                  .contextMenu {
+                    if user.status.rawValue == "ACCEPTED" {
+                      Button {
+                        print("Action for context menu item 1")
+                      } label: {
+                        Label("Add friend", systemImage: "person.badge.plus")
+                      }
+                    }
+                  }
+              }
+            }
           }
         }.padding(EdgeInsets(top: -8, leading: -10, bottom: -8, trailing: 0))
       } else {
