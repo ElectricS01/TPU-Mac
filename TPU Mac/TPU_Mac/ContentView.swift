@@ -207,7 +207,7 @@ struct SettingsView: View {
         Text("Coming soon")
       #else
         Text("TPU iOS").font(.system(size: 32, weight: .semibold))
-        Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (2/5/2024)")
+        Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (6/5/2024)")
         Text("Made by ElectricS01")
         Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
       #endif
@@ -230,7 +230,7 @@ struct AboutView: View {
       #else
         Text("TPU iOS").font(.system(size: 32, weight: .semibold))
       #endif
-      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (2/5/2024)")
+      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (6/5/2024)")
       Text("Made by ElectricS01")
       Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
     }

@@ -25,15 +25,6 @@ fragment StandardEmbed on EmbedDataV2 {
     heading
     imageUrl
   }
-  metadata {
-    url
-    siteName
-    siteIcon
-    footer
-    type
-    id
-    restricted
-  }
 }
 
 subscription UpdateMessages {
@@ -69,9 +60,6 @@ subscription UpdateMessages {
         userId
         id
         embeds {
-          metadata {
-            type
-          }
           media {
             type
           }
@@ -157,9 +145,6 @@ fragment StandardMessage on Message {
     userId
     id
     embeds {
-      metadata {
-        type
-      }
       media {
         type
       }

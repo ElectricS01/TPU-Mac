@@ -5,7 +5,7 @@
 
 public struct StandardEmbed: PrivateUploaderAPI.SelectionSet, Fragment {
   public static var fragmentDefinition: StaticString {
-    #"fragment StandardEmbed on EmbedDataV2 { __typename media { __typename url proxyUrl attachment width height isInternal videoEmbedUrl upload { __typename id createdAt attachment userId name type fileSize } mimeType type } text { __typename imageProxyUrl text heading imageUrl } metadata { __typename url siteName siteIcon footer type id restricted } }"#
+    #"fragment StandardEmbed on EmbedDataV2 { __typename media { __typename url proxyUrl attachment width height isInternal videoEmbedUrl upload { __typename id createdAt attachment userId name type fileSize } mimeType type } text { __typename imageProxyUrl text heading imageUrl } }"#
   }
 
   public let __data: DataDict
@@ -16,12 +16,10 @@ public struct StandardEmbed: PrivateUploaderAPI.SelectionSet, Fragment {
     .field("__typename", String.self),
     .field("media", [Medium]?.self),
     .field("text", [Text]?.self),
-    .field("metadata", Metadata.self),
   ] }
 
   public var media: [Medium]? { __data["media"] }
   public var text: [Text]? { __data["text"] }
-  public var metadata: Metadata { __data["metadata"] }
 
   /// Medium
   ///
@@ -106,35 +104,5 @@ public struct StandardEmbed: PrivateUploaderAPI.SelectionSet, Fragment {
     public var text: String { __data["text"] }
     public var heading: Bool? { __data["heading"] }
     public var imageUrl: String? { __data["imageUrl"] }
-  }
-
-  /// Metadata
-  ///
-  /// Parent Type: `EmbedMetadata`
-  public struct Metadata: PrivateUploaderAPI.SelectionSet {
-    public let __data: DataDict
-    public init(_dataDict: DataDict) { __data = _dataDict }
-
-    public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedMetadata }
-    public static var __selections: [ApolloAPI.Selection] { [
-      .field("__typename", String.self),
-      .field("url", String?.self),
-      .field("siteName", String?.self),
-      .field("siteIcon", String?.self),
-      .field("footer", String?.self),
-      .field("type", Double.self),
-      .field("id", String?.self),
-      .field("restricted", Bool?.self),
-    ] }
-
-    public var url: String? { __data["url"] }
-    public var siteName: String? { __data["siteName"] }
-    public var siteIcon: String? { __data["siteIcon"] }
-    public var footer: String? { __data["footer"] }
-    public var type: Double { __data["type"] }
-    /// Used for chat invites, and other embeds.
-    public var id: String? { __data["id"] }
-    /// Used for NSFW embeds and content.
-    public var restricted: Bool? { __data["restricted"] }
   }
 }

@@ -5,7 +5,7 @@
 
 public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
   public static var fragmentDefinition: StaticString {
-    #"fragment StandardMessage on Message { __typename id createdAt updatedAt chatId userId content type emoji { __typename name icon id chatId } embeds { __typename ...StandardEmbed } reply { __typename content userId id embeds { __typename metadata { __typename type } media { __typename type } } user { __typename username id avatar } } user { __typename username id avatar } edited editedAt replyId pinned readReceipts { __typename user { __typename id avatar username legacy } } }"#
+    #"fragment StandardMessage on Message { __typename id createdAt updatedAt chatId userId content type emoji { __typename name icon id chatId } embeds { __typename ...StandardEmbed } reply { __typename content userId id embeds { __typename media { __typename type } } user { __typename username id avatar } } user { __typename username id avatar } edited editedAt replyId pinned readReceipts { __typename user { __typename id avatar username legacy } } }"#
   }
 
   public let __data: DataDict
@@ -86,7 +86,6 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
 
     public var media: [Medium]? { __data["media"] }
     public var text: [Text]? { __data["text"] }
-    public var metadata: Metadata { __data["metadata"] }
 
     public struct Fragments: FragmentContainer {
       public let __data: DataDict
@@ -98,8 +97,6 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
     public typealias Medium = StandardEmbed.Medium
 
     public typealias Text = StandardEmbed.Text
-
-    public typealias Metadata = StandardEmbed.Metadata
   }
 
   /// Reply
@@ -135,28 +132,10 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
       public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedDataV2 }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
-        .field("metadata", Metadata.self),
         .field("media", [Medium]?.self),
       ] }
 
-      public var metadata: Metadata { __data["metadata"] }
       public var media: [Medium]? { __data["media"] }
-
-      /// Reply.Embed.Metadata
-      ///
-      /// Parent Type: `EmbedMetadata`
-      public struct Metadata: PrivateUploaderAPI.SelectionSet {
-        public let __data: DataDict
-        public init(_dataDict: DataDict) { __data = _dataDict }
-
-        public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedMetadata }
-        public static var __selections: [ApolloAPI.Selection] { [
-          .field("__typename", String.self),
-          .field("type", Double.self),
-        ] }
-
-        public var type: Double { __data["type"] }
-      }
 
       /// Reply.Embed.Medium
       ///

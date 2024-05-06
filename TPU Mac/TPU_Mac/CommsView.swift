@@ -631,57 +631,14 @@ struct CommsView: View {
         }
         .navigationTitle(chatsList[chatOpen].recipient?.username ?? chatsList[chatOpen].name)
         List {
-          Section(header: Text("Online")) {
-            ForEach(0 ..< chatsList[chatOpen].users.count, id: \.self) { index in
-              let user = coreUsers.unsafelyUnwrapped.first { $0.id == chatsList[chatOpen].users[index].user?.id }
-              if let user = user, user.status.value != .offline {
-                Button(action: {
-                  print(user.username)
-                }) {
-                  HStack {
-                    Circle().fill(user.status.value != .online ? user.status.value == .busy ? .red : .yellow : .green).frame(width: 6, height: 6)
-                    ProfilePicture(avatar: user.avatar)
-                    Text(user.username)
-                    Spacer()
-                  }.contentShape(Rectangle())
-                }.buttonStyle(.plain)
-                  .contextMenu {
-                    if user.status.rawValue == "ACCEPTED" {
-                      Button {
-                        print("Action for context menu item 1")
-                      } label: {
-                        Label("Add friend", systemImage: "person.badge.plus")
-                      }
-                    }
-                  }
-              }
-            }
-          }
-          Section(header: Text("Offline")) {
-            ForEach(0 ..< chatsList[chatOpen].users.count, id: \.self) { index in
-              let user = coreUsers.unsafelyUnwrapped.first { $0.id == chatsList[chatOpen].users[index].user?.id }
-              if let user = user, user.status.value == .offline {
-                Button(action: {
-                  print("Clicked: " + (user.username))
-                }) {
-                  HStack {
-                    Circle().fill(.gray).frame(width: 6, height: 6)
-                    ProfilePicture(avatar: user.avatar)
-                    Text(user.username).foregroundStyle(.gray)
-                    Spacer()
-                  }.contentShape(Rectangle())
-                }.buttonStyle(.plain)
-                  .contextMenu {
-                    if user.status.rawValue == "ACCEPTED" {
-                      Button {
-                        print("Action for context menu item 1")
-                      } label: {
-                        Label("Add friend", systemImage: "person.badge.plus")
-                      }
-                    }
-                  }
-              }
-            }
+          ForEach(0 ..< chatsList[chatOpen].users.count, id: \.self) { result in
+            Button(action: { print("Clicked: " + (chatsList[chatOpen].users[result].user?.username ?? "User's name could not be found")) }) {
+              HStack {
+                ProfilePicture(avatar: chatsList[chatOpen].users[result].user?.avatar)
+                Text(chatsList[chatOpen].users[result].user?.username ?? "User's name could not be found")
+                Spacer()
+              }.contentShape(Rectangle())
+            }.buttonStyle(.plain)
           }
         }.padding(EdgeInsets(top: -8, leading: -10, bottom: -8, trailing: 0))
       } else {
