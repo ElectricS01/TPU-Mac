@@ -97,7 +97,6 @@ public class PagedMessagesQuery: GraphQLQuery {
 
           public var media: [Medium]? { __data["media"] }
           public var text: [Text]? { __data["text"] }
-          public var metadata: Metadata { __data["metadata"] }
 
           public struct Fragments: FragmentContainer {
             public let __data: DataDict
@@ -109,8 +108,6 @@ public class PagedMessagesQuery: GraphQLQuery {
           public typealias Medium = StandardEmbed.Medium
 
           public typealias Text = StandardEmbed.Text
-
-          public typealias Metadata = StandardEmbed.Metadata
         }
 
         public typealias Reply = StandardMessage.Reply
