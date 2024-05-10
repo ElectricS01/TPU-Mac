@@ -12,7 +12,6 @@ import PrivateUploaderAPI
 import SwiftUI
 
 struct CollectionsView: View {
-  @Binding var stars: Bool
   @Environment(\.openURL) var openURL
   @State private var galleryData: GalleryItemsQuery.Data.Gallery?
   @State private var galleryItems: [GalleryItemsQuery.Data.Gallery.Item] = []
@@ -34,7 +33,6 @@ struct CollectionsView: View {
       "search": inputSearch,
       "page": currentPage,
       "limit": 36,
-      "type": stars == true ? "STARRED" : nil,
       "filters": filters
     ]))), cachePolicy: .fetchIgnoringCacheData) { result in
       switch result {
@@ -177,7 +175,7 @@ struct CollectionsView: View {
         }
 #endif
       }.padding(EdgeInsets(top: 10, leading: 10, bottom: -8, trailing: 10))
-      ScrollViewReader { proxy in
+      ScrollViewReader { _ in
         ScrollView {
           LazyVGrid(columns: [GridItem(.adaptive(minimum: 316))], spacing: 10) {
             ForEach(galleryItems, id: \.self) { galleryItem in
@@ -299,14 +297,6 @@ struct CollectionsView: View {
         .navigationTitle("Gallery")
         .onAppear {
           getGallery()
-        }
-        .onChange(of: stars) {
-          currentPage = 1
-          inputSearch = ""
-          getGallery()
-          if galleryItems.count != 0 {
-            proxy.scrollTo(0, anchor: .top)
-          }
         }
       }
     }
