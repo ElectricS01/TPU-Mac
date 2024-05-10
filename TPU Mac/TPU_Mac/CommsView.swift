@@ -22,6 +22,7 @@ struct CommsView: View {
   @State private var replyingId: Int = -1
   @State private var inputMessage: String = ""
   @State private var editingMessage: String = ""
+  @State var apolloSubscription: Apollo.Cancellable?
   //  @State private var hoverItem = -1
   
   func getMessages(chat: Int, completion: @escaping (Result<GraphQLResult<MessagesQuery.Data>, Error>) -> Void) {
@@ -186,22 +187,24 @@ struct CommsView: View {
   }
   
   func messagesSubscription() {
-    _ = Network.shared.apollo.subscribe(subscription: UpdateMessagesSubscription()) { result in
-      switch result {
-      case .success(let graphQLResult):
-        if let message = graphQLResult.data?.onMessage.message {
-          if chatsList[chatOpen].id == message.chatId {
-            let newMessage = convertToMessage(subscriptionObject: message)
-            chatMessages.append(newMessage)
+    if apolloSubscription == nil {
+      apolloSubscription = Network.shared.apollo.subscribe(subscription: UpdateMessagesSubscription()) { result in
+        switch result {
+        case .success(let graphQLResult):
+          if let message = graphQLResult.data?.onMessage.message {
+            if chatOpen != -1 && chatsList[chatOpen].id == message.chatId {
+              let newMessage = convertToMessage(subscriptionObject: message)
+              chatMessages.append(newMessage)
+            }
+            #if os(macOS)
+            if !NSApplication.shared.isActive {
+              scheduleNotification(title: message.user?.username ?? "Unknown User", body: message.content ?? "Unknown Message")
+            }
+            #endif
           }
-          #if os(macOS)
-          if !NSApplication.shared.isActive, message.user?.id != coreUser?.id {
-            scheduleNotification(title: message.user?.username ?? "Unknown User", body: message.content ?? "Unknown Message")
-          }
-          #endif
+        case .failure(let error):
+          print("Failed to subscribe \(error)")
         }
-      case .failure(let error):
-        print("Failed to subscribe \(error)")
       }
     }
   }
@@ -464,6 +467,12 @@ struct CommsView: View {
         messagesSubscription()
         editingSubscription()
       }
+      .onDisappear {
+        if let subscription = apolloSubscription {
+          subscription.cancel()
+          apolloSubscription = nil
+        }
+      }
       #else
       List {
         ForEach(0 ..< chatsList.count, id: \.self) { result in
@@ -656,6 +665,12 @@ struct CommsView: View {
           getChats()
           messagesSubscription()
           editingSubscription()
+        }
+        .onDisappear {
+          if let subscription = apolloSubscription {
+            subscription.cancel()
+            apolloSubscription = nil
+          }
         }
       }
       #endif

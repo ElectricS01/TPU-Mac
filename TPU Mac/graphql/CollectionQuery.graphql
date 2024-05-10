@@ -1,0 +1,40 @@
+query UserCollectionsQuery($input: UserCollectionsInput!) {
+  collections(input: $input) {
+    items {
+      id
+      name
+      image
+      userId
+      shareLink
+      user {
+        username
+        id
+        avatar
+      }
+      preview {
+        attachment {
+          attachment
+          id
+        }
+      }
+      shared
+      itemCount
+      permissionsMetadata {
+        write
+        read
+        configure
+      }
+    }
+    pager {
+      totalItems
+      currentPage
+      pageSize
+      totalPages
+      startPage
+      endPage
+      startIndex
+      endIndex
+      pages
+    }
+  }
+}
