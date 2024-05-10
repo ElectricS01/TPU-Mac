@@ -11,7 +11,7 @@ import NukeUI
 import PrivateUploaderAPI
 import SwiftUI
 
-struct GalleryView: View {
+struct CollectionsView: View {
   @Binding var stars: Bool
   @Environment(\.openURL) var openURL
   @State private var galleryData: GalleryItemsQuery.Data.Gallery?
@@ -23,7 +23,7 @@ struct GalleryView: View {
   @State private var showVideos: Bool = true
   @State private var showOther: Bool = true
   @State private var showingSheet: Bool = false
-  
+
   func getGallery() {
     var filters: [String] = []
     if showImages { filters.append("IMAGES") }
@@ -48,14 +48,14 @@ struct GalleryView: View {
       }
     }
   }
-  
+
   func formatFileSize(_ size: Double) -> String {
     let byteCountFormatter = ByteCountFormatter()
     byteCountFormatter.allowedUnits = [.useKB, .useMB, .useGB]
     byteCountFormatter.countStyle = .file
     return byteCountFormatter.string(fromByteCount: Int64(size))
   }
-  
+
   var body: some View {
     VStack {
       HStack {
