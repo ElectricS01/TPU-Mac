@@ -3,9 +3,10 @@ query UserCollectionsQuery($input: UserCollectionsInput!) {
     items {
       id
       name
-      image
+      banner
       userId
       shareLink
+      createdAt
       user {
         username
         id

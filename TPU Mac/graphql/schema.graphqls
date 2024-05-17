@@ -7,7 +7,7 @@ type Query {
   setupStep: Int!
   experiments: [ExperimentType!]!
   weather: Weather!
-  collections(input: UserCollectionsInput): PaginatedCollectionResponse
+  collections(input: UserCollectionsInput): PaginatedCollectionResponse!
   collection(input: CollectionInput!): Collection
 
   """
@@ -26,6 +26,7 @@ type Query {
   messages(input: InfiniteMessagesInput!): [Message!]!
   messagesPaged(input: PagedMessagesInput!): PaginatedMessageResponse!
   autoCollects(input: UserCollectionsInput!): PaginatedCollectionResponse!
+  adminPlans: [Plan!]!
   blockedUsers: [BlockedUser!]!
   chatInvite(input: InviteInput!): ChatInvite
   mailboxes: [ListResponse!]!
@@ -122,6 +123,7 @@ type User {
   banReasonType: BanReason
   banReason: String
   plan: Plan
+  planId: Int
   domain: Domain
   subscription: TPUSubscription
   experiments: [Experiment!]
@@ -163,7 +165,6 @@ enum UserStatus {
   IDLE
   OFFLINE
   BUSY
-  UNKNOWN
 }
 
 """
@@ -342,14 +343,16 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 scalar DateTimeISO
 
 type TPUSubscription {
-  planId: Float!
-  userId: Float!
-  price: Float!
+  planId: Int!
+  userId: Int!
+  price: Int
   cancelled: Boolean!
-  paymentId: Float!
-  expiredAt: DateTimeISO!
-  cancelledAt: DateTimeISO!
-  metadata: SubscriptionMetadata!
+  paymentId: Int!
+  expiredAt: DateTimeISO
+  cancelledAt: DateTimeISO
+  metadata: SubscriptionMetadata
+  createdAt: Date!
+  updatedAt: Date!
   user: PartialUserBase
 }
 
@@ -995,16 +998,10 @@ type Chat {
   createdAt: DateTimeISO!
   updatedAt: DateTimeISO!
 
-  """This is used if the chat is owned by a Colubrina legacy user."""
-  legacyUserId: Float @deprecated(reason: "Use userId instead.")
-
   """
   Null if the chat is owned by a Colubrina legacy user, or the account was deleted.
   """
   user: PartialUserBase
-
-  """This is used if the chat is owned by a Colubrina legacy user."""
-  legacyUser: PartialUserBase @deprecated(reason: "Use user instead.")
   association: ChatAssociation
   users: [ChatAssociation!]!
   description: String
@@ -1020,6 +1017,7 @@ type Chat {
   invites: [ChatInvite!]!
   emoji: [ChatEmoji!]
   usersCount: Int!
+  onlineCount: Int!
   recipient: PartialUserBase
 }
 
@@ -1032,21 +1030,12 @@ type ChatAssociation {
   createdAt: Date!
   notifications: String!
 
-  """Used for legacy Colubrina accounts."""
-  legacyUserId: Int @deprecated(reason: "Use `userId` instead.")
-
   """
   Only true/false for current user, null for other ChatAssociations. This determines whether the chat is visible in the sidebar (open or closed).
   """
   hidden: Boolean
   inviteUsed: String
   invite: ChatInvite
-
-  """Used for user virtual which falls back to a Colubrina account."""
-  tpuUser: PartialUserBase
-
-  """Used for legacy Colubrina accounts."""
-  legacyUser: PartialUserBase @deprecated(reason: "Use `user` instead.")
   user: PartialUserBase
   ranks: [ChatRank!]!
   ranksMap: [String!]!
@@ -1117,12 +1106,9 @@ type Message {
   edited: Boolean!
   editedAt: Date
   replyId: Int
-  legacyUserId: Int
   pinned: Boolean!
-  tpuUser: PartialUserBase
-  reply: Message
-  legacyUser: PartialUserBase
   user: PartialUserBase
+  reply: Message
   pending: Boolean!
   error: Boolean!
   readReceipts: [ReadReceipt!]!
@@ -1184,13 +1170,19 @@ type EmbedMetadata {
   siteName: String
   siteIcon: String
   footer: String
-  type: Float!
+  type: EmbedType!
 
   """Used for chat invites, and other embeds."""
   id: String
 
   """Used for NSFW embeds and content."""
   restricted: Boolean
+}
+
+enum EmbedType {
+  REGULAR
+  CHAT_INVITE
+  DIRECT
 }
 
 enum EmbedVersion {
@@ -1293,6 +1285,8 @@ type NoteVersion {
   noteId: Int!
   userId: Int
   data: WorkspaceNote
+  createdAt: Date!
+  updatedAt: Date!
 }
 
 type NotePermissionsMetadata {
@@ -1500,7 +1494,7 @@ input AutoCollectRuleQueryInput {
 
 type Mutation {
   updateUser(input: UpdateUserInput!): Boolean!
-  updateStatus(input: UpdateUserStatusInput!): UserStoredStatus!
+  updateStatus(input: UpdateUserStatusInput!): UserStoredStatus
   changeUserPassword(input: ChangePasswordInput!): Boolean!
   changeUsername(input: ChangeUsernameInput!): Boolean!
   changeUserEmail(input: ChangeEmailInput!): Boolean!
@@ -1550,7 +1544,7 @@ type Mutation {
 
   """Delete a Note."""
   deleteWorkspaceItem(input: DeleteWorkspaceItemInput!): Boolean!
-  saveNote(input: SaveNoteInput!): Note!
+  saveNote(input: SaveNoteInput!): Note! @deprecated(reason: "Use `saveNoteBlock` instead to support collaborative editing.")
   createNote(input: CreateNoteInput!): Note!
 
   """Toggle the ShareLink for a Note."""
@@ -1558,6 +1552,8 @@ type Mutation {
     """ID of Note"""
     input: Int!
   ): Note!
+  saveNoteBlock(input: UpdateNoteEventInput!): Boolean!
+  saveNoteCollabPosition(input: NoteCollabPositionInput!): Boolean!
   friend(input: AddFriendInput!): Boolean!
   sendMessage(input: SendMessageInput!): Message!
   editMessage(input: EditMessageInput!): Message
@@ -1573,7 +1569,6 @@ type Mutation {
   adminSendEmailForUnverifiedUsers: GenericSuccessObject!
   adminClearCache(input: ClearCacheInput!): GenericSuccessObject!
   adminDebugBatch: GenericSuccessObject!
-  adminMigrateLegacyToNormalUsers: GenericSuccessObject!
   adminGenerateInsights(customGte: String, type: String!, userId: Float!): GenericSuccessObject!
   blockUser(input: BlockUserInput!): GenericSuccessObject!
   createChatInvite(input: CreateInviteInput!): ChatInvite!
@@ -1595,6 +1590,9 @@ type Mutation {
   createSinglePulse(input: SinglePulseInput!): String!
   updatePulse(input: PulseUpdateInput!): String!
   embedResolutionPrecache(input: EmbedPrecacheInput!): EmbedDataV2
+
+  """Currently in beta and only available to people with experiment opt-in."""
+  addWorkspaceUser(input: WorkspaceUserInput!): WorkspaceUser!
 }
 
 input UpdateUserInput {
@@ -1620,7 +1618,11 @@ input UpdateUserInput {
 }
 
 input UpdateUserStatusInput {
-  storedStatus: UserStoredStatus!
+  """Permanent status change."""
+  storedStatus: UserStoredStatus
+
+  """Temporary status change, for IDLE status."""
+  status: String
 }
 
 input ChangePasswordInput {
@@ -1775,6 +1777,12 @@ input StarUploadInput {
 input CreateChatInput {
   users: [Float!]!
   name: String
+  type: ChatType
+}
+
+enum ChatType {
+  GROUP
+  DIRECT
 }
 
 input UpdateChatInput {
@@ -1888,6 +1896,25 @@ input WorkspaceNoteInput {
 input CreateNoteInput {
   workspaceFolderId: Float!
   name: String!
+}
+
+input UpdateNoteEventInput {
+  type: UpdateNoteEventType!
+  data: JSON
+  blockId: String
+  id: Int!
+}
+
+enum UpdateNoteEventType {
+  INSERT
+  UPDATE
+  DELETE
+}
+
+input NoteCollabPositionInput {
+  blockIndex: Int!
+  position: Int!
+  noteId: Int!
 }
 
 input AddFriendInput {
@@ -2137,6 +2164,14 @@ input EmbedPrecacheInput {
   attachment: String
 }
 
+input WorkspaceUserInput {
+  workspaceId: Int!
+  userId: Int!
+  read: Boolean!
+  write: Boolean!
+  configure: Boolean!
+}
+
 type Subscription {
   onUserStatus: StatusEvent!
   onCollectionUserAdded(input: FilterCollectionInput): CollectionUser!
@@ -2154,6 +2189,12 @@ type Subscription {
 
   """Returns the chat association ID"""
   onReadChat: Int!
+
+  """Subscribe to Note updates."""
+  onUpdateNote(shareLink: String, id: Int): UpdateNoteEvent!
+
+  """Subscribe to Note collaborative user positions."""
+  onNoteCollabPosition(shareLink: String, noteId: Int): NoteCollabPosition!
   onMessage(input: SubscriptionMessageInput): MessageSubscription!
   onEditMessage(input: SubscriptionMessageInput): EditMessageEvent!
   onReadReceipt: ReadReceipt!
@@ -2180,6 +2221,29 @@ type ChatTypingEvent {
   chatId: Float!
   user: PartialUserFriend!
   expires: Float
+}
+
+type UpdateNoteEvent {
+  type: UpdateNoteEventType!
+  data: JSON
+  blockId: String
+  id: Int!
+  userId: Int!
+  shareLink: String
+}
+
+type NoteCollabPosition {
+  blockIndex: Int!
+  position: Int!
+  userId: Int!
+  noteId: Int!
+  shareLink: String
+  type: CollabEventType!
+}
+
+enum CollabEventType {
+  JOIN
+  LEAVE
 }
 
 type MessageSubscription {

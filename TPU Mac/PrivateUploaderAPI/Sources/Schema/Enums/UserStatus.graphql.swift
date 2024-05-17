@@ -9,5 +9,4 @@ public enum UserStatus: String, EnumType {
   case idle = "IDLE"
   case offline = "OFFLINE"
   case busy = "BUSY"
-  case unknown = "UNKNOWN"
 }
