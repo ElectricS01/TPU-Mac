@@ -7,7 +7,7 @@ public class UserCollectionsQuery: GraphQLQuery {
   public static let operationName: String = "UserCollectionsQuery"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query UserCollectionsQuery($input: UserCollectionsInput!) { collections(input: $input) { __typename items { __typename id name image userId shareLink user { __typename username id avatar } preview { __typename attachment { __typename attachment id } } shared itemCount permissionsMetadata { __typename write read configure } } pager { __typename totalItems currentPage pageSize totalPages startPage endPage startIndex endIndex pages } } }"#
+      #"query UserCollectionsQuery($input: UserCollectionsInput!) { collections(input: $input) { __typename items { __typename id name banner userId shareLink createdAt user { __typename username id avatar } preview { __typename attachment { __typename attachment id } } shared itemCount permissionsMetadata { __typename write read configure } } pager { __typename totalItems currentPage pageSize totalPages startPage endPage startIndex endIndex pages } } }"#
     ))
 
   public var input: UserCollectionsInput
@@ -24,10 +24,10 @@ public class UserCollectionsQuery: GraphQLQuery {
 
     public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
-      .field("collections", Collections?.self, arguments: ["input": .variable("input")]),
+      .field("collections", Collections.self, arguments: ["input": .variable("input")]),
     ] }
 
-    public var collections: Collections? { __data["collections"] }
+    public var collections: Collections { __data["collections"] }
 
     /// Collections
     ///
@@ -58,9 +58,10 @@ public class UserCollectionsQuery: GraphQLQuery {
           .field("__typename", String.self),
           .field("id", Int.self),
           .field("name", String.self),
-          .field("image", String?.self),
+          .field("banner", String?.self),
           .field("userId", Double.self),
           .field("shareLink", String?.self),
+          .field("createdAt", PrivateUploaderAPI.Date.self),
           .field("user", User?.self),
           .field("preview", Preview?.self),
           .field("shared", Bool?.self),
@@ -70,10 +71,11 @@ public class UserCollectionsQuery: GraphQLQuery {
 
         public var id: Int { __data["id"] }
         public var name: String { __data["name"] }
-        /// Please use field `banner` instead if you want to obtain the banner for a collection.
-        public var image: String? { __data["image"] }
+        /// The recommended way to obtain the banner for a collection, it uses field `image`, and if null, falls back to the last added image preview.
+        public var banner: String? { __data["banner"] }
         public var userId: Double { __data["userId"] }
         public var shareLink: String? { __data["shareLink"] }
+        public var createdAt: PrivateUploaderAPI.Date { __data["createdAt"] }
         public var user: User? { __data["user"] }
         public var preview: Preview? { __data["preview"] }
         public var shared: Bool? { __data["shared"] }
