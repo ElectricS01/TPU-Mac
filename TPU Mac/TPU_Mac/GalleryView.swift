@@ -14,6 +14,7 @@ import SwiftUI
 struct GalleryView: View {
   @Binding var stars: Bool
   @Environment(\.openURL) var openURL
+  @State private var stateStars: Bool = false
   @State private var galleryData: GalleryItemsQuery.Data.Gallery?
   @State private var galleryItems: [GalleryItemsQuery.Data.Gallery.Item] = []
   @State private var isPlaying: Int = -1
@@ -34,7 +35,7 @@ struct GalleryView: View {
       "search": inputSearch,
       "page": currentPage,
       "limit": 36,
-      "type": stars == true ? "STARRED" : nil,
+      "type": stars || stateStars ? "STARRED" : nil,
       "filters": filters
     ]))), cachePolicy: .fetchIgnoringCacheData) { result in
       switch result {
@@ -92,25 +93,41 @@ struct GalleryView: View {
               }.sheet(isPresented: $showingSheet) {
                 NavigationView {
                   Form {
-                    Button(action: {
-                      showImages = true
-                      showVideos = true
-                      showOther = true
-                      getGallery()
-                    }) {
-                      HStack {
-                        Label {
-                          Text("All Items").foregroundColor(.primary)
-                        } icon: {
-                          Image(systemName: "photo.on.rectangle")
+                    Section(header: Text("Type").font(.system(size: 14)).foregroundColor(.gray)) {
+                      Button(action: {
+                        stateStars.toggle()
+                        getGallery()
+                      }) {
+                        HStack {
+                          Label {
+                            Text("All Items").foregroundColor(.primary)
+                          } icon: {
+                            Image(systemName: "photo.on.rectangle")
+                          }
+                          if !stateStars {
+                            Spacer()
+                            Image(systemName: "checkmark").foregroundColor(.blue)
+                          }
                         }
-                        if showImages && showVideos && showOther {
-                          Spacer()
-                          Image(systemName: "checkmark").foregroundColor(.blue)
+                      }
+                      Button(action: {
+                        stateStars.toggle()
+                        getGallery()
+                      }) {
+                        HStack {
+                          Label {
+                            Text("Stars").foregroundColor(.primary)
+                          } icon: {
+                            Image(systemName: "star")
+                          }
+                          if stateStars {
+                            Spacer()
+                            Image(systemName: "checkmark").foregroundColor(.blue)
+                          }
                         }
                       }
                     }
-                    Section(header: Text("Show")) {
+                    Section(header: Text("Show").font(.system(size: 14)).foregroundColor(.gray)) {
                       Button(action: {
                         showImages.toggle()
                         getGallery()
