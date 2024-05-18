@@ -18,17 +18,15 @@ struct CollectionsView: View {
   @State private var isPlaying: Int = -1
   @State private var currentPage: Int = 1
   @State private var inputSearch: String = ""
-  @State private var showImages: Bool = true
-  @State private var showVideos: Bool = true
-  @State private var showOther: Bool = true
+  @State private var showOwned: Bool = true
+  @State private var showShared: Bool = true
   @State private var showingSheet: Bool = false
 
   func getCollections() {
     var filters: [String] = []
-    if showImages { filters.append("IMAGES") }
-    if showVideos { filters.append("VIDEOS") }
-    if showOther { filters.append("OTHER") }
-    if filters.count == 3 { filters = [] }
+    if showOwned { filters.append("OWNED") }
+    if showShared { filters.append("SHARED") }
+    if filters.count == 2 { filters = [] }
     Network.shared.apollo.fetch(query: UserCollectionsQuery(input: UserCollectionsInput(InputDict([
       "search": inputSearch,
       "page": currentPage,
@@ -63,37 +61,31 @@ struct CollectionsView: View {
             getCollections()
           }.textFieldStyle(RoundedBorderTextFieldStyle())
         #if os(macOS)
-        Toggle(isOn: $showImages) {
-          Text("Images")
-        }.onChange(of: showImages) {
+        Toggle(isOn: $showOwned) {
+          Text("Owned")
+        }.onChange(of: showOwned) {
           getCollections()
         }
-        Toggle(isOn: $showVideos) {
-          Text("Video")
-        }.onChange(of: showVideos) {
-          getCollections()
-        }
-        Toggle(isOn: $showOther) {
-          Text("Other")
-        }.onChange(of: showOther) {
+        Toggle(isOn: $showShared) {
+          Text("Shared")
+        }.onChange(of: showShared) {
           getCollections()
         }
         #else
         Button(action: { showingSheet.toggle() }) {
           Circle()
-            .fill(showImages && showVideos && showOther ? .gray.opacity(0.15) : .blue)
+            .fill(showOwned && showShared ? .gray.opacity(0.15) : .blue)
             .frame(width: 30, height: 30)
             .overlay {
               Image(systemName: "line.3.horizontal.decrease")
                 .font(.system(size: 13.0, weight: .semibold))
-                .foregroundColor(showImages && showVideos && showOther ? .blue : .primary)
+                .foregroundColor(showOwned && showShared ? .blue : .primary)
             }.sheet(isPresented: $showingSheet) {
               NavigationView {
                 Form {
                   Button(action: {
-                    showImages = true
-                    showVideos = true
-                    showOther = true
+                    showOwned = true
+                    showShared = true
                     getCollections()
                   }) {
                     HStack {
@@ -102,7 +94,7 @@ struct CollectionsView: View {
                       } icon: {
                         Image(systemName: "photo.on.rectangle")
                       }
-                      if showImages && showVideos && showOther {
+                      if showOwned && showShared {
                         Spacer()
                         Image(systemName: "checkmark").foregroundColor(.blue)
                       }
@@ -110,23 +102,23 @@ struct CollectionsView: View {
                   }
                   Section(header: Text("Show")) {
                     Button(action: {
-                      showImages.toggle()
+                      showOwned.toggle()
                       getCollections()
                     }) {
                       HStack {
                         Label {
-                          Text("Images").foregroundColor(.primary)
+                          Text("Owned").foregroundColor(.primary)
                         } icon: {
                           Image(systemName: "photo")
                         }
-                        if showImages {
+                        if showOwned {
                           Spacer()
                           Image(systemName: "checkmark").foregroundColor(.blue)
                         }
                       }
                     }
                     Button(action: {
-                      showVideos.toggle()
+                      showShared.toggle()
                       getCollections()
                     }) {
                       HStack {
@@ -135,23 +127,7 @@ struct CollectionsView: View {
                         } icon: {
                           Image(systemName: "video")
                         }
-                        if showVideos {
-                          Spacer()
-                          Image(systemName: "checkmark").foregroundColor(.blue)
-                        }
-                      }
-                    }
-                    Button(action: {
-                      showOther.toggle()
-                      getCollections()
-                    }) {
-                      HStack {
-                        Label {
-                          Text("Other").foregroundColor(.primary)
-                        } icon: {
-                          Image(systemName: "doc")
-                        }
-                        if showOther {
+                        if showShared {
                           Spacer()
                           Image(systemName: "checkmark").foregroundColor(.blue)
                         }
