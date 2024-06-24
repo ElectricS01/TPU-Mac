@@ -5,7 +5,7 @@ type Query {
   trackedUserIds: [Float!]!
   coreState: CoreState!
   setupStep: Int!
-  experiments: [ExperimentType!]!
+  experiments(version: Int): [ExperimentType!]!
   weather: Weather!
   collections(input: UserCollectionsInput): PaginatedCollectionResponse!
   collection(input: CollectionInput!): Collection
@@ -27,6 +27,7 @@ type Query {
   messagesPaged(input: PagedMessagesInput!): PaginatedMessageResponse!
   autoCollects(input: UserCollectionsInput!): PaginatedCollectionResponse!
   adminPlans: [Plan!]!
+  adminGetExperimentOverrides: [ExperimentOverride!]!
   blockedUsers: [BlockedUser!]!
   chatInvite(input: InviteInput!): ChatInvite
   mailboxes: [ListResponse!]!
@@ -849,7 +850,11 @@ type Weather {
   description: String
   main: String
   location: String
-  name: String
+  wind_gust: Float
+  sunrise: Float
+  sunset: Float
+  rain_1h: Float
+  rain_3h: Float
 }
 
 type ExperimentType {
@@ -858,6 +863,9 @@ type ExperimentType {
   description: String
   createdAt: Date
   refresh: Boolean
+  versions: [Int!]!
+  override: Boolean!
+  force: Boolean!
 }
 
 type PaginatedCollectionResponse {
@@ -1358,6 +1366,13 @@ input PagedMessagesInput {
   page: Int! = 1
 }
 
+type ExperimentOverride {
+  id: String!
+  value: Int!
+  force: Boolean!
+  userId: Int
+}
+
 type BlockedUser {
   id: String!
   userId: Int
@@ -1570,6 +1585,8 @@ type Mutation {
   adminClearCache(input: ClearCacheInput!): GenericSuccessObject!
   adminDebugBatch: GenericSuccessObject!
   adminGenerateInsights(customGte: String, type: String!, userId: Float!): GenericSuccessObject!
+  adminSetExperimentOverride(input: ExperimentOverrideInput!): ExperimentOverride!
+  adminDeleteExperimentOverride(id: String!): GenericSuccessObject!
   blockUser(input: BlockUserInput!): GenericSuccessObject!
   createChatInvite(input: CreateInviteInput!): ChatInvite!
   invalidateChatInvite(input: InvalidateInviteInput!): GenericSuccessObject!
@@ -2035,6 +2052,14 @@ enum AdminCacheType {
   mal
   trackedUsers
   users
+  sessions
+}
+
+input ExperimentOverrideInput {
+  id: String!
+  value: Int!
+  force: Boolean! = false
+  userId: Int
 }
 
 input BlockUserInput {
