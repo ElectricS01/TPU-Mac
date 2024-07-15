@@ -23,6 +23,7 @@ struct CommsView: View {
   @State private var inputMessage: String = ""
   @State private var editingMessage: String = ""
   @State var apolloSubscription: Apollo.Cancellable?
+  @State private var notifications: Int = 0
   //  @State private var hoverItem = -1
   
   func getMessages(chat: Int, completion: @escaping (Result<GraphQLResult<MessagesQuery.Data>, Error>) -> Void) {
@@ -173,6 +174,8 @@ struct CommsView: View {
   func scheduleNotification(title: String, body: String) {
     UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { _, _ in
     }
+    notifications += 1
+    UNUserNotificationCenter.current().setBadgeCount(notifications)
     let content = UNMutableNotificationContent()
     content.title = title
     content.body = body
