@@ -113,6 +113,19 @@ struct CommsView: View {
     }
   }
   
+  func deleteMessage(messageId: Int) {
+    Network.shared.apollo.perform(mutation: DeleteMessageMutation(input: DeleteMessageInput(messageId: messageId, associationId: chatsList[chatOpen].association?.id ?? 0))) { result in
+      switch result {
+      case .success:
+        replyingId = -1
+        editingId = -1
+        inputMessage = ""
+      case .failure(let error):
+        print("Failure! Error: \(error)")
+      }
+    }
+  }
+  
   func merge(message: MessagesQuery.Data.Message, previousMessage: MessagesQuery.Data.Message?) -> Bool {
     print(message.content)
     if message.userId == previousMessage?.userId && message.replyId == nil {
@@ -332,6 +345,11 @@ struct CommsView: View {
                       } else { replyingId = -1 }
                     }) {
                       Image(systemName: "arrowshape.turn.up.left.fill").frame(width: 16, height: 16)
+                    }
+                    Button(action: {
+                      deleteMessage(messageId: message.id)
+                    }) {
+                      Image(systemName: "trash.fill").frame(width: 16, height: 16)
                     }
                     Button(action: {
                       pinMessage(messageId: message.id, pinned: message.pinned)

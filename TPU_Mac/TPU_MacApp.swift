@@ -8,12 +8,17 @@
 import NukeUI
 import PrivateUploaderAPI
 import SwiftUI
+import UserNotifications
 
 @main
 struct TPU_MacApp: App {
+  @Environment(\.scenePhase) private var scenePhase
+
   var body: some Scene {
     WindowGroup {
-      ContentView()
+      ContentView().onAppear {
+        UNUserNotificationCenter.current().setBadgeCount(0)
+      }
     }
   }
 }
