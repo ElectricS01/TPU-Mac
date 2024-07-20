@@ -24,6 +24,7 @@
 		C47E19752BEE04D1004B14C4 /* CollectionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47E19742BEE04D1004B14C4 /* CollectionsView.swift */; };
 		C48C2E9E2AD0417B0000A362 /* Apollo in Frameworks */ = {isa = PBXBuildFile; productRef = C48C2E9D2AD0417B0000A362 /* Apollo */; };
 		C4D7E5062AF4D4FC008308CA /* CommsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D7E5052AF4D4FC008308CA /* CommsView.swift */; };
+		C4DD4D492C4892AE00DF1A22 /* ApolloSQLite in Frameworks */ = {isa = PBXBuildFile; productRef = C4DD4D482C4892AE00DF1A22 /* ApolloSQLite */; };
 		C4FE71542AD3F085003E4DC0 /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C4FE71532AD3F085003E4DC0 /* KeychainSwift */; };
 		C4FE71582AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4FE71572AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift */; };
 /* End PBXBuildFile section */
@@ -72,6 +73,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C40BC9892B8C8F9800444B56 /* NukeUI in Frameworks */,
+				C4DD4D492C4892AE00DF1A22 /* ApolloSQLite in Frameworks */,
 				C40BC98B2B8C8F9800444B56 /* NukeVideo in Frameworks */,
 				C4569DF12AD17A2A00F17C06 /* PrivateUploaderAPI in Frameworks */,
 				C428DE892B709ADB00A13E4A /* ApolloWebSocket in Frameworks */,
@@ -192,6 +194,7 @@
 				C428DE882B709ADB00A13E4A /* ApolloWebSocket */,
 				C40BC9882B8C8F9800444B56 /* NukeUI */,
 				C40BC98A2B8C8F9800444B56 /* NukeVideo */,
+				C4DD4D482C4892AE00DF1A22 /* ApolloSQLite */,
 			);
 			productName = "TPU Mac";
 			productReference = C45099112ACFFA7F00FA9247 /* TPU Mac.app */;
@@ -241,7 +244,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1510;
+				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					C45099102ACFFA7F00FA9247 = {
 						CreatedOnToolsVersion = 15.0;
@@ -505,7 +508,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.1.22;
+				MARKETING_VERSION = 0.1.23;
 				PRODUCT_BUNDLE_IDENTIFIER = "ElectricS01.TPU-Mac";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -546,7 +549,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.1.22;
+				MARKETING_VERSION = 0.1.23;
 				PRODUCT_BUNDLE_IDENTIFIER = "ElectricS01.TPU-Mac";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -560,7 +563,6 @@
 		C450993A2ACFFA8100FA9247 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -584,7 +586,6 @@
 		C450993B2ACFFA8100FA9247 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -608,7 +609,6 @@
 		C450993D2ACFFA8100FA9247 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
@@ -631,7 +631,6 @@
 		C450993E2ACFFA8100FA9247 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
@@ -750,6 +749,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C48C2E9C2AD0417B0000A362 /* XCRemoteSwiftPackageReference "apollo-ios" */;
 			productName = Apollo;
+		};
+		C4DD4D482C4892AE00DF1A22 /* ApolloSQLite */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C48C2E9C2AD0417B0000A362 /* XCRemoteSwiftPackageReference "apollo-ios" */;
+			productName = ApolloSQLite;
 		};
 		C4FE71532AD3F085003E4DC0 /* KeychainSwift */ = {
 			isa = XCSwiftPackageProductDependency;

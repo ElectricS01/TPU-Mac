@@ -37,7 +37,7 @@ struct GalleryView: View {
       "limit": 36,
       "type": stars || stateStars ? "STARRED" : nil,
       "filters": filters
-    ]))), cachePolicy: .fetchIgnoringCacheData) { result in
+    ]))), cachePolicy: .returnCacheDataAndFetch) { result in
       switch result {
       case .success(let graphQLResult):
         if let unwrapped = graphQLResult.data {

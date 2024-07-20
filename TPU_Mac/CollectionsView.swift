@@ -32,7 +32,7 @@ struct CollectionsView: View {
       "page": currentPage,
       "limit": 36,
       "filter": filters
-    ]))), cachePolicy: .fetchIgnoringCacheData) { result in
+    ]))), cachePolicy: .returnCacheDataAndFetch) { result in
       switch result {
       case .success(let graphQLResult):
         if let unwrapped = graphQLResult.data {
@@ -174,7 +174,6 @@ struct CollectionsView: View {
                   }
                 }
               }
-              .padding()
               .frame(minWidth: 300, minHeight: 200)
               .background()
               .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))

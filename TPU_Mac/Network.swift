@@ -6,13 +6,24 @@
 //
 
 import Apollo
+import ApolloSQLite
 import ApolloWebSocket
 import Foundation
 import KeychainSwift
 
+func temporarySQLite() -> SQLiteNormalizedCache? {
+  let dbPath = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true).first! + "/com.electrics01.tpumac"
+
+  if !FileManager.default.fileExists(atPath: dbPath) {
+    try? FileManager.default.createDirectory(atPath: dbPath, withIntermediateDirectories: true, attributes: nil)
+  }
+  return try? SQLiteNormalizedCache(fileURL: URL(fileURLWithPath: dbPath).appendingPathComponent("db.sqlite3"))
+}
+
 class Network {
   static let shared = Network()
-  let store = ApolloStore(cache: InMemoryNormalizedCache())
+
+  let store = ApolloStore(cache: temporarySQLite() ?? InMemoryNormalizedCache())
 
   private lazy var webSocketTransport: WebSocketTransport = {
     let url = URL(string: "https://privateuploader.com/graphql")!
