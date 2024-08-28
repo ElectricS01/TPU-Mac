@@ -50,6 +50,32 @@ struct GalleryView: View {
     }
   }
 
+  func starUpload(attachment: String, index: Int) {
+    Network.shared.apollo.perform(mutation: StarUploadMutation(input: StarUploadInput(attachment: attachment))) { result in
+      switch result {
+      case .success(let graphQLResult):
+        if stars {
+          galleryItems.remove(at: index)
+        } else {
+          var itemData = DataDict(data: [:], fulfilledFragments: Set<ObjectIdentifier>())
+
+          itemData["id"] = galleryItems[index].id
+          itemData["createdAt"] = galleryItems[index].createdAt
+          itemData["attachment"] = galleryItems[index].attachment
+          itemData["fileSize"] = galleryItems[index].fileSize
+          itemData["name"] = galleryItems[index].name
+          itemData["textMetadata"] = galleryItems[index].textMetadata
+          itemData["type"] = galleryItems[index].type
+          itemData["starred"] = graphQLResult.data?.starUpload.star
+
+          galleryItems[index] = GalleryItemsQuery.Data.Gallery.Item(_dataDict: itemData)
+        }
+      case .failure(let error):
+        print("Failure! Error: \(error)")
+      }
+    }
+  }
+
   func formatFileSize(_ size: Double) -> String {
     let byteCountFormatter = ByteCountFormatter()
     byteCountFormatter.allowedUnits = [.useKB, .useMB, .useGB]
@@ -197,12 +223,14 @@ struct GalleryView: View {
       ScrollViewReader { proxy in
         ScrollView {
           LazyVGrid(columns: [GridItem(.adaptive(minimum: 316))], spacing: 10) {
-            ForEach(galleryItems, id: \.self) { galleryItem in
+            ForEach(Array(galleryItems.enumerated()), id: \.element) { index, galleryItem in
               VStack(alignment: .leading) {
                 HStack {
                   Text(galleryItem.name ?? "Unknown").font(.title2).lineLimit(1)
                   Spacer()
-                  Image(systemName: galleryItem.starred == nil ? "star" : "star.fill").resizable().frame(width: 16, height: 16)
+                  Image(systemName: galleryItem.starred == nil ? "star" : "star.fill").resizable().frame(width: 16, height: 16).onTapGesture {
+                    starUpload(attachment: galleryItem.attachment, index: index)
+                  }
                 }
                 HStack(alignment: .center) {
                   if galleryItem.type == "image" {

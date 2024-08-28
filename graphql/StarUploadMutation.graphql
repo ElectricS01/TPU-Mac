@@ -1,0 +1,7 @@
+mutation StarUpload($input: StarUploadInput!) {
+  starUpload(input: $input) {
+    star {
+      id
+    }
+  }
+}
