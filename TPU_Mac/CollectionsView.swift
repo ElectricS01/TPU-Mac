@@ -109,7 +109,7 @@ struct CollectionsView: View {
                         Label {
                           Text("Owned").foregroundColor(.primary)
                         } icon: {
-                          Image(systemName: "photo")
+                          Image(systemName: "person")
                         }
                         if showOwned {
                           Spacer()
@@ -123,9 +123,9 @@ struct CollectionsView: View {
                     }) {
                       HStack {
                         Label {
-                          Text("Videos").foregroundColor(.primary)
+                          Text("Shared").foregroundColor(.primary)
                         } icon: {
-                          Image(systemName: "video")
+                          Image(systemName: "shared.with.you")
                         }
                         if showShared {
                           Spacer()
@@ -165,13 +165,15 @@ struct CollectionsView: View {
                     ProgressView()
                   }
                 }.frame(minWidth: 300, maxWidth: .infinity, minHeight: 200, maxHeight: 200).overlay(alignment: .bottom) {
-                  VStack(alignment: .leading) {
+                  VStack(alignment: .leading, spacing: 4) {
                     Text(collectionItem.wrappedValue.name).font(.title2).lineLimit(1)
                     Text("Upload count: " + String(collectionItem.wrappedValue.itemCount ?? 0))
-                    Text("Link: " + (collectionItem.wrappedValue.shareLink ?? "none"))
                     Text("Created at: " + DateUtils.dateFormat(collectionItem.wrappedValue.createdAt))
                     Text("Owner: " + (collectionItem.wrappedValue.user?.username ?? "none"))
                   }
+                  .padding()
+                  .frame(maxWidth: .infinity, alignment: .leading)
+                  .background(Color.black.opacity(0.7)) // Dark background with opacity
                 }
               }
               .frame(minWidth: 300, minHeight: 200)
