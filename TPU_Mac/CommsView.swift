@@ -12,8 +12,13 @@ import SwiftUI
 import UserNotifications
 
 struct CommsView: View {
+  enum FocusedField {
+    case editing, sending
+  }
+
   @Binding var coreUser: StateQuery.Data.CurrentUser?
   @Binding var coreUsers: [StateQuery.Data.TrackedUser]?
+  @FocusState private var focusedField: FocusedField?
   @State private var chatsList: [ChatsQuery.Data.Chat] = []
   @State private var chatMessages: [MessagesQuery.Data.Message] = []
   @State private var chatOpen: Int = -1
@@ -45,6 +50,7 @@ struct CommsView: View {
         if let unwrapped = graphQLResult.data {
           chatMessages = unwrapped.messages.reversed()
           chatOpen = chatId ?? -1
+          focusedField = .sending
           if chatsList[chatOpen].unread != 0 {
             if let unreadMessageIndex = chatMessages.firstIndex(where: { $0.id == chatsList[chatOpen].association?.lastRead }) {
               unreadId = chatMessages[unreadMessageIndex + 1].id
@@ -227,6 +233,7 @@ struct CommsView: View {
   
   func editingSubscription() {
     _ = Network.shared.apollo.subscribe(subscription: EditedMessageSubscription()) { result in
+      print("e")
       switch result {
       case .success(let graphQLResult):
         if let message = graphQLResult.data?.onEditMessage.message {
@@ -315,7 +322,13 @@ struct CommsView: View {
                           .lineLimit(nil)
                       } else {
                         TextField("Keep it civil!", text: $editingMessage)
+                          .focused($focusedField, equals: .editing)
+                          .onExitCommand(perform: {
+                            editingId = -1
+                            focusedField = .sending
+                          })
                           .onSubmit {
+                            print("EWWWWWEKUBFYUWVBEUYKFVWYEFUYWVEUFEWWWWWEKUBFYUWVBEUYKFVWYEFUYWVEUFEWWWWWEKUBFYUWVBEUYKFVWYEFUYWVEUFEWWWWWEKUBFYUWVBEUYKFVWYEFUYWVEUFEWWWWWEKUBFYUWVBEUYKFVWYEFUYWVEUFEWWWWWEKUBFYUWVBEUYKFVWYEFUYWVEUFEWWWWWEKUBFYUWVBEUYKFVWYEFUYWVEUFEWWWWWEKUBFYUWVBEUYKFVWYEFUYWVEUFEWWWWWEKUBFYUWVBEUYKFVWYEFUYWVEUFEWWWWWEKUBFYUWVBEUYKFVWYEFUYWVEUFEWWWWWEKUBFYUWVBEUYKFVWYEFUYWVEUF")
                             editMessage()
                           }
                           .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -362,6 +375,7 @@ struct CommsView: View {
                         if editingId != message.id {
                           editingId = message.id
                           editingMessage = message.content ?? ""
+                          focusedField = .editing
                         } else { editingId = -1 }
                       }) {
                         Image(systemName: "pencil").frame(width: 16, height: 16)
@@ -409,6 +423,7 @@ struct CommsView: View {
                        alignment: .topLeading)
             }
             TextField("Keep it civil!", text: $inputMessage)
+              .focused($focusedField, equals: .sending)
               .onSubmit {
                 sendMessage()
               }
@@ -568,6 +583,7 @@ struct CommsView: View {
                         .onSubmit {
                           editMessage()
                         }
+                        .focused($focusedField, equals: .editing)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                     }
                     ForEach(message.embeds, id: \.self) { embed in
@@ -654,6 +670,7 @@ struct CommsView: View {
                      alignment: .topLeading)
           }
           TextField("Keep it civil!", text: $inputMessage)
+            .focused($focusedField, equals: .editing)
             .onSubmit {
               sendMessage()
             }
