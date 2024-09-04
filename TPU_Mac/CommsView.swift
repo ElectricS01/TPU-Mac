@@ -250,7 +250,7 @@ struct CommsView: View {
   var body: some View {
     VStack {
       #if os(macOS)
-      HSplitView {
+      HStack {
         List {
           ForEach(0 ..< chatsList.count, id: \.self) { result in
             Button(action: { getChat(chatId: result) }) {

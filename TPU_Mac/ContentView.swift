@@ -105,7 +105,14 @@ struct ContentView: View {
                 ForEach(coreUser?.notifications ?? [], id: \.self) { notification in
                   Divider()
                   HStack {
+                    if !notification.dismissed {
+                      Circle()
+                        .fill(Color.accentColor)
+                        .frame(width: 8, height: 8)
+                    } else { Spacer().frame(width: 16) }
                     Text(notification.message)
+                      .frame(maxWidth: 350, alignment: .topLeading)
+                      .help(notification.message)
                     Text(DateUtils.relativeFormat(notification.createdAt)).font(.subheadline).foregroundStyle(.gray)
                   }.frame(maxWidth: .infinity, alignment: .leading).frame(alignment: .top)
                 }
@@ -210,7 +217,7 @@ struct SettingsView: View {
         Text("Coming soon")
       #else
         Text("TPU iOS").font(.system(size: 32, weight: .semibold))
-        Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (1/9/2024)")
+        Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (4/9/2024)")
         Text("Made by ElectricS01")
         Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
       #endif
@@ -233,7 +240,7 @@ struct AboutView: View {
       #else
         Text("TPU iOS").font(.system(size: 32, weight: .semibold))
       #endif
-      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (1/9/2024)")
+      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (4/9/2024)")
       Text("Made by ElectricS01")
       Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
     }
