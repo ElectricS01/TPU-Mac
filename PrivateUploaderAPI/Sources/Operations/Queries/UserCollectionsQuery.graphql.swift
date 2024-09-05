@@ -7,7 +7,7 @@ public class UserCollectionsQuery: GraphQLQuery {
   public static let operationName: String = "UserCollectionsQuery"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query UserCollectionsQuery($input: UserCollectionsInput!) { collections(input: $input) { __typename items { __typename id name banner userId shareLink createdAt user { __typename username id avatar } preview { __typename attachment { __typename attachment id } } shared itemCount permissionsMetadata { __typename write read configure } } pager { __typename totalItems currentPage pageSize totalPages startPage endPage startIndex endIndex pages } } }"#
+      #"query UserCollectionsQuery($input: UserCollectionsInput!) { collections(input: $input) { __typename items { __typename id name banner userId shareLink createdAt user { __typename username id avatar } preview { __typename attachment { __typename attachment id } } shared itemCount permissionsMetadata { __typename write read configure } } pager { __typename totalItems } } }"#
     ))
 
   public var input: UserCollectionsInput
@@ -168,25 +168,9 @@ public class UserCollectionsQuery: GraphQLQuery {
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("totalItems", Int.self),
-          .field("currentPage", Int.self),
-          .field("pageSize", Int.self),
-          .field("totalPages", Int.self),
-          .field("startPage", Int.self),
-          .field("endPage", Int.self),
-          .field("startIndex", Int.self),
-          .field("endIndex", Int.self),
-          .field("pages", [Double].self),
         ] }
 
         public var totalItems: Int { __data["totalItems"] }
-        public var currentPage: Int { __data["currentPage"] }
-        public var pageSize: Int { __data["pageSize"] }
-        public var totalPages: Int { __data["totalPages"] }
-        public var startPage: Int { __data["startPage"] }
-        public var endPage: Int { __data["endPage"] }
-        public var startIndex: Int { __data["startIndex"] }
-        public var endIndex: Int { __data["endIndex"] }
-        public var pages: [Double] { __data["pages"] }
       }
     }
   }

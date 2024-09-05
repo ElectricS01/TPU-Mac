@@ -28,14 +28,6 @@ query UserCollectionsQuery($input: UserCollectionsInput!) {
     }
     pager {
       totalItems
-      currentPage
-      pageSize
-      totalPages
-      startPage
-      endPage
-      startIndex
-      endIndex
-      pages
     }
   }
 }

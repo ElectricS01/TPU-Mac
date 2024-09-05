@@ -72,10 +72,10 @@ struct ContentView: View {
             NavigationLink(destination: SettingsView(showingLogin: $showingLogin, coreState: $coreState)) {
               Label("Settings", systemImage: "gear")
             }
-            NavigationLink(destination: GalleryView(stars: .constant(false))) {
+            NavigationLink(destination: GalleryView(stars: .constant(false), collection: .constant(nil))) {
               Label("Gallery", systemImage: "photo.on.rectangle")
             }
-            NavigationLink(destination: GalleryView(stars: .constant(true))) {
+            NavigationLink(destination: GalleryView(stars: .constant(true), collection: .constant(nil))) {
               Label("Stars", systemImage: "star")
             }
             NavigationLink(destination: CollectionsView()) {
@@ -217,7 +217,7 @@ struct SettingsView: View {
         Text("Coming soon")
       #else
         Text("TPU iOS").font(.system(size: 32, weight: .semibold))
-        Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (4/9/2024)")
+        Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (5/9/2024)")
         Text("Made by ElectricS01")
         Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
       #endif
@@ -240,7 +240,7 @@ struct AboutView: View {
       #else
         Text("TPU iOS").font(.system(size: 32, weight: .semibold))
       #endif
-      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (4/9/2024)")
+      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (5/9/2024)")
       Text("Made by ElectricS01")
       Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
     }
