@@ -28,6 +28,7 @@ query UserCollectionsQuery($input: UserCollectionsInput!) {
     }
     pager {
       totalItems
+      totalPages
     }
   }
 }

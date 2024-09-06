@@ -7,7 +7,7 @@ public class UserCollectionsQuery: GraphQLQuery {
   public static let operationName: String = "UserCollectionsQuery"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query UserCollectionsQuery($input: UserCollectionsInput!) { collections(input: $input) { __typename items { __typename id name banner userId shareLink createdAt user { __typename username id avatar } preview { __typename attachment { __typename attachment id } } shared itemCount permissionsMetadata { __typename write read configure } } pager { __typename totalItems } } }"#
+      #"query UserCollectionsQuery($input: UserCollectionsInput!) { collections(input: $input) { __typename items { __typename id name banner userId shareLink createdAt user { __typename username id avatar } preview { __typename attachment { __typename attachment id } } shared itemCount permissionsMetadata { __typename write read configure } } pager { __typename totalItems totalPages } } }"#
     ))
 
   public var input: UserCollectionsInput
@@ -168,9 +168,11 @@ public class UserCollectionsQuery: GraphQLQuery {
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("totalItems", Int.self),
+          .field("totalPages", Int.self),
         ] }
 
         public var totalItems: Int { __data["totalItems"] }
+        public var totalPages: Int { __data["totalPages"] }
       }
     }
   }
