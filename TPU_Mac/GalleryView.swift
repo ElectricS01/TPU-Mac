@@ -13,7 +13,8 @@ import SwiftUI
 
 struct GalleryView: View {
   @Binding var stars: Bool
-  @Binding var collection: Int?
+  @Binding var collectionId: Int?
+  @Binding var collectionName: String?
   @Environment(\.openURL) var openURL
   @State private var stateStars: Bool = false
   @State private var galleryData: GalleryItemsQuery.Data.Gallery?
@@ -36,9 +37,9 @@ struct GalleryView: View {
       "search": inputSearch,
       "page": currentPage,
       "limit": 36,
-      "type": stars || stateStars ? "STARRED" : collection != nil && collection != -1 ? "COLLECTION" : nil,
+      "type": stars || stateStars ? "STARRED" : collectionId != nil && collectionId != -1 ? "COLLECTION" : nil,
       "filters": filters,
-      "collectionId": collection,
+      "collectionId": collectionId,
     ]))), cachePolicy: .returnCacheDataAndFetch) { result in
       switch result {
       case .success(let graphQLResult):
@@ -88,7 +89,7 @@ struct GalleryView: View {
   var body: some View {
     VStack {
       HStack {
-        TextField(collection != nil && collection != -1 ? "Search the Collection" : "Search the Gallery", text: $inputSearch)
+        TextField(collectionId != nil && collectionId != -1 ? "Search the Collection" : "Search the Gallery", text: $inputSearch)
           .onSubmit {
             currentPage = 1
             getGallery()
@@ -343,7 +344,7 @@ struct GalleryView: View {
           }
           .padding(EdgeInsets(top: 0, leading: 0, bottom: 10, trailing: 0))
         }
-        .navigationTitle(collection != nil && collection != -1 ? "Collection" : "Gallery")
+        .navigationTitle((collectionId != nil && collectionId != -1 ? collectionName : stars != true ? "Gallery" : "Stars") ?? "Collections")
         .onAppear {
           getGallery()
         }

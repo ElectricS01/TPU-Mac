@@ -16,6 +16,7 @@ struct CollectionsView: View {
   @State private var collectionData: UserCollectionsQuery.Data.Collections?
   @State private var collectionItems: [UserCollectionsQuery.Data.Collections.Item] = []
   @State private var collectionOpen: Int = -1
+  @State private var collectionName: String = ""
   @State private var isPlaying: Int = -1
   @State private var currentPage: Int = 1
   @State private var inputSearch: String = ""
@@ -55,7 +56,7 @@ struct CollectionsView: View {
 
   var body: some View {
     if collectionOpen != -1 {
-      GalleryView(stars: .constant(false), collection: .constant(collectionOpen))
+      GalleryView(stars: .constant(false), collectionId: .constant(collectionOpen), collectionName: .constant(collectionName))
     } else {
       VStack {
         HStack {
@@ -185,6 +186,7 @@ struct CollectionsView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                 .onTapGesture {
                   collectionOpen = collectionItem.wrappedValue.id
+                  collectionName = collectionItem.wrappedValue.name
                 }
               }
             }
