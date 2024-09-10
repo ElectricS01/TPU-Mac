@@ -16,7 +16,7 @@ struct CollectionsView: View {
   @State private var collectionData: UserCollectionsQuery.Data.Collections?
   @State private var collectionItems: [UserCollectionsQuery.Data.Collections.Item] = []
   @State private var collectionOpen: Int = -1
-  @State private var collectionName: String = ""
+  @State private var collectionIndex: Int = -1
   @State private var isPlaying: Int = -1
   @State private var currentPage: Int = 1
   @State private var inputSearch: String = ""
@@ -56,7 +56,28 @@ struct CollectionsView: View {
 
   var body: some View {
     if collectionOpen != -1 {
-      GalleryView(stars: .constant(false), collectionId: .constant(collectionOpen), collectionName: .constant(collectionName))
+      HStack(alignment: .center) {
+        LazyImage(url: URL(string: "https://i.electrics01.com/i/" + (collectionItems[collectionIndex].banner ?? "a050d6f271c3.png"))) { state in
+          if let image = state.image {
+            image.resizable().aspectRatio(contentMode: .fill)
+          } else if state.error != nil {
+            Color.red
+          } else {
+            ProgressView()
+          }
+        }.frame(minWidth: 300, maxWidth: .infinity, minHeight: 200, maxHeight: 200).overlay(alignment: .bottom) {
+          VStack(alignment: .leading, spacing: 4) {
+            Text(collectionItems[collectionIndex].name).font(.title2).lineLimit(1)
+            Text("Upload count: " + String(collectionItems[collectionIndex].itemCount ?? 0))
+            Text("Created at: " + DateUtils.dateFormat(collectionItems[collectionIndex].createdAt))
+            Text("Owner: " + (collectionItems[collectionIndex].user?.username ?? "none"))
+          }
+          .padding()
+          .frame(maxWidth: .infinity, alignment: .leading)
+          .background(Color.black.opacity(0.7)) // Dark background with opacity
+        }
+      }
+      GalleryView(stars: .constant(false), collectionId: .constant(collectionOpen), collectionName: .constant(collectionItems[collectionIndex].name))
     } else {
       VStack {
         HStack {
@@ -156,12 +177,12 @@ struct CollectionsView: View {
           }
 #endif
         }.padding(EdgeInsets(top: 10, leading: 10, bottom: -8, trailing: 10))
-        ScrollViewReader { _ in
+        ScrollView {
           ScrollView {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 316))], spacing: 10) {
-              ForEach($collectionItems, id: \.self) { collectionItem in
+              ForEach(Array($collectionItems.wrappedValue.enumerated()), id: \.element) { index, collectionItem in
                 HStack(alignment: .center) {
-                  LazyImage(url: URL(string: "https://i.electrics01.com/i/" + (collectionItem.wrappedValue.banner ?? "a050d6f271c3.png"))) { state in
+                  LazyImage(url: URL(string: "https://i.electrics01.com/i/" + (collectionItem.banner ?? "a050d6f271c3.png"))) { state in
                     if let image = state.image {
                       image.resizable().aspectRatio(contentMode: .fill)
                     } else if state.error != nil {
@@ -171,10 +192,10 @@ struct CollectionsView: View {
                     }
                   }.frame(minWidth: 300, maxWidth: .infinity, minHeight: 200, maxHeight: 200).overlay(alignment: .bottom) {
                     VStack(alignment: .leading, spacing: 4) {
-                      Text(collectionItem.wrappedValue.name).font(.title2).lineLimit(1)
-                      Text("Upload count: " + String(collectionItem.wrappedValue.itemCount ?? 0))
-                      Text("Created at: " + DateUtils.dateFormat(collectionItem.wrappedValue.createdAt))
-                      Text("Owner: " + (collectionItem.wrappedValue.user?.username ?? "none"))
+                      Text(collectionItem.name).font(.title2).lineLimit(1)
+                      Text("Upload count: " + String(collectionItem.itemCount ?? 0))
+                      Text("Created at: " + DateUtils.dateFormat(collectionItem.createdAt))
+                      Text("Owner: " + (collectionItem.user?.username ?? "none"))
                     }
                     .padding()
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -185,13 +206,11 @@ struct CollectionsView: View {
                 .background()
                 .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                 .onTapGesture {
-                  collectionOpen = collectionItem.wrappedValue.id
-                  collectionName = collectionItem.wrappedValue.name
+                  collectionOpen = collectionItem.id
+                  collectionIndex = index
                 }
               }
-            }
-            .id(0)
-            .padding(EdgeInsets(top: 10, leading: 10, bottom: 0, trailing: 10))
+            }.id(0).padding(EdgeInsets(top: 10, leading: 10, bottom: 0, trailing: 10))
             HStack {
               Text("Pages: " + String(collectionData?.pager.totalPages ?? 0))
               Button("Last Page") {
@@ -205,8 +224,7 @@ struct CollectionsView: View {
               }
               .disabled(currentPage >= collectionData?.pager.totalPages ?? 0)
               Text("Page: " + String(currentPage))
-            }
-            .padding(EdgeInsets(top: 0, leading: 0, bottom: 10, trailing: 0))
+            }.padding(EdgeInsets(top: 0, leading: 0, bottom: 10, trailing: 0))
           }
           .navigationTitle("Collections")
           .onAppear {

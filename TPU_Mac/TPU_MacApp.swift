@@ -16,8 +16,10 @@ struct TPU_MacApp: App {
 
   var body: some Scene {
     WindowGroup {
-      ContentView().onAppear {
-        UNUserNotificationCenter.current().setBadgeCount(0)
+      ContentView()
+        .frame(minWidth: 500, maxWidth: .infinity, minHeight: 250, maxHeight: .infinity)
+        .onAppear {
+          UNUserNotificationCenter.current().setBadgeCount(0)
       }
     }
   }
