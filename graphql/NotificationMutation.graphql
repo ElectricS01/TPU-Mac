@@ -1,0 +1,9 @@
+mutation MarkNotificationsAsRead {
+  markNotificationsAsRead {
+    id
+    dismissed
+    message
+    route
+    createdAt
+  }
+}

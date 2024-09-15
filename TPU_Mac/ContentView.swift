@@ -41,6 +41,7 @@ struct ContentView: View {
   @State private var showingLogin = keychain.get("token") == nil || keychain.get("token") == ""
   @State private var coreState: StateQuery.Data.CoreState?
   @State private var coreUser: StateQuery.Data.CurrentUser?
+  @State private var coreNotifications: [StateQuery.Data.CurrentUser.Notification]?
   @State private var coreUsers: [StateQuery.Data.TrackedUser]?
   @State var isPopover = false
 
@@ -51,11 +52,39 @@ struct ContentView: View {
         if let unwrapped = graphQLResult.data {
           coreState = unwrapped.coreState
           coreUser = unwrapped.currentUser
+          coreNotifications = coreUser?.notifications
           coreUsers = unwrapped.trackedUsers
         }
       case .failure(let error):
         print("Failure! Error: \(error)")
       }
+    }
+  }
+
+  func readNotifications() {
+    Network.shared.apollo.perform(mutation: MarkNotificationsAsReadMutation()) { result in
+      switch result {
+      case .success(let graphQLResult):
+        if let unwrapped = graphQLResult.data {
+          coreNotifications = readToNotification(readObjects: unwrapped.markNotificationsAsRead)
+        }
+      case .failure(let error):
+        print("Failure! Error: \(error)")
+      }
+    }
+  }
+
+  func readToNotification(readObjects: [MarkNotificationsAsReadMutation.Data.MarkNotificationsAsRead]) -> [StateQuery.Data.CurrentUser.Notification] {
+    return readObjects.map { readObject in
+      var notificationsData = DataDict(data: [:], fulfilledFragments: Set<ObjectIdentifier>())
+
+      notificationsData["id"] = readObject.id
+      notificationsData["dismissed"] = readObject.dismissed
+      notificationsData["message"] = readObject.message
+      notificationsData["route"] = readObject.route
+      notificationsData["createdAt"] = readObject.createdAt
+
+      return StateQuery.Data.CurrentUser.Notification(_dataDict: notificationsData)
     }
   }
 
@@ -96,13 +125,15 @@ struct ContentView: View {
         }
         .toolbar(id: "nav") {
           ToolbarItem(id: "bell") {
-            Button(action: { self.isPopover.toggle() }) {
+            Button(action: {
+              isPopover.toggle()
+            }) {
               Label("Notifications", systemImage: "bell").help("Notifications")
-              Text(String(coreUser?.notifications.filter { $0.dismissed == false }.count ?? 0))
-            }.popover(isPresented: self.$isPopover, arrowEdge: .bottom) {
+              Text(String(coreNotifications?.filter { $0.dismissed == false }.count ?? 0))
+            }.popover(isPresented: $isPopover, arrowEdge: .bottom) {
               VStack {
                 Text("Notifications").font(.title)
-                ForEach(coreUser?.notifications ?? [], id: \.self) { notification in
+                ForEach(coreNotifications ?? [], id: \.self) { notification in
                   Divider()
                   HStack {
                     if !notification.dismissed {
@@ -117,7 +148,7 @@ struct ContentView: View {
                   }.frame(maxWidth: .infinity, alignment: .leading).frame(alignment: .top)
                 }
               }.padding()
-            }
+            }.onChange(of: isPopover) { if !isPopover { readNotifications() } }
           }
         }
       #else
@@ -217,7 +248,7 @@ struct SettingsView: View {
         Text("Coming soon")
       #else
         Text("TPU iOS").font(.system(size: 32, weight: .semibold))
-        Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (10/9/2024)")
+        Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (15/9/2024)")
         Text("Made by ElectricS01")
         Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
       #endif
@@ -240,7 +271,7 @@ struct AboutView: View {
       #else
         Text("TPU iOS").font(.system(size: 32, weight: .semibold))
       #endif
-      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (10/9/2024)")
+      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (15/9/2024)")
       Text("Made by ElectricS01")
       Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
     }

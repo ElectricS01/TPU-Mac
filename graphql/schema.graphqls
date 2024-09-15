@@ -27,7 +27,10 @@ type Query {
   messagesPaged(input: PagedMessagesInput!): PaginatedMessageResponse!
   autoCollects(input: UserCollectionsInput!): PaginatedCollectionResponse!
   adminPlans: [Plan!]!
-  adminGetExperimentOverrides: [ExperimentOverride!]!
+  adminGetExperimentOverrides(
+    """If null or 0, will get the system global overrides"""
+    userId: Int
+  ): [ExperimentOverride!]!
   blockedUsers: [BlockedUser!]!
   chatInvite(input: InviteInput!): ChatInvite
   mailboxes: [ListResponse!]!
@@ -524,6 +527,13 @@ type Upload {
 
   """This is used for OCR scanned text from images."""
   textMetadata: String
+  sha256sum: String
+
+  """
+  The location of the file on a server. 's3' defines AWS S3, 'local' defines the local 'storage' folder, and any other string assumes a hostname of a server within the Flowinity network.
+  """
+  location: String!
+  mimeType: String!
   user: PartialUserBase
   item: CollectionItem
   collections: [Collection!]!
@@ -1587,6 +1597,8 @@ type Mutation {
   adminGenerateInsights(customGte: String, type: String!, userId: Float!): GenericSuccessObject!
   adminSetExperimentOverride(input: ExperimentOverrideInput!): ExperimentOverride!
   adminDeleteExperimentOverride(id: String!): GenericSuccessObject!
+  adminMigrateToS3: GenericSuccessObject!
+  adminGenerateMimeTypeMap: GenericSuccessObject!
   blockUser(input: BlockUserInput!): GenericSuccessObject!
   createChatInvite(input: CreateInviteInput!): ChatInvite!
   invalidateChatInvite(input: InvalidateInviteInput!): GenericSuccessObject!
@@ -1610,6 +1622,7 @@ type Mutation {
 
   """Currently in beta and only available to people with experiment opt-in."""
   addWorkspaceUser(input: WorkspaceUserInput!): WorkspaceUser!
+  markNotificationsAsRead: [Notification!]!
 }
 
 input UpdateUserInput {
