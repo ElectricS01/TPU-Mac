@@ -156,7 +156,7 @@ struct ContentView: View {
           HomeView(coreState: $coreState).tabItem {
             Label("Home", systemImage: "house")
           }
-          GalleryView(stars: .constant(false), collection: .constant(nil)).tabItem {
+          GalleryView(stars: .constant(false), collectionId: .constant(nil), collectionName: .constant(nil)).tabItem {
             Label("Gallery", systemImage: "photo.on.rectangle")
           }
           CollectionsView().tabItem {
@@ -248,7 +248,7 @@ struct SettingsView: View {
         Text("Coming soon")
       #else
         Text("TPU iOS").font(.system(size: 32, weight: .semibold))
-        Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (15/9/2024)")
+        Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (16/9/2024)")
         Text("Made by ElectricS01")
         Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
       #endif
@@ -271,7 +271,7 @@ struct AboutView: View {
       #else
         Text("TPU iOS").font(.system(size: 32, weight: .semibold))
       #endif
-      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (15/9/2024)")
+      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (16/9/2024)")
       Text("Made by ElectricS01")
       Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
     }
