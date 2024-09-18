@@ -82,18 +82,7 @@ struct CollectionsView: View {
       NavigationStack {
         ScrollView {
           HStack {
-            #if os(macOS)
-              Toggle(isOn: $showOwned) {
-                Text("Owned")
-              }.onChange(of: showOwned) {
-                getCollections()
-              }
-              Toggle(isOn: $showShared) {
-                Text("Shared")
-              }.onChange(of: showShared) {
-                getCollections()
-              }
-            #else
+            #if !os(macOS)
               Button(action: { showingSheet.toggle() }) {
                 Circle()
                   .fill(showOwned && showShared ? .gray.opacity(0.15) : .blue)
@@ -204,6 +193,18 @@ struct CollectionsView: View {
                 collectionIndex = index
               }
             }
+          }
+          .toolbar {
+            Toggle(isOn: $showOwned) {
+              Label("Owned", systemImage: "person.fill")
+            }.onChange(of: showOwned) {
+              getCollections()
+            }.help("Owned")
+            Toggle(isOn: $showShared) {
+              Label("Shared", systemImage: "shared.with.you")
+            }.onChange(of: showShared) {
+              getCollections()
+            }.help("Shared")
           }
           .id(0)
           .padding(EdgeInsets(top: 10, leading: 10, bottom: 0, trailing: 10))

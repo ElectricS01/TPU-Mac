@@ -128,9 +128,9 @@ struct ContentView: View {
             Button(action: {
               isPopover.toggle()
             }) {
-              Label("Notifications", systemImage: "bell").help("Notifications")
+              Label("Notifications", systemImage: "bell")
               Text(String(coreNotifications?.filter { $0.dismissed == false }.count ?? 0))
-            }.popover(isPresented: $isPopover, arrowEdge: .bottom) {
+            }.help("Notifications").popover(isPresented: $isPopover, arrowEdge: .bottom) {
               VStack {
                 Text("Notifications").font(.title)
                 ForEach(coreNotifications ?? [], id: \.self) { notification in
@@ -248,7 +248,7 @@ struct SettingsView: View {
         Text("Coming soon")
       #else
         Text("TPU iOS").font(.system(size: 32, weight: .semibold))
-        Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (17/9/2024)")
+        Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (18/9/2024)")
         Text("Made by ElectricS01")
         Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
       #endif
@@ -271,7 +271,7 @@ struct AboutView: View {
       #else
         Text("TPU iOS").font(.system(size: 32, weight: .semibold))
       #endif
-      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (17/9/2024)")
+      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (18/9/2024)")
       Text("Made by ElectricS01")
       Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
     }

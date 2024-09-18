@@ -92,23 +92,7 @@ struct GalleryView: View {
         ScrollView {
           VStack {
             HStack {
-#if os(macOS)
-              Toggle(isOn: $showImages) {
-                Text("Images")
-              }.onChange(of: showImages) {
-                getGallery()
-              }
-              Toggle(isOn: $showVideos) {
-                Text("Video")
-              }.onChange(of: showVideos) {
-                getGallery()
-              }
-              Toggle(isOn: $showOther) {
-                Text("Other")
-              }.onChange(of: showOther) {
-                getGallery()
-              }
-#else
+#if !os(macOS)
               Button(action: { showingSheet.toggle() }) {
                 Circle()
                   .fill(showImages && showVideos && showOther ? .gray.opacity(0.15) : .blue)
@@ -321,6 +305,23 @@ struct GalleryView: View {
                 .background()
                 .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
               }
+            }
+            .toolbar {
+              Toggle(isOn: $showImages) {
+                Label("Images", systemImage: "photo")
+              }.onChange(of: showImages) {
+                getGallery()
+              }.help("Images")
+              Toggle(isOn: $showVideos) {
+                Label("Videos", systemImage: "video")
+              }.onChange(of: showVideos) {
+                getGallery()
+              }.help("Videos")
+              Toggle(isOn: $showOther) {
+                Label("Other", systemImage: "doc")
+              }.onChange(of: showOther) {
+                getGallery()
+              }.help("Other")
             }
             .id(0)
             .padding(EdgeInsets(top: 10, leading: 10, bottom: 0, trailing: 10))
