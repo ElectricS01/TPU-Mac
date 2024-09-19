@@ -55,31 +55,31 @@ struct CollectionsView: View {
   }
 
   var body: some View {
-    if collectionOpen != -1 {
-      HStack(alignment: .center) {
-        LazyImage(url: URL(string: "https://i.electrics01.com/i/" + (collectionItems[collectionIndex].banner ?? "a050d6f271c3.png"))) { state in
-          if let image = state.image {
-            image.resizable().aspectRatio(contentMode: .fill)
-          } else if state.error != nil {
-            Color.red
-          } else {
-            ProgressView()
+    NavigationStack {
+      if collectionOpen != -1 {
+        HStack(alignment: .center) {
+          LazyImage(url: URL(string: "https://i.electrics01.com/i/" + (collectionItems[collectionIndex].banner ?? "a050d6f271c3.png"))) { state in
+            if let image = state.image {
+              image.resizable().aspectRatio(contentMode: .fill)
+            } else if state.error != nil {
+              Color.red
+            } else {
+              ProgressView()
+            }
+          }.frame(minWidth: 300, maxWidth: .infinity, minHeight: 200, maxHeight: 200).overlay(alignment: .bottom) {
+            VStack(alignment: .leading, spacing: 4) {
+              Text(collectionItems[collectionIndex].name).font(.title2).lineLimit(1)
+              Text("Upload count: " + String(collectionItems[collectionIndex].itemCount ?? 0))
+              Text("Created at: " + DateUtils.dateFormat(collectionItems[collectionIndex].createdAt))
+              Text("Owner: " + (collectionItems[collectionIndex].user?.username ?? "none"))
+            }
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color.black.opacity(0.7)) // Dark background with opacity
           }
-        }.frame(minWidth: 300, maxWidth: .infinity, minHeight: 200, maxHeight: 200).overlay(alignment: .bottom) {
-          VStack(alignment: .leading, spacing: 4) {
-            Text(collectionItems[collectionIndex].name).font(.title2).lineLimit(1)
-            Text("Upload count: " + String(collectionItems[collectionIndex].itemCount ?? 0))
-            Text("Created at: " + DateUtils.dateFormat(collectionItems[collectionIndex].createdAt))
-            Text("Owner: " + (collectionItems[collectionIndex].user?.username ?? "none"))
-          }
-          .padding()
-          .frame(maxWidth: .infinity, alignment: .leading)
-          .background(Color.black.opacity(0.7)) // Dark background with opacity
         }
-      }
-      GalleryView(stars: .constant(false), collectionId: .constant(collectionOpen), collectionName: .constant(collectionItems[collectionIndex].name))
-    } else {
-      NavigationStack {
+        GalleryView(stars: .constant(false), collectionId: .constant(collectionOpen), collectionName: .constant(collectionItems[collectionIndex].name))
+      } else {
         ScrollView {
           HStack {
             #if !os(macOS)
