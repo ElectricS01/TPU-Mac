@@ -11,14 +11,14 @@ public struct DeleteUploadInput: InputObject {
   }
 
   public init(
-    items: [Double]
+    items: [Int]
   ) {
     __data = InputDict([
       "items": items
     ])
   }
 
-  public var items: [Double] {
+  public var items: [Int] {
     get { __data["items"] }
     set { __data["items"] = newValue }
   }

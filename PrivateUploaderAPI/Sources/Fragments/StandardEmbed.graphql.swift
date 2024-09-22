@@ -34,8 +34,8 @@ public struct StandardEmbed: PrivateUploaderAPI.SelectionSet, Fragment {
       .field("url", String?.self),
       .field("proxyUrl", String?.self),
       .field("attachment", String?.self),
-      .field("width", Double?.self),
-      .field("height", Double?.self),
+      .field("width", Int?.self),
+      .field("height", Int?.self),
       .field("isInternal", Bool.self),
       .field("videoEmbedUrl", String?.self),
       .field("upload", Upload?.self),
@@ -46,8 +46,8 @@ public struct StandardEmbed: PrivateUploaderAPI.SelectionSet, Fragment {
     public var url: String? { __data["url"] }
     public var proxyUrl: String? { __data["proxyUrl"] }
     public var attachment: String? { __data["attachment"] }
-    public var width: Double? { __data["width"] }
-    public var height: Double? { __data["height"] }
+    public var width: Int? { __data["width"] }
+    public var height: Int? { __data["height"] }
     public var isInternal: Bool { __data["isInternal"] }
     /// Used for trusted video embed sources, such as YouTube.
     public var videoEmbedUrl: String? { __data["videoEmbedUrl"] }
@@ -68,7 +68,7 @@ public struct StandardEmbed: PrivateUploaderAPI.SelectionSet, Fragment {
         .field("id", Int.self),
         .field("createdAt", PrivateUploaderAPI.Date.self),
         .field("attachment", String.self),
-        .field("userId", Double.self),
+        .field("userId", Int.self),
         .field("name", String?.self),
         .field("type", String.self),
         .field("fileSize", Double.self),
@@ -77,7 +77,7 @@ public struct StandardEmbed: PrivateUploaderAPI.SelectionSet, Fragment {
       public var id: Int { __data["id"] }
       public var createdAt: PrivateUploaderAPI.Date { __data["createdAt"] }
       public var attachment: String { __data["attachment"] }
-      public var userId: Double { __data["userId"] }
+      public var userId: Int { __data["userId"] }
       public var name: String? { __data["name"] }
       public var type: String { __data["type"] }
       public var fileSize: Double { __data["fileSize"] }

@@ -54,7 +54,7 @@ public class StateQuery: GraphQLQuery {
         public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Announcement }
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
-          .field("userId", Double?.self),
+          .field("userId", Int?.self),
           .field("content", String.self),
           .field("type", String?.self),
           .field("id", Int.self),
@@ -62,7 +62,7 @@ public class StateQuery: GraphQLQuery {
           .field("user", User?.self),
         ] }
 
-        public var userId: Double? { __data["userId"] }
+        public var userId: Int? { __data["userId"] }
         public var content: String { __data["content"] }
         public var type: String? { __data["type"] }
         public var id: Int { __data["id"] }
@@ -200,7 +200,7 @@ public class StateQuery: GraphQLQuery {
           .field("id", Int.self),
           .field("image", String?.self),
           .field("name", String.self),
-          .field("priority", Double?.self),
+          .field("priority", Int?.self),
           .field("tooltip", String?.self),
         ] }
 
@@ -209,7 +209,7 @@ public class StateQuery: GraphQLQuery {
         public var id: Int { __data["id"] }
         public var image: String? { __data["image"] }
         public var name: String { __data["name"] }
-        public var priority: Double? { __data["priority"] }
+        public var priority: Int? { __data["priority"] }
         public var tooltip: String? { __data["tooltip"] }
       }
 

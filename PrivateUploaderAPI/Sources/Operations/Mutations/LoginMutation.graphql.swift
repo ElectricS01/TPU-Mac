@@ -56,12 +56,12 @@ public class LoginMutation: GraphQLMutation {
         public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.LoginUser }
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
-          .field("id", Double.self),
+          .field("id", Int.self),
           .field("username", String.self),
           .field("email", String.self),
         ] }
 
-        public var id: Double { __data["id"] }
+        public var id: Int { __data["id"] }
         public var username: String { __data["username"] }
         public var email: String { __data["email"] }
       }

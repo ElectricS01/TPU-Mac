@@ -59,7 +59,7 @@ public class UserCollectionsQuery: GraphQLQuery {
           .field("id", Int.self),
           .field("name", String.self),
           .field("banner", String?.self),
-          .field("userId", Double.self),
+          .field("userId", Int.self),
           .field("shareLink", String?.self),
           .field("createdAt", PrivateUploaderAPI.Date.self),
           .field("user", User?.self),
@@ -73,7 +73,7 @@ public class UserCollectionsQuery: GraphQLQuery {
         public var name: String { __data["name"] }
         /// The recommended way to obtain the banner for a collection, it uses field `image`, and if null, falls back to the last added image preview.
         public var banner: String? { __data["banner"] }
-        public var userId: Double { __data["userId"] }
+        public var userId: Int { __data["userId"] }
         public var shareLink: String? { __data["shareLink"] }
         public var createdAt: PrivateUploaderAPI.Date { __data["createdAt"] }
         public var user: User? { __data["user"] }

@@ -289,7 +289,7 @@ struct GalleryView: View {
                       downloadTask.resume()
                     }
                     Button("Delete") {
-                      Network.shared.apollo.perform(mutation: DeleteUploadsMutation(input: DeleteUploadInput(items: [Double(galleryItem.id)]))) { result in
+                      Network.shared.apollo.perform(mutation: DeleteUploadsMutation(input: DeleteUploadInput(items: [galleryItem.id]))) { result in
                         switch result {
                         case .success:
                           galleryItems.remove(at: galleryItems.firstIndex(of: galleryItem)!)

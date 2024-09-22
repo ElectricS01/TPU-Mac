@@ -2,7 +2,7 @@ type Query {
   currentUser: User
   user(input: UserProfileInput!): PartialUserPublic
   trackedUsers: [PartialUserFriend!]!
-  trackedUserIds: [Float!]!
+  trackedUserIds: [Int!]!
   coreState: CoreState!
   setupStep: Int!
   experiments(version: Int): [ExperimentType!]!
@@ -57,11 +57,11 @@ type User {
   darkTheme: Boolean!
   emailVerified: Boolean!
   banned: Boolean!
-  inviteId: Float
+  inviteId: Int
   discordPrecache: Boolean!
   avatar: String
-  subdomainId: Float @deprecated(reason: "Subdomains are no longer available as of TPUv2/NEXT.")
-  domainId: Float!
+  subdomainId: Int @deprecated(reason: "Subdomains are no longer available as of TPUv2/NEXT.")
+  domainId: Int!
   totpEnable: Boolean!
 
   """How much the user has uploaded in bytes."""
@@ -73,10 +73,10 @@ type User {
   """
   Subscriptions are no longer used as they were in TPUv1, and are now used to store metadata for permanent Gold subscriptions.
   """
-  subscriptionId: Float
+  subscriptionId: Int
   fakePath: String @deprecated(reason: "Fake paths are no longer available as of TPUv2/NEXT.")
-  themeId: Float! @deprecated(reason: "Replaced with `themeEngine`, used in legacy clients such as legacy.privateuploader.com.")
-  itemsPerPage: Float!
+  themeId: Int! @deprecated(reason: "Replaced with `themeEngine`, used in legacy clients such as legacy.privateuploader.com.")
+  itemsPerPage: Int!
 
   """UserV2 banner."""
   banner: String
@@ -97,7 +97,7 @@ type User {
   profileLayout: JSON
 
   """Collections that are excluded from the Collections filter in Gallery."""
-  excludedCollections: [Float!]
+  excludedCollections: [Int!]
   language: String!
   publicProfile: Boolean!
 
@@ -146,7 +146,7 @@ type User {
   sessions(input: SessionInput): [Session!]!
 
   """How many AutoCollect approvals the user needs to approve/reject."""
-  pendingAutoCollects: Float
+  pendingAutoCollects: Int
   legacy: Boolean!
   forceAgeVerification: Boolean!
   canAccessRestrictedContent: Boolean!
@@ -269,7 +269,7 @@ type Domain {
   DNSProvisioned: Boolean! @deprecated(reason: "Use `active` instead.")
   active: Boolean!
   zone: String @deprecated(reason: "Cloudflare integration was removed in TPUv2.")
-  advanced: Float @deprecated(reason: "Cloudflare integration was removed in TPUv2.")
+  advanced: Int @deprecated(reason: "Cloudflare integration was removed in TPUv2.")
   subdomains: Boolean! @deprecated(reason: "Subdomains were removed in TPUv2.")
   subdomainsCreate: Boolean! @deprecated(reason: "Subdomains were removed in TPUv2.")
   customUserEligibility: [Int!] @deprecated(reason: "Granular user control was removed in TPUv2.")
@@ -311,7 +311,7 @@ type Badge {
   icon: String
   color: String
   unlocked: Boolean!
-  priority: Float
+  priority: Int
   plan: Plan!
   users: [PartialUserBase!]!
 }
@@ -319,7 +319,7 @@ type Badge {
 type Notification {
   id: Int!
   message: String!
-  userId: Float!
+  userId: Int!
   dismissed: Boolean!
   route: String
   createdAt: Date!
@@ -329,7 +329,7 @@ type Notification {
 
 type Integration {
   id: Int!
-  userId: Float!
+  userId: Int!
   type: String!
   expiresAt: DateTimeISO
   createdAt: Date!
@@ -361,25 +361,25 @@ type TPUSubscription {
 }
 
 type SubscriptionMetadata {
-  hours: Float!
+  hours: Int!
 }
 
 type AutoCollectRule {
   id: Int!
   name: String!
   enabled: Boolean!
-  collectionId: Float!
+  collectionId: Int!
   requireApproval: Boolean!
   rules: [AutoCollectParentRule!]!
 }
 
 type AutoCollectParentRule {
-  id: Float!
+  id: Int!
   rules: [SubRule!]!
 }
 
 type SubRule {
-  id: Float!
+  id: Int!
   type: String!
   value: String!
   operator: String!
@@ -468,7 +468,7 @@ type Collection {
   Please use field `banner` instead if you want to obtain the banner for a collection.
   """
   image: String
-  userId: Float!
+  userId: Int!
   shareLink: String
   avatar: String
 
@@ -492,9 +492,9 @@ type Collection {
 
 type CollectionItem {
   id: Int!
-  collectionId: Float!
-  attachmentId: Float!
-  userId: Float!
+  collectionId: Int!
+  attachmentId: Int!
+  userId: Int!
 
   """
   Used to prevent duplicates by forming `uploadId-collectionId`. Can be null for items created before October 2022.
@@ -513,7 +513,7 @@ type Upload {
   createdAt: Date!
   updatedAt: Date!
   attachment: String!
-  userId: Float!
+  userId: Int!
   name: String
   originalFilename: String
   type: String!
@@ -544,8 +544,8 @@ type Upload {
 
 type Star {
   id: Int!
-  userId: Float!
-  attachmentId: Float!
+  userId: Int!
+  attachmentId: Int!
   createdAt: Date!
   updatedAt: Date!
   user: PartialUserBase
@@ -555,7 +555,7 @@ type Star {
 type AutoCollectApproval {
   id: Int!
   autoCollectRuleId: Int!
-  uploadId: Float!
+  uploadId: Int!
   collectionId: Int!
   userId: Int
   approved: Boolean!
@@ -569,13 +569,13 @@ type CollectionUser {
   id: Int!
   createdAt: Date!
   updatedAt: Date!
-  collectionId: Float!
+  collectionId: Int!
   read: Boolean!
   write: Boolean!
   configure: Boolean!
   accepted: Boolean!
-  recipientId: Float
-  senderId: Float
+  recipientId: Int
+  senderId: Int
   identifier: String
   collection: Collection
   user: PartialUserBase
@@ -590,10 +590,10 @@ type PermissionsMetadata {
 
 type FriendNickname {
   id: Int!
-  userId: Float!
+  userId: Int!
   createdAt: Date!
   updatedAt: Date!
-  friendId: Float!
+  friendId: Int!
   nickname: String!
   user: PartialUserBase
   friend: PartialUserBase
@@ -616,7 +616,7 @@ enum PlatformType {
 type Experiment {
   key: String!
   value: String!
-  userId: Float!
+  userId: Int!
   user: PartialUserBase
 }
 
@@ -627,7 +627,7 @@ type Session {
   token: String
   createdAt: Date
   updatedAt: Date
-  userId: Float!
+  userId: Int!
   scopes: String!
   type: SessionType!
   expiredAt: DateTimeISO
@@ -652,7 +652,7 @@ type AccessedFrom {
   isp: String
   location: String
   date: String!
-  asn: Float
+  asn: Int
 }
 
 input SessionInput {
@@ -681,7 +681,7 @@ type PartialUserPublic {
   quota: Float!
   stats: Stats
   themeEngine: JSON
-  xp: Float
+  xp: Int
   mutualCollections: [Collection!]!
   notifications: [Notification!]!
   integrations: [Integration!]!
@@ -693,7 +693,7 @@ type PartialUserPublic {
 type ProfileLayout {
   layout: ProfileLayoutObject!
   config: ProfileLayoutConfig!
-  version: Float!
+  version: Int!
 }
 
 type ProfileLayoutObject {
@@ -711,10 +711,10 @@ type ProfileLayoutComponent {
 }
 
 type ProfileLayoutProps {
-  height: Float
+  height: Int
   children: [ProfileLayoutComponent!]
   friendsOnly: Boolean
-  display: Float
+  display: Int
   type: String
   links: [ProfileLayoutPropLink!]
 }
@@ -726,12 +726,12 @@ type ProfileLayoutPropLink {
 }
 
 type ProfileLayoutConfig {
-  containerMargin: Float
+  containerMargin: Int
   showStatsSidebar: Boolean!
 }
 
 input UserProfileInput {
-  id: Float
+  id: Int
   username: String
 }
 
@@ -775,10 +775,10 @@ type CoreState {
   domain: String!
 
   """Uptime of the TPU Server in seconds."""
-  uptime: Float!
+  uptime: Int!
 
   """Uptime of the system in seconds."""
-  uptimeSys: Float!
+  uptimeSys: Int!
   commitVersion: String!
 
   """
@@ -795,7 +795,7 @@ type Connection {
 
 type Announcement {
   id: Int!
-  userId: Float
+  userId: Int
   content: String!
   type: String
   createdAt: Date
@@ -892,14 +892,14 @@ type Pager {
   endPage: Int!
   startIndex: Int!
   endIndex: Int!
-  pages: [Float!]!
+  pages: [Int!]!
 }
 
 input UserCollectionsInput {
   filter: [CollectionFilter!]! = [ALL]
   search: String
-  limit: Float
-  page: Float! = 1
+  limit: Int
+  page: Int! = 1
   onlyInvited: Boolean! = false
 }
 
@@ -1011,7 +1011,7 @@ type Chat {
   """
   Null if the chat is owned by a Colubrina legacy user, or the account was deleted.
   """
-  userId: Float
+  userId: Int
   icon: String
   createdAt: DateTimeISO!
   updatedAt: DateTimeISO!
@@ -1158,8 +1158,8 @@ type EmbedMedia {
   url: String
   proxyUrl: String
   attachment: String
-  width: Float
-  height: Float
+  width: Int
+  height: Int
   isInternal: Boolean!
   upload: Upload
   mimeType: String
@@ -1244,7 +1244,7 @@ type Prefix {
 type LookupPrefix {
   command: String!
   description: String!
-  botId: Float!
+  botId: Int!
 }
 
 input LookupPrefixInput {
@@ -1269,8 +1269,8 @@ type WorkspaceFolder {
   createdAt: Date!
   updatedAt: Date!
   name: String!
-  workspaceId: Float!
-  folderId: Float
+  workspaceId: Int!
+  folderId: Int
   children: [Note!]!
   workspace: Workspace!
 }
@@ -1282,7 +1282,7 @@ type Note {
   name: String!
   data: WorkspaceNote
   metadata: WorkspaceNoteMetadata
-  workspaceFolderId: Float!
+  workspaceFolderId: Int!
   shareLink: String
   versions: [NoteVersion!]!
   permissions: NotePermissionsMetadata
@@ -1317,7 +1317,7 @@ type WorkspaceUser {
   id: Int!
   createdAt: Date!
   updatedAt: Date!
-  workspaceId: Float!
+  workspaceId: Int!
   read: Boolean!
   write: Boolean!
   configure: Boolean!
@@ -1333,7 +1333,7 @@ type WorkspaceUser {
 }
 
 input NoteInput {
-  id: Float
+  id: Int
   shareLink: String
 }
 
@@ -1413,9 +1413,9 @@ type ListResponse {
 }
 
 input GetMailInput {
-  userId: Float!
+  userId: Int!
   mailbox: String!
-  page: Float
+  page: Int
 }
 
 type OauthApp {
@@ -1428,8 +1428,8 @@ type OauthApp {
   secret: String
   description: String
   scopes: String!
-  userId: Float!
-  botId: Float
+  userId: Int!
+  botId: Int
   private: Boolean!
   user: PartialUserBase
   bot: PartialUserBase
@@ -1440,7 +1440,7 @@ type OauthApp {
 
 type OauthUser {
   id: String!
-  userId: Float!
+  userId: Int!
   oauthAppId: String!
   active: Boolean!
   createdAt: Date!
@@ -1462,8 +1462,8 @@ type OauthConsentApp {
   redirectUri: String
   description: String
   scopes: String!
-  userId: Float!
-  botId: Float
+  userId: Int!
+  botId: Int
   private: Boolean!
   user: PartialUserBase
   bot: PartialUserBase
@@ -1509,8 +1509,8 @@ enum AuditLogActionType {
 
 input AuditLogInput {
   associationId: Int!
-  page: Float! = 1
-  limit: Float! = 24
+  page: Int! = 1
+  limit: Int! = 24
 }
 
 input AutoCollectRuleQueryInput {
@@ -1549,8 +1549,8 @@ type Mutation {
   updateChat(input: UpdateChatInput!): Chat!
   deleteGroup(input: DangerZoneChatInput!): GenericSuccessObject!
   transferGroupOwnership(input: TransferOwnershipInput!): Chat!
-  typing(input: Float!): Boolean!
-  cancelTyping(input: Float!): Boolean!
+  typing(input: Int!): Boolean!
+  cancelTyping(input: Int!): Boolean!
   addChatUsers(input: AddChatUser!): GenericSuccessObject!
   toggleUserRank(input: AddRank!): GenericSuccessObject!
   leaveChat(input: LeaveChatInput!): GenericSuccessObject!
@@ -1594,7 +1594,7 @@ type Mutation {
   adminSendEmailForUnverifiedUsers: GenericSuccessObject!
   adminClearCache(input: ClearCacheInput!): GenericSuccessObject!
   adminDebugBatch: GenericSuccessObject!
-  adminGenerateInsights(customGte: String, type: String!, userId: Float!): GenericSuccessObject!
+  adminGenerateInsights(customGte: String, type: String!, userId: Int!): GenericSuccessObject!
   adminSetExperimentOverride(input: ExperimentOverrideInput!): ExperimentOverride!
   adminDeleteExperimentOverride(id: String!): GenericSuccessObject!
   adminMigrateToS3: GenericSuccessObject!
@@ -1631,14 +1631,14 @@ input UpdateUserInput {
   discordPrecache: Boolean
   darkTheme: Boolean
   description: String
-  itemsPerPage: Float
+  itemsPerPage: Int
   storedStatus: String
   weatherUnit: String
   themeEngine: JSON
   insights: String
   profileLayout: JSON
   language: String
-  excludedCollections: [Float!]
+  excludedCollections: [Int!]
   publicProfile: Boolean
   privacyPolicyAccepted: Boolean
   nameColor: String
@@ -1701,7 +1701,7 @@ type LoginResponse {
 }
 
 type LoginUser {
-  id: Float!
+  id: Int!
   username: String!
   email: String!
   banned: Boolean!
@@ -1786,7 +1786,7 @@ input LeaveCollectionInput {
 }
 
 input DeleteUploadInput {
-  items: [Float!]!
+  items: [Int!]!
 }
 
 input UpdateUploadInput {
@@ -1805,7 +1805,7 @@ input StarUploadInput {
 }
 
 input CreateChatInput {
-  users: [Float!]!
+  users: [Int!]!
   name: String
   type: ChatType
 }
@@ -1859,7 +1859,7 @@ input TransferOwnershipInput {
 
 input AddChatUser {
   chatAssociationId: Int!
-  users: [Float!]!
+  users: [Int!]!
   action: ToggleUser!
 }
 
@@ -1895,11 +1895,11 @@ input ReadChatInput {
 
 input CreateWorkspaceFolderInput {
   name: String!
-  workspaceId: Float!
+  workspaceId: Int!
 }
 
 input DeleteWorkspaceItemInput {
-  id: Float!
+  id: Int!
   type: WorkspaceItemType!
 }
 
@@ -1911,7 +1911,7 @@ enum WorkspaceItemType {
 }
 
 input SaveNoteInput {
-  id: Float!
+  id: Int!
   data: WorkspaceNoteInput!
   manualSave: Boolean
   name: String
@@ -1924,7 +1924,7 @@ input WorkspaceNoteInput {
 }
 
 input CreateNoteInput {
-  workspaceFolderId: Float!
+  workspaceFolderId: Int!
   name: String!
 }
 
@@ -2040,8 +2040,8 @@ enum AutoCollectAction {
 }
 
 input AddToCollectionInput {
-  collectionId: Float!
-  items: [Float!]!
+  collectionId: Int!
+  items: [Int!]!
 }
 
 input ClearCacheInput {
@@ -2256,7 +2256,7 @@ type CreateUploadEvent {
 }
 
 type ChatTypingEvent {
-  chatId: Float!
+  chatId: Int!
   user: PartialUserFriend!
   expires: Float
 }

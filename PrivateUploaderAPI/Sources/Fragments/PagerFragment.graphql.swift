@@ -22,7 +22,7 @@ public struct PagerFragment: PrivateUploaderAPI.SelectionSet, Fragment {
     .field("endPage", Int.self),
     .field("startIndex", Int.self),
     .field("endIndex", Int.self),
-    .field("pages", [Double].self),
+    .field("pages", [Int].self),
   ] }
 
   public var totalItems: Int { __data["totalItems"] }
@@ -33,5 +33,5 @@ public struct PagerFragment: PrivateUploaderAPI.SelectionSet, Fragment {
   public var endPage: Int { __data["endPage"] }
   public var startIndex: Int { __data["startIndex"] }
   public var endIndex: Int { __data["endIndex"] }
-  public var pages: [Double] { __data["pages"] }
+  public var pages: [Int] { __data["pages"] }
 }

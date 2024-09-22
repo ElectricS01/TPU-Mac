@@ -12,18 +12,37 @@ import UserNotifications
 
 @main
 struct TPU_MacApp: App {
+  @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
   @Environment(\.scenePhase) private var scenePhase
 
   var body: some Scene {
     WindowGroup {
       ContentView()
         .onAppear {
+          UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { _, error in
+            if let error = error {
+              print("Error requesting notifications permission: \(error)")
+            }
+          }
+          UNUserNotificationCenter.current().delegate = appDelegate
           UNUserNotificationCenter.current().setBadgeCount(0)
         }
-#if os(macOS)
+      #if os(macOS)
         .frame(minWidth: 500, maxWidth: .infinity, minHeight: 250, maxHeight: .infinity)
-#endif
+      #endif
     }
+  }
+}
+
+class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDelegate {
+  func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+    let userInfo = response.notification.request.content.userInfo
+
+    if let pageID = userInfo["to"] as? Int {
+      NotificationCenter.default.post(name: NSNotification.Name("NavigateToPage"), object: nil, userInfo: ["to": pageID])
+    }
+
+    completionHandler()
   }
 }
 

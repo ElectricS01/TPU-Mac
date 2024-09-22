@@ -13,8 +13,8 @@ public struct UserCollectionsInput: InputObject {
   public init(
     filter: [GraphQLEnum<CollectionFilter>]?,
     search: GraphQLNullable<String> = nil,
-    limit: GraphQLNullable<Double> = nil,
-    page: Double?,
+    limit: GraphQLNullable<Int> = nil,
+    page: Int?,
     onlyInvited: Bool?
   ) {
     __data = InputDict([
@@ -36,12 +36,12 @@ public struct UserCollectionsInput: InputObject {
     set { __data["search"] = newValue }
   }
 
-  public var limit: GraphQLNullable<Double> {
+  public var limit: GraphQLNullable<Int> {
     get { __data["limit"] }
     set { __data["limit"] = newValue }
   }
 
-  public var page: Double? {
+  public var page: Int? {
     get { __data["page"] }
     set { __data["page"] = newValue }
   }

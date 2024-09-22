@@ -138,7 +138,7 @@ public class PagedMessagesQuery: GraphQLQuery {
         public var endPage: Int { __data["endPage"] }
         public var startIndex: Int { __data["startIndex"] }
         public var endIndex: Int { __data["endIndex"] }
-        public var pages: [Double] { __data["pages"] }
+        public var pages: [Int] { __data["pages"] }
 
         public struct Fragments: FragmentContainer {
           public let __data: DataDict

@@ -190,15 +190,14 @@ struct CommsView: View {
     return message
   }
   
-  func scheduleNotification(title: String, body: String) {
-    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { _, _ in
-    }
+  func scheduleNotification(title: String, body: String, to: Int) {
     notifications += 1
     UNUserNotificationCenter.current().setBadgeCount(notifications)
     let content = UNMutableNotificationContent()
     content.title = title
     content.body = body
     content.sound = UNNotificationSound.default
+    content.userInfo = ["to": to]
     
     let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
     UNUserNotificationCenter.current().add(request) { error in
@@ -219,8 +218,8 @@ struct CommsView: View {
               chatMessages.append(newMessage)
             }
             #if os(macOS)
-            if !NSApplication.shared.isActive {
-              scheduleNotification(title: message.user?.username ?? "Unknown User", body: message.content ?? "Unknown Message")
+            if !NSApplication.shared.isActive, coreUser?.id != message.userId {
+              scheduleNotification(title: message.user?.username ?? "Unknown User", body: message.content ?? "Unknown Message", to: message.chatId)
             }
             #endif
           }
@@ -328,7 +327,6 @@ struct CommsView: View {
                             focusedField = .sending
                           })
                           .onSubmit {
-                            print("EWWWWWEKUBFYUWVBEUYKFVWYEFUYWVEUFEWWWWWEKUBFYUWVBEUYKFVWYEFUYWVEUFEWWWWWEKUBFYUWVBEUYKFVWYEFUYWVEUFEWWWWWEKUBFYUWVBEUYKFVWYEFUYWVEUFEWWWWWEKUBFYUWVBEUYKFVWYEFUYWVEUFEWWWWWEKUBFYUWVBEUYKFVWYEFUYWVEUFEWWWWWEKUBFYUWVBEUYKFVWYEFUYWVEUFEWWWWWEKUBFYUWVBEUYKFVWYEFUYWVEUFEWWWWWEKUBFYUWVBEUYKFVWYEFUYWVEUFEWWWWWEKUBFYUWVBEUYKFVWYEFUYWVEUFEWWWWWEKUBFYUWVBEUYKFVWYEFUYWVEUF")
                             editMessage()
                           }
                           .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -712,6 +710,11 @@ struct CommsView: View {
         }
       }
       #endif
+    }
+    .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("NavigateToPage"))) { notification in
+      if let userInfo = notification.userInfo, let pageID = userInfo["to"] as? Int {
+        getChat(chatId: chatsList.firstIndex(where: { $0.id == pageID }))
+      }
     }
   }
 }
