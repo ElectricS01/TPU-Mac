@@ -12,7 +12,9 @@ import UserNotifications
 
 @main
 struct TPU_MacApp: App {
-  @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+  #if os(macOS)
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+  #endif
   @Environment(\.scenePhase) private var scenePhase
 
   var body: some Scene {
@@ -24,7 +26,9 @@ struct TPU_MacApp: App {
               print("Error requesting notifications permission: \(error)")
             }
           }
-          UNUserNotificationCenter.current().delegate = appDelegate
+          #if os(macOS)
+            UNUserNotificationCenter.current().delegate = appDelegate
+          #endif
           UNUserNotificationCenter.current().setBadgeCount(0)
         }
       #if os(macOS)
@@ -34,17 +38,19 @@ struct TPU_MacApp: App {
   }
 }
 
-class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDelegate {
-  func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-    let userInfo = response.notification.request.content.userInfo
+#if os(macOS)
+  class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDelegate {
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+      let userInfo = response.notification.request.content.userInfo
 
-    if let pageID = userInfo["to"] as? Int {
-      NotificationCenter.default.post(name: NSNotification.Name("NavigateToPage"), object: nil, userInfo: ["to": pageID])
+      if let pageID = userInfo["to"] as? Int {
+        NotificationCenter.default.post(name: NSNotification.Name("NavigateToPage"), object: nil, userInfo: ["to": pageID])
+      }
+
+      completionHandler()
     }
-
-    completionHandler()
   }
-}
+#endif
 
 struct ProfilePicture: View {
   var avatar: String?
