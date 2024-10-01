@@ -248,7 +248,7 @@ struct SettingsView: View {
         Text("Coming soon")
       #else
         Text("TPU iOS").font(.system(size: 32, weight: .semibold))
-        Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (26/9/2024)")
+        Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (1/10/2024)")
         Text("Made by ElectricS01")
         Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
       #endif
@@ -266,12 +266,8 @@ struct AboutView: View {
     VStack {
       Text("About")
         .navigationTitle("About")
-      #if os(macOS)
-        Text("TPU Mac").font(.system(size: 32, weight: .semibold))
-      #else
-        Text("TPU iOS").font(.system(size: 32, weight: .semibold))
-      #endif
-      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (26/9/2024)")
+      Text("TPU Mac").font(.system(size: 32, weight: .semibold))
+      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (1/10/2024)")
       Text("Made by ElectricS01")
       Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
     }

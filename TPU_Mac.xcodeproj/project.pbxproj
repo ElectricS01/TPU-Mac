@@ -26,6 +26,7 @@
 		C4D7E5062AF4D4FC008308CA /* CommsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D7E5052AF4D4FC008308CA /* CommsView.swift */; };
 		C4DC9A022C9FD5E000C80E8C /* CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4DC9A012C9FD5E000C80E8C /* CollectionView.swift */; };
 		C4DD4D492C4892AE00DF1A22 /* ApolloSQLite in Frameworks */ = {isa = PBXBuildFile; productRef = C4DD4D482C4892AE00DF1A22 /* ApolloSQLite */; };
+		C4FD79E32CABE2ED00A6FDEB /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4FD79E22CABE2ED00A6FDEB /* ChatView.swift */; };
 		C4FE71542AD3F085003E4DC0 /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C4FE71532AD3F085003E4DC0 /* KeychainSwift */; };
 		C4FE71582AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4FE71572AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift */; };
 /* End PBXBuildFile section */
@@ -66,6 +67,7 @@
 		C48D5DB72AF4D2DB00067554 /* graphql */ = {isa = PBXFileReference; lastKnownFileType = folder; path = graphql; sourceTree = "<group>"; };
 		C4D7E5052AF4D4FC008308CA /* CommsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommsView.swift; sourceTree = "<group>"; };
 		C4DC9A012C9FD5E000C80E8C /* CollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionView.swift; sourceTree = "<group>"; };
+		C4FD79E22CABE2ED00A6FDEB /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		C4FE71572AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkInterceptorProvider.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -133,6 +135,7 @@
 				C4DC9A012C9FD5E000C80E8C /* CollectionView.swift */,
 				C45099162ACFFA7F00FA9247 /* ContentView.swift */,
 				C4D7E5052AF4D4FC008308CA /* CommsView.swift */,
+				C4FD79E22CABE2ED00A6FDEB /* ChatView.swift */,
 				C4060AC32B8C10A600236E0E /* HomeView.swift */,
 				C45C3D9A2B68DCB300D5AB4D /* GalleryView.swift */,
 				C45099182ACFFA8100FA9247 /* Assets.xcassets */,
@@ -323,6 +326,7 @@
 				C4569DF72AD1828300F17C06 /* Network.swift in Sources */,
 				C45099172ACFFA7F00FA9247 /* ContentView.swift in Sources */,
 				C47E19752BEE04D1004B14C4 /* CollectionsView.swift in Sources */,
+				C4FD79E32CABE2ED00A6FDEB /* ChatView.swift in Sources */,
 				C4FE71582AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift in Sources */,
 				C4D7E5062AF4D4FC008308CA /* CommsView.swift in Sources */,
 				C4060AC42B8C10A600236E0E /* HomeView.swift in Sources */,
@@ -489,7 +493,7 @@
 				CODE_SIGN_ENTITLEMENTS = TPU_Mac/TPU_Mac.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"TPU_Mac/Preview Content\"";
 				DEVELOPMENT_TEAM = PK36GR28A7;
@@ -514,7 +518,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.3.4;
+				MARKETING_VERSION = 0.3.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "ElectricS01.TPU-Mac";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -532,7 +536,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = TPU_Mac/TPU_Mac.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"TPU_Mac/Preview Content\"";
 				DEVELOPMENT_TEAM = PK36GR28A7;
@@ -557,7 +561,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.3.4;
+				MARKETING_VERSION = 0.3.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "ElectricS01.TPU-Mac";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
