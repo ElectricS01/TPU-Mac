@@ -55,94 +55,13 @@ struct CollectionsView: View {
   var body: some View {
     NavigationStack {
       ScrollView {
-        HStack {
-          #if !os(macOS)
-            Button(action: { showingSheet.toggle() }) {
-              Circle()
-                .fill(showOwned && showShared ? .gray.opacity(0.15) : .blue)
-                .frame(width: 30, height: 30)
-                .overlay {
-                  Image(systemName: "line.3.horizontal.decrease")
-                    .font(.system(size: 13.0, weight: .semibold))
-                    .foregroundColor(showOwned && showShared ? .blue : .primary)
-                }.sheet(isPresented: $showingSheet) {
-                  NavigationView {
-                    Form {
-                      Button(action: {
-                        showOwned = true
-                        showShared = true
-                        getCollections()
-                      }) {
-                        HStack {
-                          Label {
-                            Text("All Items").foregroundColor(.primary)
-                          } icon: {
-                            Image(systemName: "photo.on.rectangle")
-                          }
-                          if showOwned && showShared {
-                            Spacer()
-                            Image(systemName: "checkmark").foregroundColor(.blue)
-                          }
-                        }
-                      }
-                      Section(header: Text("Show")) {
-                        Button(action: {
-                          showOwned.toggle()
-                          getCollections()
-                        }) {
-                          HStack {
-                            Label {
-                              Text("Owned").foregroundColor(.primary)
-                            } icon: {
-                              Image(systemName: "person")
-                            }
-                            if showOwned {
-                              Spacer()
-                              Image(systemName: "checkmark").foregroundColor(.blue)
-                            }
-                          }
-                        }
-                        Button(action: {
-                          showShared.toggle()
-                          getCollections()
-                        }) {
-                          HStack {
-                            Label {
-                              Text("Shared").foregroundColor(.primary)
-                            } icon: {
-                              Image(systemName: "shared.with.you")
-                            }
-                            if showShared {
-                              Spacer()
-                              Image(systemName: "checkmark").foregroundColor(.blue)
-                            }
-                          }
-                        }
-                      }
-                    }
-                    .toolbar {
-                      ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(action: {
-                          self.showingSheet = false
-                        }) {
-                          Text("Done").bold()
-                        }
-                      }
-                    }
-                    .navigationTitle("Filter")
-                    .navigationBarTitleDisplayMode(.inline)
-                  }
-                }
-            }
-          #endif
-        }.padding(EdgeInsets(top: 10, leading: 10, bottom: -8, trailing: 10))
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 316))], spacing: 10) {
           ForEach(Array($collectionItems.wrappedValue.enumerated()), id: \.element) { _, collectionItem in
             NavigationLink(destination: CollectionView(collection: .constant(collectionItem))) {
               HStack(alignment: .center) {
                 LazyImage(url: URL(string: "https://i.electrics01.com/i/" + (collectionItem.banner ?? "a050d6f271c3.png"))) { state in
                   if let image = state.image {
-                    image.resizable().aspectRatio(contentMode: .fill)
+                    image.resizable().aspectRatio(contentMode: .fill).clipped()
                   } else if state.error != nil {
                     Color.red
                   } else {
@@ -166,29 +85,108 @@ struct CollectionsView: View {
             }.buttonStyle(.plain)
           }
         }
-        .toolbar {
-          Toggle(isOn: $showOwned) {
-            Label("Owned", systemImage: "person.fill")
-          }.onChange(of: showOwned) {
-            getCollections()
-          }.help("Owned")
-          Toggle(isOn: $showShared) {
-            Label("Shared", systemImage: "shared.with.you")
-          }.onChange(of: showShared) {
-            getCollections()
-          }.help("Shared")
-        }
         .id(0)
         .padding(EdgeInsets(top: 10, leading: 10, bottom: 0, trailing: 10))
         #if os(macOS)
           .searchable(text: $inputSearch)
+          .toolbar {
+            Toggle(isOn: $showOwned) {
+              Label("Owned", systemImage: "person.fill")
+            }.onChange(of: showOwned) {
+              getCollections()
+            }.help("Owned")
+            Toggle(isOn: $showShared) {
+              Label("Shared", systemImage: "shared.with.you")
+            }.onChange(of: showShared) {
+              getCollections()
+            }.help("Shared")
+          }
         #else
           .searchable(text: $inputSearch, placement: .navigationBarDrawer(displayMode: .always))
+            .toolbar {
+              Button(action: { showingSheet.toggle() }) {
+                Circle()
+                  .fill(showOwned && showShared ? .gray.opacity(0.15) : .blue)
+                  .frame(width: 30, height: 30)
+                  .overlay {
+                    Image(systemName: "line.3.horizontal.decrease")
+                      .font(.system(size: 13.0, weight: .semibold))
+                      .foregroundColor(showOwned && showShared ? .blue : .primary)
+                  }.sheet(isPresented: $showingSheet) {
+                    NavigationView {
+                      Form {
+                        Button(action: {
+                          showOwned = true
+                          showShared = true
+                          getCollections()
+                        }) {
+                          HStack {
+                            Label {
+                              Text("All Items").foregroundColor(.primary)
+                            } icon: {
+                              Image(systemName: "photo.on.rectangle")
+                            }
+                            if showOwned && showShared {
+                              Spacer()
+                              Image(systemName: "checkmark").foregroundColor(.blue)
+                            }
+                          }
+                        }
+                        Section(header: Text("Show")) {
+                          Button(action: {
+                            showOwned.toggle()
+                            getCollections()
+                          }) {
+                            HStack {
+                              Label {
+                                Text("Owned").foregroundColor(.primary)
+                              } icon: {
+                                Image(systemName: "person")
+                              }
+                              if showOwned {
+                                Spacer()
+                                Image(systemName: "checkmark").foregroundColor(.blue)
+                              }
+                            }
+                          }
+                          Button(action: {
+                            showShared.toggle()
+                            getCollections()
+                          }) {
+                            HStack {
+                              Label {
+                                Text("Shared").foregroundColor(.primary)
+                              } icon: {
+                                Image(systemName: "shared.with.you")
+                              }
+                              if showShared {
+                                Spacer()
+                                Image(systemName: "checkmark").foregroundColor(.blue)
+                              }
+                            }
+                          }
+                        }
+                      }
+                      .toolbar {
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                          Button(action: {
+                            self.showingSheet = false
+                          }) {
+                            Text("Done").bold()
+                          }
+                        }
+                      }
+                      .navigationTitle("Filter")
+                      .navigationBarTitleDisplayMode(.inline)
+                    }
+                  }
+              }
+            }
         #endif
-          .onSubmit(of: .search) {
-            currentPage = 1
-            getCollections()
-          }
+            .onSubmit(of: .search) {
+              currentPage = 1
+              getCollections()
+            }
         HStack {
           Text("Pages: " + String(collectionData?.pager.totalPages ?? 0))
           Button("Last Page") {
