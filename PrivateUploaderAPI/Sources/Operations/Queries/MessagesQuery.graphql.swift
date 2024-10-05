@@ -49,7 +49,7 @@ public class MessagesQuery: GraphQLQuery {
       public var chatId: Int { __data["chatId"] }
       public var userId: Int? { __data["userId"] }
       public var content: String? { __data["content"] }
-      public var type: GraphQLEnum<PrivateUploaderAPI.MessageType>? { __data["type"] }
+      public var type: GraphQLEnum<PrivateUploaderAPI.MessageType> { __data["type"] }
       public var emoji: [Emoji]? { __data["emoji"] }
       public var embeds: [Embed] { __data["embeds"] }
       public var reply: Reply? { __data["reply"] }

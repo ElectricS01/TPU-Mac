@@ -31,62 +31,7 @@ subscription UpdateMessages {
   onMessage {
     mention
     message {
-      id
-      createdAt
-      updatedAt
-      chatId
-      userId
-      content
-      type
-      emoji {
-        name
-        icon
-        id
-        chatId
-      }
-      embeds {
-        ...StandardEmbed
-      }
-      reply {
-        readReceipts {
-          user {
-            id
-            avatar
-            username
-            legacy
-          }
-        }
-        content
-        userId
-        id
-        embeds {
-          media {
-            type
-          }
-        }
-        user {
-          username
-          id
-          avatar
-        }
-      }
-      user {
-        username
-        id
-        avatar
-      }
-      edited
-      editedAt
-      replyId
-      pinned
-      readReceipts {
-        user {
-          id
-          avatar
-          username
-          legacy
-        }
-      }
+      ...StandardMessage
     }
     chat {
       id
@@ -169,7 +114,6 @@ fragment StandardMessage on Message {
       id
       avatar
       username
-      legacy
     }
   }
 }

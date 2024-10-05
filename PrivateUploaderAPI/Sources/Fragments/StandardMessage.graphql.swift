@@ -5,7 +5,7 @@
 
 public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
   public static var fragmentDefinition: StaticString {
-    #"fragment StandardMessage on Message { __typename id createdAt updatedAt chatId userId content type emoji { __typename name icon id chatId } embeds { __typename ...StandardEmbed } reply { __typename content userId id embeds { __typename media { __typename type } } user { __typename username id avatar } } user { __typename username id avatar } edited editedAt replyId pinned readReceipts { __typename user { __typename id avatar username legacy } } }"#
+    #"fragment StandardMessage on Message { __typename id createdAt updatedAt chatId userId content type emoji { __typename name icon id chatId } embeds { __typename ...StandardEmbed } reply { __typename content userId id embeds { __typename media { __typename type } } user { __typename username id avatar } } user { __typename username id avatar } edited editedAt replyId pinned readReceipts { __typename user { __typename id avatar username } } }"#
   }
 
   public let __data: DataDict
@@ -20,7 +20,7 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
     .field("chatId", Int.self),
     .field("userId", Int?.self),
     .field("content", String?.self),
-    .field("type", GraphQLEnum<PrivateUploaderAPI.MessageType>?.self),
+    .field("type", GraphQLEnum<PrivateUploaderAPI.MessageType>.self),
     .field("emoji", [Emoji]?.self),
     .field("embeds", [Embed].self),
     .field("reply", Reply?.self),
@@ -38,7 +38,7 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
   public var chatId: Int { __data["chatId"] }
   public var userId: Int? { __data["userId"] }
   public var content: String? { __data["content"] }
-  public var type: GraphQLEnum<PrivateUploaderAPI.MessageType>? { __data["type"] }
+  public var type: GraphQLEnum<PrivateUploaderAPI.MessageType> { __data["type"] }
   public var emoji: [Emoji]? { __data["emoji"] }
   public var embeds: [Embed] { __data["embeds"] }
   public var reply: Reply? { __data["reply"] }
@@ -223,13 +223,11 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
         .field("id", Int.self),
         .field("avatar", String?.self),
         .field("username", String.self),
-        .field("legacy", Bool.self),
       ] }
 
       public var id: Int { __data["id"] }
       public var avatar: String? { __data["avatar"] }
       public var username: String { __data["username"] }
-      public var legacy: Bool { __data["legacy"] }
     }
   }
 }

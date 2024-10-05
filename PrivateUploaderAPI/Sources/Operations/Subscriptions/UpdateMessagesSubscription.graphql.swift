@@ -7,8 +7,8 @@ public class UpdateMessagesSubscription: GraphQLSubscription {
   public static let operationName: String = "UpdateMessages"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"subscription UpdateMessages { onMessage { __typename mention message { __typename id createdAt updatedAt chatId userId content type emoji { __typename name icon id chatId } embeds { __typename ...StandardEmbed } reply { __typename readReceipts { __typename user { __typename id avatar username legacy } } content userId id embeds { __typename media { __typename type } } user { __typename username id avatar } } user { __typename username id avatar } edited editedAt replyId pinned readReceipts { __typename user { __typename id avatar username legacy } } } chat { __typename id recipient { __typename id username } type } } }"#,
-      fragments: [StandardEmbed.self]
+      #"subscription UpdateMessages { onMessage { __typename mention message { __typename ...StandardMessage } chat { __typename id recipient { __typename id username } type } } }"#,
+      fragments: [StandardEmbed.self, StandardMessage.self]
     ))
 
   public init() {}
@@ -53,22 +53,7 @@ public class UpdateMessagesSubscription: GraphQLSubscription {
         public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Message }
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
-          .field("id", Int.self),
-          .field("createdAt", PrivateUploaderAPI.Date.self),
-          .field("updatedAt", PrivateUploaderAPI.Date.self),
-          .field("chatId", Int.self),
-          .field("userId", Int?.self),
-          .field("content", String?.self),
-          .field("type", GraphQLEnum<PrivateUploaderAPI.MessageType>?.self),
-          .field("emoji", [Emoji]?.self),
-          .field("embeds", [Embed].self),
-          .field("reply", Reply?.self),
-          .field("user", User?.self),
-          .field("edited", Bool.self),
-          .field("editedAt", PrivateUploaderAPI.Date?.self),
-          .field("replyId", Int?.self),
-          .field("pinned", Bool.self),
-          .field("readReceipts", [ReadReceipt].self),
+          .fragment(StandardMessage.self),
         ] }
 
         public var id: Int { __data["id"] }
@@ -77,7 +62,7 @@ public class UpdateMessagesSubscription: GraphQLSubscription {
         public var chatId: Int { __data["chatId"] }
         public var userId: Int? { __data["userId"] }
         public var content: String? { __data["content"] }
-        public var type: GraphQLEnum<PrivateUploaderAPI.MessageType>? { __data["type"] }
+        public var type: GraphQLEnum<PrivateUploaderAPI.MessageType> { __data["type"] }
         public var emoji: [Emoji]? { __data["emoji"] }
         public var embeds: [Embed] { __data["embeds"] }
         public var reply: Reply? { __data["reply"] }
@@ -88,27 +73,14 @@ public class UpdateMessagesSubscription: GraphQLSubscription {
         public var pinned: Bool { __data["pinned"] }
         public var readReceipts: [ReadReceipt] { __data["readReceipts"] }
 
-        /// OnMessage.Message.Emoji
-        ///
-        /// Parent Type: `ChatEmoji`
-        public struct Emoji: PrivateUploaderAPI.SelectionSet {
+        public struct Fragments: FragmentContainer {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.ChatEmoji }
-          public static var __selections: [ApolloAPI.Selection] { [
-            .field("__typename", String.self),
-            .field("name", String?.self),
-            .field("icon", String?.self),
-            .field("id", String.self),
-            .field("chatId", Int.self),
-          ] }
-
-          public var name: String? { __data["name"] }
-          public var icon: String? { __data["icon"] }
-          public var id: String { __data["id"] }
-          public var chatId: Int { __data["chatId"] }
+          public var standardMessage: StandardMessage { _toFragment() }
         }
+
+        public typealias Emoji = StandardMessage.Emoji
 
         /// OnMessage.Message.Embed
         ///
@@ -118,10 +90,6 @@ public class UpdateMessagesSubscription: GraphQLSubscription {
           public init(_dataDict: DataDict) { __data = _dataDict }
 
           public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedDataV2 }
-          public static var __selections: [ApolloAPI.Selection] { [
-            .field("__typename", String.self),
-            .fragment(StandardEmbed.self),
-          ] }
 
           public var media: [Medium]? { __data["media"] }
           public var text: [Text]? { __data["text"] }
@@ -138,179 +106,11 @@ public class UpdateMessagesSubscription: GraphQLSubscription {
           public typealias Text = StandardEmbed.Text
         }
 
-        /// OnMessage.Message.Reply
-        ///
-        /// Parent Type: `Message`
-        public struct Reply: PrivateUploaderAPI.SelectionSet {
-          public let __data: DataDict
-          public init(_dataDict: DataDict) { __data = _dataDict }
+        public typealias Reply = StandardMessage.Reply
 
-          public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Message }
-          public static var __selections: [ApolloAPI.Selection] { [
-            .field("__typename", String.self),
-            .field("readReceipts", [ReadReceipt].self),
-            .field("content", String?.self),
-            .field("userId", Int?.self),
-            .field("id", Int.self),
-            .field("embeds", [Embed].self),
-            .field("user", User?.self),
-          ] }
+        public typealias User = StandardMessage.User
 
-          public var readReceipts: [ReadReceipt] { __data["readReceipts"] }
-          public var content: String? { __data["content"] }
-          public var userId: Int? { __data["userId"] }
-          public var id: Int { __data["id"] }
-          public var embeds: [Embed] { __data["embeds"] }
-          public var user: User? { __data["user"] }
-
-          /// OnMessage.Message.Reply.ReadReceipt
-          ///
-          /// Parent Type: `ReadReceipt`
-          public struct ReadReceipt: PrivateUploaderAPI.SelectionSet {
-            public let __data: DataDict
-            public init(_dataDict: DataDict) { __data = _dataDict }
-
-            public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.ReadReceipt }
-            public static var __selections: [ApolloAPI.Selection] { [
-              .field("__typename", String.self),
-              .field("user", User?.self),
-            ] }
-
-            public var user: User? { __data["user"] }
-
-            /// OnMessage.Message.Reply.ReadReceipt.User
-            ///
-            /// Parent Type: `PartialUserBase`
-            public struct User: PrivateUploaderAPI.SelectionSet {
-              public let __data: DataDict
-              public init(_dataDict: DataDict) { __data = _dataDict }
-
-              public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PartialUserBase }
-              public static var __selections: [ApolloAPI.Selection] { [
-                .field("__typename", String.self),
-                .field("id", Int.self),
-                .field("avatar", String?.self),
-                .field("username", String.self),
-                .field("legacy", Bool.self),
-              ] }
-
-              public var id: Int { __data["id"] }
-              public var avatar: String? { __data["avatar"] }
-              public var username: String { __data["username"] }
-              public var legacy: Bool { __data["legacy"] }
-            }
-          }
-
-          /// OnMessage.Message.Reply.Embed
-          ///
-          /// Parent Type: `EmbedDataV2`
-          public struct Embed: PrivateUploaderAPI.SelectionSet {
-            public let __data: DataDict
-            public init(_dataDict: DataDict) { __data = _dataDict }
-
-            public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedDataV2 }
-            public static var __selections: [ApolloAPI.Selection] { [
-              .field("__typename", String.self),
-              .field("media", [Medium]?.self),
-            ] }
-
-            public var media: [Medium]? { __data["media"] }
-
-            /// OnMessage.Message.Reply.Embed.Medium
-            ///
-            /// Parent Type: `EmbedMedia`
-            public struct Medium: PrivateUploaderAPI.SelectionSet {
-              public let __data: DataDict
-              public init(_dataDict: DataDict) { __data = _dataDict }
-
-              public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedMedia }
-              public static var __selections: [ApolloAPI.Selection] { [
-                .field("__typename", String.self),
-                .field("type", GraphQLEnum<PrivateUploaderAPI.EmbedMediaType>.self),
-              ] }
-
-              public var type: GraphQLEnum<PrivateUploaderAPI.EmbedMediaType> { __data["type"] }
-            }
-          }
-
-          /// OnMessage.Message.Reply.User
-          ///
-          /// Parent Type: `PartialUserBase`
-          public struct User: PrivateUploaderAPI.SelectionSet {
-            public let __data: DataDict
-            public init(_dataDict: DataDict) { __data = _dataDict }
-
-            public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PartialUserBase }
-            public static var __selections: [ApolloAPI.Selection] { [
-              .field("__typename", String.self),
-              .field("username", String.self),
-              .field("id", Int.self),
-              .field("avatar", String?.self),
-            ] }
-
-            public var username: String { __data["username"] }
-            public var id: Int { __data["id"] }
-            public var avatar: String? { __data["avatar"] }
-          }
-        }
-
-        /// OnMessage.Message.User
-        ///
-        /// Parent Type: `PartialUserBase`
-        public struct User: PrivateUploaderAPI.SelectionSet {
-          public let __data: DataDict
-          public init(_dataDict: DataDict) { __data = _dataDict }
-
-          public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PartialUserBase }
-          public static var __selections: [ApolloAPI.Selection] { [
-            .field("__typename", String.self),
-            .field("username", String.self),
-            .field("id", Int.self),
-            .field("avatar", String?.self),
-          ] }
-
-          public var username: String { __data["username"] }
-          public var id: Int { __data["id"] }
-          public var avatar: String? { __data["avatar"] }
-        }
-
-        /// OnMessage.Message.ReadReceipt
-        ///
-        /// Parent Type: `ReadReceipt`
-        public struct ReadReceipt: PrivateUploaderAPI.SelectionSet {
-          public let __data: DataDict
-          public init(_dataDict: DataDict) { __data = _dataDict }
-
-          public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.ReadReceipt }
-          public static var __selections: [ApolloAPI.Selection] { [
-            .field("__typename", String.self),
-            .field("user", User?.self),
-          ] }
-
-          public var user: User? { __data["user"] }
-
-          /// OnMessage.Message.ReadReceipt.User
-          ///
-          /// Parent Type: `PartialUserBase`
-          public struct User: PrivateUploaderAPI.SelectionSet {
-            public let __data: DataDict
-            public init(_dataDict: DataDict) { __data = _dataDict }
-
-            public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PartialUserBase }
-            public static var __selections: [ApolloAPI.Selection] { [
-              .field("__typename", String.self),
-              .field("id", Int.self),
-              .field("avatar", String?.self),
-              .field("username", String.self),
-              .field("legacy", Bool.self),
-            ] }
-
-            public var id: Int { __data["id"] }
-            public var avatar: String? { __data["avatar"] }
-            public var username: String { __data["username"] }
-            public var legacy: Bool { __data["legacy"] }
-          }
-        }
+        public typealias ReadReceipt = StandardMessage.ReadReceipt
       }
 
       /// OnMessage.Chat

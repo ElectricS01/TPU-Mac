@@ -538,6 +538,7 @@ struct CommsView: View {
           getChat(chatId: chatsList.firstIndex(where: { $0.id == pageID }))
         }
       }
+    }
     #endif
   }
 }

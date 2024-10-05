@@ -1,3 +1,8 @@
+"""
+Indicates exactly one field must be supplied and this field must not be `null`.
+"""
+directive @oneOf on INPUT_OBJECT
+
 type Query {
   currentUser: User
   user(input: UserProfileInput!): PartialUserPublic
@@ -5,7 +10,11 @@ type Query {
   trackedUserIds: [Int!]!
   coreState: CoreState!
   setupStep: Int!
-  experiments(version: Int): [ExperimentType!]!
+  experiments(
+    """Clients use this to request specific experiments."""
+    experiments: [String!]
+    version: Int
+  ): [ExperimentType!]!
   weather: Weather!
   collections(input: UserCollectionsInput): PaginatedCollectionResponse!
   collection(input: CollectionInput!): Collection
@@ -107,7 +116,7 @@ type User {
   xp: Float!
   privacyPolicyAccepted: Boolean
 
-  """The user's name color in Communications."""
+  """The user's name color in Communications (v3)."""
   nameColor: String @deprecated(reason: "Replaced by ranks")
 
   """Whether the user has TPU Pulse Telemetry enabled."""
@@ -288,7 +297,7 @@ type PartialUserBase {
   moderator: Boolean!
   avatar: String
   bot: Boolean!
-  legacy: Boolean!
+  legacy: Boolean! @deprecated(reason: "This field is no longer used after migration from Colubrina to Flowinity.")
   badges: [Badge!]!
   notifications: [Notification!]!
   integrations: [Integration!]!
@@ -361,7 +370,7 @@ type TPUSubscription {
 }
 
 type SubscriptionMetadata {
-  hours: Int!
+  hours: Float!
 }
 
 type AutoCollectRule {
@@ -439,7 +448,7 @@ type PartialUserFriend {
   moderator: Boolean!
   avatar: String
   bot: Boolean!
-  legacy: Boolean!
+  legacy: Boolean! @deprecated(reason: "This field is no longer used after migration from Colubrina to Flowinity.")
   badges: [Badge!]!
   notifications: [Notification!]!
   integrations: [Integration!]!
@@ -452,7 +461,9 @@ type PartialUserFriend {
   mutualCollections: [Collection!]!
   friend: FriendStatus!
   status: UserStatus!
-  nameColor: String
+
+  """The user's name color in Communications (v3)."""
+  nameColor: String @deprecated(reason: "Replaced by ranks")
   nickname: FriendNickname
   blocked: Boolean
   platforms: [Platform!]
@@ -868,7 +879,7 @@ type Weather {
 }
 
 type ExperimentType {
-  id: String!
+  id: Experiments!
   value: Int!
   description: String
   createdAt: Date
@@ -876,6 +887,86 @@ type ExperimentType {
   versions: [Int!]!
   override: Boolean!
   force: Boolean!
+}
+
+"""Available experiments"""
+enum Experiments {
+  NEW_BRANDING
+  CAN_ENABLE_PROGRESSIVE_UI
+  EDITOR_V2
+  WIDGETS
+  BADGES
+  NATIVE_BADGES
+  REMOVE_LEGACY_SOCKET
+  CHAT_CACHING
+  FAB
+  ENABLE_PULSE_TAB
+  LEGACY_FLOWINITY_SSO
+  CLASSIC_MIGRATE
+  EXPAND_APP_BAR_IMAGE
+  COPY_MSG_ID
+  WEATHER
+  BREADCRUMB_SHOW_PARENT
+  MEET
+  COMMS_SUPERBAR
+  PROGRESSIVE_HOME
+  DISABLE_ANIMATIONS
+  PROGRESSIVE_UI
+  CHAT_GUIDED_WIZARD
+  NOTE_AI_ASSIST
+  NOTE_COLLAB
+  V5_FLOAT
+  IAF_NAG
+  GALLERY_INFINITE_SCROLL
+  DOWNLOAD_THE_APP_NAG
+  ENABLE_AUTOSTART_APP_NAG
+  DEBUG_FAVICON
+  FLOWINITY
+  PRIDE
+  THEME
+  NOTIFICATION_SOUND
+  RESIZABLE_SIDEBARS
+  LEGACY_MOBILE_NAV
+  OFFICIAL_INSTANCE
+  API_FALLBACK_ON_ERROR
+  API_VERSION
+  USER_V3_EDITOR
+  RAIL_SIDEBAR
+  USER_V3_MODIFY
+  USER_V3
+  EARLY_ACCESS
+  PINNED_MESSAGES
+  COMMUNICATIONS_KEEP_LOADED
+  COMMUNICATIONS_INLINE_SIDEBAR_HIRES
+  COMMUNICATIONS_QUAD_SIDEBAR_LOWRES
+  COMMUNICATIONS
+  WEBMAIL
+  SURVEYS
+  PROJECT_MERGE
+  WORKSPACES_SIDEBAR
+  LEGACY_CUSTOMIZATION
+  ACCOUNT_DEV_ELIGIBLE
+  QUICK_NOTES
+  INTERACTIVE_NOTES
+  CREEPY_SFX_BUTTON
+  PROFILE_BANNER
+  PROJECT_CENTRAL
+  DESIGN_V2
+  API_VERSION_V2
+  MEME_GEN
+  INSTANT_UPLOAD
+  USER_V2
+  SFX_KFX
+  SFX_KOLF
+  HOVER_CHIP_CLOSE_DELAY
+  HOVER_CHIP_OPEN_DELAY
+  HOVER_CHIP_HOVER
+  EXPERIENCE_FLUID
+  EXPERIENCE_ITEMS_PER_PAGE
+  EXPERIENCE_GALLERY_ITEM_WIDTH
+  ANDROID_CONFIG
+  LEGACY_ATTRIBUTES_UI
+  ZZ_TEST
 }
 
 type PaginatedCollectionResponse {
@@ -1025,7 +1116,8 @@ type Chat {
   description: String
   background: String
   unread: Int
-  _redisSortDate: String
+  _redisSortDate: String @deprecated(reason: "Use `sortDate` instead.")
+  sortDate: String
   ranks: [ChatRank!]!
   messages: [Message!]!
 
@@ -1036,6 +1128,7 @@ type Chat {
   emoji: [ChatEmoji!]
   usersCount: Int!
   onlineCount: Int!
+  typing: [ChatTypingEvent!]!
   recipient: PartialUserBase
 }
 
@@ -1119,7 +1212,7 @@ type Message {
   chatId: Int!
   userId: Int
   content: String
-  type: MessageType
+  type: MessageType!
   embeds: [EmbedDataV2!]!
   edited: Boolean!
   editedAt: Date
@@ -1225,6 +1318,13 @@ type ChatEmoji {
   deleted: Boolean!
   createdAt: Date!
   updatedAt: Date!
+}
+
+type ChatTypingEvent {
+  userId: Int!
+  chatId: Int!
+  user: PartialUserFriend!
+  expires: Float
 }
 
 input ChatsInput {
@@ -1730,7 +1830,7 @@ input RegisterInput {
 }
 
 input SetExperimentInput {
-  key: String!
+  key: Experiments!
   value: Int!
 
   """Admin only."""
@@ -2225,7 +2325,7 @@ type Subscription {
   onTyping: ChatTypingEvent!
   onCancelTyping: ChatTypingEvent!
 
-  """Returns the chat association ID"""
+  """Returns the chat ID"""
   onReadChat: Int!
 
   """Subscribe to Note updates."""
@@ -2253,12 +2353,6 @@ input FilterCollectionInput {
 type CreateUploadEvent {
   url: String!
   upload: Upload!
-}
-
-type ChatTypingEvent {
-  chatId: Int!
-  user: PartialUserFriend!
-  expires: Float
 }
 
 type UpdateNoteEvent {

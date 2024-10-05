@@ -7,7 +7,7 @@ public class ChatsQuery: GraphQLQuery {
   public static let operationName: String = "ChatsQuery"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query ChatsQuery { chats { __typename id type name unread icon association { __typename id chatId userId rank lastRead notifications } users { __typename id chatId userId rank lastRead notifications user { __typename username id createdAt administrator moderator avatar } } _redisSortDate recipient { __typename username id createdAt administrator moderator avatar } } }"#
+      #"query ChatsQuery { chats { __typename id type name unread icon association { __typename id chatId userId rank lastRead notifications } users { __typename id chatId userId rank lastRead notifications user { __typename username id createdAt administrator moderator avatar } } sortDate recipient { __typename username id createdAt administrator moderator avatar } } }"#
     ))
 
   public init() {}
@@ -40,7 +40,7 @@ public class ChatsQuery: GraphQLQuery {
         .field("icon", String?.self),
         .field("association", Association?.self),
         .field("users", [User].self),
-        .field("_redisSortDate", String?.self),
+        .field("sortDate", String?.self),
         .field("recipient", Recipient?.self),
       ] }
 
@@ -51,7 +51,7 @@ public class ChatsQuery: GraphQLQuery {
       public var icon: String? { __data["icon"] }
       public var association: Association? { __data["association"] }
       public var users: [User] { __data["users"] }
-      public var _redisSortDate: String? { __data["_redisSortDate"] }
+      public var sortDate: String? { __data["sortDate"] }
       public var recipient: Recipient? { __data["recipient"] }
 
       /// Chat.Association
