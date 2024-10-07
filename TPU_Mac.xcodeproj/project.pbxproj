@@ -11,6 +11,7 @@
 		C40BC9892B8C8F9800444B56 /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = C40BC9882B8C8F9800444B56 /* NukeUI */; };
 		C40BC98B2B8C8F9800444B56 /* NukeVideo in Frameworks */ = {isa = PBXBuildFile; productRef = C40BC98A2B8C8F9800444B56 /* NukeVideo */; };
 		C428DE892B709ADB00A13E4A /* ApolloWebSocket in Frameworks */ = {isa = PBXBuildFile; productRef = C428DE882B709ADB00A13E4A /* ApolloWebSocket */; };
+		C44156622CB3F86100EE1F96 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = C44156612CB3F86100EE1F96 /* SDWebImageSwiftUI */; };
 		C45099152ACFFA7F00FA9247 /* TPU_MacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45099142ACFFA7F00FA9247 /* TPU_MacApp.swift */; };
 		C45099172ACFFA7F00FA9247 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45099162ACFFA7F00FA9247 /* ContentView.swift */; };
 		C45099192ACFFA8100FA9247 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C45099182ACFFA8100FA9247 /* Assets.xcassets */; };
@@ -80,6 +81,7 @@
 				C4DD4D492C4892AE00DF1A22 /* ApolloSQLite in Frameworks */,
 				C40BC98B2B8C8F9800444B56 /* NukeVideo in Frameworks */,
 				C4569DF12AD17A2A00F17C06 /* PrivateUploaderAPI in Frameworks */,
+				C44156622CB3F86100EE1F96 /* SDWebImageSwiftUI in Frameworks */,
 				C428DE892B709ADB00A13E4A /* ApolloWebSocket in Frameworks */,
 				C48C2E9E2AD0417B0000A362 /* Apollo in Frameworks */,
 				C4FE71542AD3F085003E4DC0 /* KeychainSwift in Frameworks */,
@@ -201,6 +203,7 @@
 				C40BC9882B8C8F9800444B56 /* NukeUI */,
 				C40BC98A2B8C8F9800444B56 /* NukeVideo */,
 				C4DD4D482C4892AE00DF1A22 /* ApolloSQLite */,
+				C44156612CB3F86100EE1F96 /* SDWebImageSwiftUI */,
 			);
 			productName = "TPU Mac";
 			productReference = C45099112ACFFA7F00FA9247 /* TPU Mac.app */;
@@ -279,6 +282,7 @@
 				C4569DEF2AD17A2A00F17C06 /* XCLocalSwiftPackageReference "PrivateUploaderAPI" */,
 				C4FE71522AD3F084003E4DC0 /* XCRemoteSwiftPackageReference "keychain-swift" */,
 				C40BC9872B8C8F9800444B56 /* XCRemoteSwiftPackageReference "Nuke" */,
+				C44156602CB3F86100EE1F96 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 			);
 			productRefGroup = C45099122ACFFA7F00FA9247 /* Products */;
 			projectDirPath = "";
@@ -493,7 +497,7 @@
 				CODE_SIGN_ENTITLEMENTS = TPU_Mac/TPU_Mac.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"TPU_Mac/Preview Content\"";
 				DEVELOPMENT_TEAM = PK36GR28A7;
@@ -518,7 +522,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.3.6;
+				MARKETING_VERSION = 0.3.7;
 				PRODUCT_BUNDLE_IDENTIFIER = "ElectricS01.TPU-Mac";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -536,7 +540,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = TPU_Mac/TPU_Mac.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"TPU_Mac/Preview Content\"";
 				DEVELOPMENT_TEAM = PK36GR28A7;
@@ -561,7 +565,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.3.6;
+				MARKETING_VERSION = 0.3.7;
 				PRODUCT_BUNDLE_IDENTIFIER = "ElectricS01.TPU-Mac";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -719,6 +723,14 @@
 				minimumVersion = 12.4.0;
 			};
 		};
+		C44156602CB3F86100EE1F96 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.1.2;
+			};
+		};
 		C48C2E9C2AD0417B0000A362 /* XCRemoteSwiftPackageReference "apollo-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apollographql/apollo-ios.git";
@@ -752,6 +764,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C48C2E9C2AD0417B0000A362 /* XCRemoteSwiftPackageReference "apollo-ios" */;
 			productName = ApolloWebSocket;
+		};
+		C44156612CB3F86100EE1F96 /* SDWebImageSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C44156602CB3F86100EE1F96 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
+			productName = SDWebImageSwiftUI;
 		};
 		C4569DF02AD17A2A00F17C06 /* PrivateUploaderAPI */ = {
 			isa = XCSwiftPackageProductDependency;

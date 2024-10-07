@@ -8,6 +8,7 @@
 import Apollo
 import NukeUI
 import PrivateUploaderAPI
+import SDWebImageSwiftUI
 import SwiftUI
 import UserNotifications
 
@@ -331,19 +332,31 @@ struct CommsView: View {
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                     }
                     ForEach(message.embeds, id: \.self) { embed in
-                      if embed.media != [] {
-                        LazyImage(url: URL(string: embed.media?[0].attachment == nil ? ("https://i.electrics01.com" + (embed.media?[0].proxyUrl ?? "")) : ("https://i.electrics01.com/i/" + (embed.media?[0].attachment ?? "")))) { state in
-                          if let image = state.image {
-                            image.resizable().aspectRatio(contentMode: .fit)
-//                                .onAppear {
-                            ////                                  if chatMessages.count != 0 {
-                            ////                                    proxy.scrollTo(0, anchor: .bottom)
-                            ////                                  }
-//                                }
-                          } else if state.error != nil {
-                            Color.red
+                      if let media = embed.media, embed.media != [] {
+                        ForEach(media, id: \.self) { img in
+                          if img.mimeType != "image/gif" {
+                            LazyImage(url: URL(string: img.attachment == nil ? ("https://i.electrics01.com" + (img.proxyUrl ?? "")) : ("https://i.electrics01.com/i/" + (img.attachment ?? "")))) { state in
+                              if let image = state.image {
+                                image.resizable().aspectRatio(contentMode: .fit)
+                                //                                .onAppear {
+                                ////                                  if chatMessages.count != 0 {
+                                ////                                    proxy.scrollTo(0, anchor: .bottom)
+                                ////                                  }
+                                //                                }
+                              } else if state.error != nil {
+                                Color.red
+                              } else {
+                                ProgressView()
+                              }
+                            }
                           } else {
-                            ProgressView()
+                            HStack {
+                              WebImage(url: URL(string: img.attachment == nil ? ("https://i.electrics01.com" + (img.proxyUrl ?? "")) : ("https://i.electrics01.com/i/" + (img.attachment ?? "")))) { image in
+                                image.resizable().aspectRatio(contentMode: .fit)
+                              } placeholder: {
+                                ProgressView()
+                              }
+                            }
                           }
                         }.frame(minWidth: 0, maxWidth: 600, minHeight: 0, maxHeight: 400)
                       }
