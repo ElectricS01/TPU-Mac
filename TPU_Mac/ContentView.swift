@@ -37,12 +37,16 @@ enum DateUtils {
   }
 }
 
+class Store: ObservableObject {
+  @Published var coreState: StateQuery.Data.CoreState?
+  @Published var coreUser: StateQuery.Data.CurrentUser?
+  @Published var coreUsers: [StateQuery.Data.TrackedUser]?
+}
+
 struct ContentView: View {
+  @StateObject var store = Store()
   @State private var showingLogin = keychain.get("token") == nil || keychain.get("token") == ""
-  @State private var coreState: StateQuery.Data.CoreState?
-  @State private var coreUser: StateQuery.Data.CurrentUser?
   @State private var coreNotifications: [StateQuery.Data.CurrentUser.Notification]?
-  @State private var coreUsers: [StateQuery.Data.TrackedUser]?
   @State var isPopover = false
 
   func getState() {
@@ -50,10 +54,10 @@ struct ContentView: View {
       switch result {
       case .success(let graphQLResult):
         if let unwrapped = graphQLResult.data {
-          coreState = unwrapped.coreState
-          coreUser = unwrapped.currentUser
-          coreNotifications = coreUser?.notifications
-          coreUsers = unwrapped.trackedUsers
+          store.coreState = unwrapped.coreState
+          store.coreUser = unwrapped.currentUser
+          coreNotifications = store.coreUser?.notifications
+          store.coreUsers = unwrapped.trackedUsers
         }
       case .failure(let error):
         print("Failure! Error: \(error)")
@@ -95,10 +99,10 @@ struct ContentView: View {
       #if os(macOS)
         NavigationSplitView {
           List {
-            NavigationLink(destination: HomeView(coreState: $coreState)) {
+            NavigationLink(destination: HomeView()) {
               Label("Home", systemImage: "house")
             }
-            NavigationLink(destination: SettingsView(showingLogin: $showingLogin, coreState: $coreState)) {
+            NavigationLink(destination: SettingsView(showingLogin: $showingLogin)) {
               Label("Settings", systemImage: "gear")
             }
             NavigationLink(destination: GalleryView(stars: .constant(false), collectionId: .constant(nil), collectionName: .constant(nil))) {
@@ -110,7 +114,7 @@ struct ContentView: View {
             NavigationLink(destination: CollectionsView()) {
               Label("Collections", systemImage: "person.2.crop.square.stack.fill")
             }
-            NavigationLink(destination: CommsView(coreUser: $coreUser, coreUsers: $coreUsers)) {
+            NavigationLink(destination: CommsView()) {
               Label("Comms", systemImage: "message")
             }
             NavigationLink(destination: AboutView()) {
@@ -118,11 +122,11 @@ struct ContentView: View {
             }
           }
         } detail: {
-          HomeView(coreState: $coreState)
+          HomeView()
         }
         .onAppear {
           getState()
-        }
+        }.environmentObject(store)
         .toolbar(id: "nav") {
           ToolbarItem(id: "bell") {
             Button(action: {
@@ -153,7 +157,7 @@ struct ContentView: View {
         }
       #else
         TabView {
-          HomeView(coreState: $coreState).tabItem {
+          HomeView().tabItem {
             Label("Home", systemImage: "house")
           }
           GalleryView(stars: .constant(false), collectionId: .constant(nil), collectionName: .constant(nil)).tabItem {
@@ -165,7 +169,7 @@ struct ContentView: View {
           CommsView(coreUser: $coreUser, coreUsers: $coreUsers).tabItem {
             Label("Comms", systemImage: "message")
           }
-          SettingsView(showingLogin: $showingLogin, coreState: $coreState).tabItem {
+          SettingsView(showingLogin: $showingLogin).tabItem {
             Label("Settings", systemImage: "gear")
           }
         }
@@ -239,7 +243,7 @@ struct LoginSheet: View {
 
 struct SettingsView: View {
   @Binding var showingLogin: Bool
-  @Binding var coreState: StateQuery.Data.CoreState?
+  @EnvironmentObject var store: Store
 
   var body: some View {
     VStack {
@@ -248,10 +252,11 @@ struct SettingsView: View {
         Text("Coming soon")
       #else
         Text("TPU iOS").font(.system(size: 32, weight: .semibold))
-        Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (13/10/2024)")
+        Text("Version " + (Bundle.main.infoDictionary?[kCFBundleVersionKey as String] as? String ?? "") + " (14/10/2024)")
         Text("Made by ElectricS01")
         Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
       #endif
+      Text("Logged in as " + (store.coreUser?.username ?? "Unknown"))
       Button("Log out") {
         keychain.delete("token")
         showingLogin = true
@@ -267,7 +272,7 @@ struct AboutView: View {
       Text("About")
         .navigationTitle("About")
       Text("TPU Mac").font(.system(size: 32, weight: .semibold))
-      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (13/10/2024)")
+      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (14/10/2024)")
       Text("Made by ElectricS01")
       Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
     }

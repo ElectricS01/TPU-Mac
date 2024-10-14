@@ -56,7 +56,7 @@ struct CollectionsView: View {
     NavigationStack {
       ScrollView {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 316))], spacing: 10) {
-          ForEach(Array($collectionItems.wrappedValue.enumerated()), id: \.element) { _, collectionItem in
+          ForEach($collectionItems.wrappedValue, id: \.self) { collectionItem in
             NavigationLink(destination: CollectionView(collection: .constant(collectionItem))) {
               HStack(alignment: .center) {
                 LazyImage(url: URL(string: "https://i.electrics01.com/i/" + (collectionItem.banner ?? "a050d6f271c3.png"))) { state in

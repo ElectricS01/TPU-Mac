@@ -17,8 +17,7 @@ struct CommsView: View {
     case editing, sending
   }
 
-  @Binding var coreUser: StateQuery.Data.CurrentUser?
-  @Binding var coreUsers: [StateQuery.Data.TrackedUser]?
+  @EnvironmentObject var store: Store
   @FocusState private var focusedField: FocusedField?
   @State private var chatsList: [ChatsQuery.Data.Chat] = []
   @State private var chatMessages: [MessagesQuery.Data.Message] = []
@@ -238,7 +237,7 @@ struct CommsView: View {
             }
             
             let index = chatsList.firstIndex(where: { $0.id == message.chatId })
-            let newChat = newToChat(chatObject: chatsList[index ?? 0], self: coreUser?.id != message.userId)
+            let newChat = newToChat(chatObject: chatsList[index ?? 0], self: store.coreUser?.id != message.userId)
             chatsList[index ?? 0] = newChat
             
             chatsList.sort {
@@ -246,7 +245,7 @@ struct CommsView: View {
             }
             
             #if os(macOS)
-              if !NSApplication.shared.isActive, coreUser?.id != message.userId {
+              if !NSApplication.shared.isActive, store.coreUser?.id != message.userId {
                 scheduleNotification(title: message.user?.username ?? "Unknown User", body: message.content ?? "Unknown Message", to: message.chatId)
               }
             #endif
@@ -406,7 +405,7 @@ struct CommsView: View {
                     }) {
                       Image(systemName: message.pinned ? "pin.slash.fill" : "pin.fill").frame(width: 16, height: 16)
                     }
-                    if coreUser?.id == message.userId {
+                    if store.coreUser?.id == message.userId {
                       Button(action: {
                         replyingId = -1
                         if editingId != message.id {
@@ -470,7 +469,7 @@ struct CommsView: View {
           List {
             Section(header: Text("Online")) {
               ForEach(0 ..< (chatsList.first(where: { $0.association?.id == chatOpen })?.users.count ?? 0), id: \.self) { index in
-                let user = coreUsers.unsafelyUnwrapped.first { $0.id == chatsList.first(where: { $0.association?.id == chatOpen })?.users[index].user?.id }
+                let user = store.coreUsers.unsafelyUnwrapped.first { $0.id == chatsList.first(where: { $0.association?.id == chatOpen })?.users[index].user?.id }
                 if let user = user, user.status.value != .offline {
                   Button(action: {
                     print(user.username)
@@ -496,7 +495,7 @@ struct CommsView: View {
             }
             Section(header: Text("Offline")) {
               ForEach(0 ..< (chatsList.first(where: { $0.association?.id == chatOpen })?.users.count ?? 0), id: \.self) { index in
-                let user = coreUsers.unsafelyUnwrapped.first { $0.id == chatsList.first(where: { $0.association?.id == chatOpen })?.users[index].user?.id }
+                let user = store.coreUsers.unsafelyUnwrapped.first { $0.id == chatsList.first(where: { $0.association?.id == chatOpen })?.users[index].user?.id }
                 if let user = user, user.status.value == .offline {
                   Button(action: {
                     print("Clicked: " + (user.username))
