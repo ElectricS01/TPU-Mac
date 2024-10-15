@@ -17,9 +17,8 @@ struct ChatView: View {
     case editing, sending
   }
   
-  @Binding var coreUser: StateQuery.Data.CurrentUser?
-  @Binding var coreUsers: [StateQuery.Data.TrackedUser]?
   @Binding var chatsList: [ChatsQuery.Data.Chat]
+  @EnvironmentObject var store: Store
   @FocusState private var focusedField: FocusedField?
   @State private var chatMessages: [MessagesQuery.Data.Message] = []
   @Binding var chatOpen: Int
@@ -46,8 +45,6 @@ struct ChatView: View {
   }
   
   func getChat(chatId: Int?) {
-    print(chatOpen)
-    print($chatsList.count)
     getMessages(chat: chatsList[chatId ?? 0].association?.id ?? 0) { result in
       switch result {
       case .success(let graphQLResult):
@@ -208,7 +205,7 @@ struct ChatView: View {
               chatMessages.append(newMessage)
             }
             #if os(macOS)
-              if !NSApplication.shared.isActive, coreUser?.id != message.userId {
+              if !NSApplication.shared.isActive, store.coreUser?.id != message.userId {
                 scheduleNotification(title: message.user?.username ?? "Unknown User", body: message.content ?? "Unknown Message", to: message.chatId)
               }
             #endif
@@ -340,7 +337,7 @@ struct ChatView: View {
                   }) {
                     Image(systemName: message.pinned ? "pin.slash.fill" : "pin.fill").frame(width: 16, height: 16)
                   }
-                  if coreUser?.id == message.userId {
+                  if store.coreUser?.id == message.userId {
                     Button(action: {
                       replyingId = -1
                       if editingId != message.id {

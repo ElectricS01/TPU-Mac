@@ -554,7 +554,7 @@ struct CommsView: View {
       NavigationStack {
         List {
           ForEach(0 ..< chatsList.count, id: \.self) { result in
-            NavigationLink(destination: ChatView(coreUser: $coreUser, coreUsers: $coreUsers, chatsList: $chatsList, chatOpen: .constant(result))) {
+            NavigationLink(destination: ChatView(chatsList: $chatsList, chatOpen: .constant(result))) {
               HStack {
                 ProfilePicture(avatar: chatsList[result].recipient?.avatar ?? chatsList[result].icon)
                 Text(chatsList[result].recipient?.username ?? chatsList[result].name).lineLimit(1)

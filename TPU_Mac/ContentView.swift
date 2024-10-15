@@ -166,7 +166,7 @@ struct ContentView: View {
           CollectionsView().tabItem {
             Label("Collections", systemImage: "person.2.crop.square.stack.fill")
           }
-          CommsView(coreUser: $coreUser, coreUsers: $coreUsers).tabItem {
+          CommsView().tabItem {
             Label("Comms", systemImage: "message")
           }
           SettingsView(showingLogin: $showingLogin).tabItem {
@@ -175,7 +175,7 @@ struct ContentView: View {
         }
         .onAppear {
           getState()
-        }
+        }.environmentObject(store)
       #endif
     }
   }
@@ -252,7 +252,7 @@ struct SettingsView: View {
         Text("Coming soon")
       #else
         Text("TPU iOS").font(.system(size: 32, weight: .semibold))
-        Text("Version " + (Bundle.main.infoDictionary?[kCFBundleVersionKey as String] as? String ?? "") + " (14/10/2024)")
+        Text("Version " + (Bundle.main.infoDictionary?[kCFBundleVersionKey as String] as? String ?? "") + " (15/10/2024)")
         Text("Made by ElectricS01")
         Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
       #endif
@@ -272,7 +272,7 @@ struct AboutView: View {
       Text("About")
         .navigationTitle("About")
       Text("TPU Mac").font(.system(size: 32, weight: .semibold))
-      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (14/10/2024)")
+      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (15/10/2024)")
       Text("Made by ElectricS01")
       Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
     }
