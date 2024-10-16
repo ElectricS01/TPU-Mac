@@ -3,19 +3,8 @@ fragment StandardEmbed on EmbedDataV2 {
     url
     proxyUrl
     attachment
-    width
-    height
     isInternal
     videoEmbedUrl
-    upload {
-      id
-      createdAt
-      attachment
-      userId
-      name
-      type
-      fileSize
-    }
     mimeType
     type
   }
