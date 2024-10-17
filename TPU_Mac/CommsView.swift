@@ -359,46 +359,47 @@ struct CommsView: View {
                       }
                       ForEach(message.embeds, id: \.self) { embed in
                         VStack {
-                          if let text = embed.text, embed.text != [] {
-                            ForEach(Array(text.enumerated()), id: \.element) { index, line in
-                              if index == 0 {
-                                Text(line.text ?? "").font( .title2).lineLimit(1 : nil)
-                              } else {
-                                Text(line.text ?? "")
+                          VStack {
+                            if let text = embed.text, embed.text != [] {
+                              ForEach(Array(text.enumerated()), id: \.element) { index, line in
+                                if index == 0 {
+                                  Text(line.text ?? "").font(.title2).lineLimit(1)
+                                } else {
+                                  Text(line.text ?? "")
+                                }
                               }
                             }
-                          }
-                          if let media = embed.media, embed.media != [] {
-                            ForEach(media, id: \.self) { img in
-                              if img.mimeType != "image/gif" {
-                                LazyImage(url: URL(string: img.attachment == nil ? ("https://i.electrics01.com" + (img.proxyUrl ?? "")) : ("https://i.electrics01.com/i/" + (img.attachment ?? "")))) { state in
-                                  if let image = state.image {
-                                    image.resizable().aspectRatio(contentMode: .fit)
-                                    //                                .onAppear {
-                                    ////                                  if chatMessages.count != 0 {
-                                    ////                                    proxy.scrollTo(0, anchor: .bottom)
-                                    ////                                  }
-                                    //                                }
-                                  } else if state.error != nil {
-                                    Color.red
-                                  } else {
-                                    ProgressView()
+                            if let media = embed.media, embed.media != [] {
+                              ForEach(media, id: \.self) { img in
+                                if img.mimeType != "image/gif" {
+                                  LazyImage(url: URL(string: img.attachment == nil ? ("https://i.electrics01.com" + (img.proxyUrl ?? "")) : ("https://i.electrics01.com/i/" + (img.attachment ?? "")))) { state in
+                                    if let image = state.image {
+                                      image.resizable().aspectRatio(contentMode: .fit)
+                                      //                                .onAppear {
+                                      ////                                  if chatMessages.count != 0 {
+                                      ////                                    proxy.scrollTo(0, anchor: .bottom)
+                                      ////                                  }
+                                      //                                }
+                                    } else if state.error != nil {
+                                      Color.red
+                                    } else {
+                                      ProgressView()
+                                    }
+                                  }
+                                } else {
+                                  HStack {
+                                    WebImage(url: URL(string: img.attachment == nil ? ("https://i.electrics01.com" + (img.proxyUrl ?? "")) : ("https://i.electrics01.com/i/" + (img.attachment ?? "")))) { image in
+                                      image.resizable().aspectRatio(contentMode: .fit)
+                                    } placeholder: {
+                                      ProgressView()
+                                    }
                                   }
                                 }
-                              } else {
-                                HStack {
-                                  WebImage(url: URL(string: img.attachment == nil ? ("https://i.electrics01.com" + (img.proxyUrl ?? "")) : ("https://i.electrics01.com/i/" + (img.attachment ?? "")))) { image in
-                                    image.resizable().aspectRatio(contentMode: .fit)
-                                  } placeholder: {
-                                    ProgressView()
-                                  }
-                                }
-                              }
-                            }.frame(minWidth: 0, maxWidth: 600, minHeight: 0, maxHeight: 400).clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-                          }
-                        }.padding(8)
-                      }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading).background()
-                        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                              }.frame(minWidth: 0, maxWidth: 600, minHeight: 0, maxHeight: 400).clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                            }
+                          }.padding(embed.text ?? [] != [] ? 8 : 0)
+                        }.frame(minWidth: 0, maxWidth: 600).background().clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                      }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
                     }
                     Button(action: {
                       if replyingId != message.id {
