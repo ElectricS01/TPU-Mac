@@ -31,7 +31,7 @@ struct HomeView: View {
       VStack {
         VStack {
           Text("Welcome to").navigationTitle("Home")
-          Text(Bundle.main.infoDictionary?[kCFBundleNameKey as String] as? String ?? "").font(.system(size: 32, weight: .semibold))
+          Text(Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ?? "").font(.system(size: 32, weight: .semibold))
         }.frame(maxHeight: .infinity)
         VStack {
           Text("Announcments").font(.system(size: 24, weight: .semibold))
