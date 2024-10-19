@@ -10,7 +10,6 @@ import NukeUI
 import PrivateUploaderAPI
 import SDWebImageSwiftUI
 import SwiftUI
-import UserNotifications
 
 struct ChatView: View {
   enum FocusedField {
@@ -28,7 +27,6 @@ struct ChatView: View {
   @State private var inputMessage: String = ""
   @State private var editingMessage: String = ""
   @State var apolloSubscription: Apollo.Cancellable?
-  @State private var notifications: Int = 0
   @State private var showingSheet: Bool = false
   //  @State private var hoverItem = -1
   
@@ -45,14 +43,15 @@ struct ChatView: View {
   }
   
   func getChat(chatId: Int?) {
-    getMessages(chat: chatsList[chatId ?? 0].association?.id ?? 0) { result in
+    getMessages(chat: chatId ?? 0) { result in
       switch result {
       case .success(let graphQLResult):
         if let unwrapped = graphQLResult.data {
           chatMessages = unwrapped.messages.reversed()
+          chatOpen = chatId ?? -1
           focusedField = .sending
-          if chatsList[chatOpen].unread != 0 {
-            if let unreadMessageIndex = chatMessages.firstIndex(where: { $0.id == chatsList[chatOpen].association?.lastRead }) {
+          if chatsList.first(where: { $0.association?.id == chatOpen })?.unread != 0 {
+            if let unreadMessageIndex = chatMessages.firstIndex(where: { $0.id == chatsList.first(where: { $0.association?.id == chatOpen })?.association?.lastRead }) {
               unreadId = chatMessages[unreadMessageIndex + 1].id
             } else {
               unreadId = -1
@@ -64,11 +63,11 @@ struct ChatView: View {
       }
     }
   }
-  
+
   func sendMessage() {
     var replyId: GraphQLNullable<Int> = nil
     if replyingId != -1 { replyId = GraphQLNullable<Int>(integerLiteral: replyingId) }
-    Network.shared.apollo.perform(mutation: SendMessageMutation(input: SendMessageInput(content: inputMessage, associationId: chatsList[chatOpen].association?.id ?? 0, attachments: [], replyId: replyId))) { result in
+    Network.shared.apollo.perform(mutation: SendMessageMutation(input: SendMessageInput(content: inputMessage, associationId: chatsList.first(where: { $0.association?.id == chatOpen })?.association?.id ?? 0, attachments: [], replyId: replyId))) { result in
       switch result {
       case .success:
         replyingId = -1
@@ -81,7 +80,7 @@ struct ChatView: View {
   }
   
   func editMessage() {
-    Network.shared.apollo.perform(mutation: EditMessageMutation(input: EditMessageInput(content: GraphQLNullable<String>(stringLiteral: editingMessage), attachments: [], messageId: editingId, associationId: chatsList[chatOpen].association?.id ?? 0))) { result in
+    Network.shared.apollo.perform(mutation: EditMessageMutation(input: EditMessageInput(content: GraphQLNullable<String>(stringLiteral: editingMessage), attachments: [], messageId: editingId, associationId: chatsList.first(where: { $0.association?.id == chatOpen })?.association?.id ?? 0))) { result in
       switch result {
       case .success:
         replyingId = -1
@@ -94,7 +93,7 @@ struct ChatView: View {
   }
   
   func pinMessage(messageId: Int, pinned: Bool) {
-    Network.shared.apollo.perform(mutation: EditMessageMutation(input: EditMessageInput(attachments: [], messageId: messageId, associationId: chatsList[chatOpen].association?.id ?? 0, pinned: GraphQLNullable<Bool>(booleanLiteral: pinned)))) { result in
+    Network.shared.apollo.perform(mutation: EditMessageMutation(input: EditMessageInput(attachments: [], messageId: messageId, associationId: chatsList.first(where: { $0.association?.id == chatOpen })?.association?.id ?? 0, pinned: GraphQLNullable<Bool>(booleanLiteral: pinned)))) { result in
       switch result {
       case .success:
         replyingId = -1
@@ -107,7 +106,7 @@ struct ChatView: View {
   }
   
   func deleteMessage(messageId: Int) {
-    Network.shared.apollo.perform(mutation: DeleteMessageMutation(input: DeleteMessageInput(messageId: messageId, associationId: chatsList[chatOpen].association?.id ?? 0))) { result in
+    Network.shared.apollo.perform(mutation: DeleteMessageMutation(input: DeleteMessageInput(messageId: messageId, associationId: chatsList.first(where: { $0.association?.id == chatOpen })?.association?.id ?? 0))) { result in
       switch result {
       case .success:
         replyingId = -1
@@ -177,21 +176,22 @@ struct ChatView: View {
     return message
   }
   
-  func scheduleNotification(title: String, body: String, to: Int) {
-    notifications += 1
-    UNUserNotificationCenter.current().setBadgeCount(notifications)
-    let content = UNMutableNotificationContent()
-    content.title = title
-    content.body = body
-    content.sound = UNNotificationSound.default
-    content.userInfo = ["to": to]
+  func newToChat(chatObject: ChatsQuery.Data.Chat, self: Bool) -> ChatsQuery.Data.Chat {
+    var chatData = DataDict(data: [:], fulfilledFragments: Set<ObjectIdentifier>())
     
-    let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-    UNUserNotificationCenter.current().add(request) { error in
-      if let error = error {
-        print("Error scheduling notification: \(error)")
-      }
-    }
+    chatData["id"] = chatObject.id
+    chatData["type"] = chatObject.type
+    chatData["name"] = chatObject.name
+    chatData["unread"] = self ? (chatObject.unread ?? 0) + 1 : chatObject.unread
+    chatData["icon"] = chatObject.icon
+    chatData["association"] = chatObject.association
+    chatData["users"] = chatObject.users
+    chatData["sortDate"] = String(Date().timeIntervalSince1970 * 1000)
+    chatData["recipient"] = chatObject.recipient
+    
+    let chat = ChatsQuery.Data.Chat(_dataDict: chatData)
+    
+    return chat
   }
   
   func messagesSubscription() {
@@ -200,15 +200,10 @@ struct ChatView: View {
         switch result {
         case .success(let graphQLResult):
           if let message = graphQLResult.data?.onMessage.message {
-            if chatOpen != -1 && chatsList[chatOpen].id == message.chatId {
+            if chatOpen != -1 && chatsList.first(where: { $0.association?.id == chatOpen })?.id == message.chatId {
               let newMessage = convertToMessage(subscriptionObject: message)
               chatMessages.append(newMessage)
             }
-            #if os(macOS)
-              if !NSApplication.shared.isActive, store.coreUser?.id != message.userId {
-                scheduleNotification(title: message.user?.username ?? "Unknown User", body: message.content ?? "Unknown Message", to: message.chatId)
-              }
-            #endif
           }
         case .failure(let error):
           print("Failed to subscribe \(error)")
@@ -234,7 +229,7 @@ struct ChatView: View {
   }
   
   var body: some View {
-    #if !os(macOS)
+    #if !os(iOS)
       VStack {
         ScrollViewReader { proxy in
           ScrollView {
@@ -287,42 +282,58 @@ struct ChatView: View {
                         .lineLimit(nil)
                     } else {
                       TextField("Keep it civil!", text: $editingMessage)
+                        .focused($focusedField, equals: .editing)
+                        .onExitCommand(perform: {
+                          editingId = -1
+                          focusedField = .sending
+                        })
                         .onSubmit {
                           editMessage()
                         }
-                        .focused($focusedField, equals: .editing)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                     }
                     ForEach(message.embeds, id: \.self) { embed in
-                      if let media = embed.media, embed.media != [] {
-                        ForEach(media, id: \.self) { img in
-                          if img.mimeType != "image/gif" {
-                            LazyImage(url: URL(string: img.attachment == nil ? ("https://i.electrics01.com" + (img.proxyUrl ?? "")) : ("https://i.electrics01.com/i/" + (img.attachment ?? "")))) { state in
-                              if let image = state.image {
-                                image.resizable().aspectRatio(contentMode: .fit)
-                                //                                .onAppear {
-                                ////                                  if chatMessages.count != 0 {
-                                ////                                    proxy.scrollTo(0, anchor: .bottom)
-                                ////                                  }
-                                //                                }
-                              } else if state.error != nil {
-                                Color.red
+                      VStack {
+                        VStack {
+                          if let text = embed.text, embed.text != [] {
+                            ForEach(Array(text.enumerated()), id: \.element) { index, line in
+                              if index == 0 {
+                                Text(line.text ?? "").font(.title2).lineLimit(1)
                               } else {
-                                ProgressView()
-                              }
-                            }
-                          } else {
-                            HStack {
-                              WebImage(url: URL(string: img.attachment == nil ? ("https://i.electrics01.com" + (img.proxyUrl ?? "")) : ("https://i.electrics01.com/i/" + (img.attachment ?? "")))) { image in
-                                image.resizable().aspectRatio(contentMode: .fit)
-                              } placeholder: {
-                                ProgressView()
+                                Text(line.text ?? "")
                               }
                             }
                           }
-                        }.frame(minWidth: 0, maxWidth: 600, minHeight: 0, maxHeight: 400)
-                      }
-
+                          if let media = embed.media, embed.media != [] {
+                            ForEach(media, id: \.self) { img in
+                              if img.mimeType != "image/gif" {
+                                LazyImage(url: URL(string: img.attachment == nil ? ("https://i.electrics01.com" + (img.proxyUrl ?? "")) : ("https://i.electrics01.com/i/" + (img.attachment ?? "")))) { state in
+                                  if let image = state.image {
+                                    image.resizable().aspectRatio(contentMode: .fit)
+                                    //                                .onAppear {
+                                    ////                                  if chatMessages.count != 0 {
+                                    ////                                    proxy.scrollTo(0, anchor: .bottom)
+                                    ////                                  }
+                                    //                                }
+                                  } else if state.error != nil {
+                                    Color.red
+                                  } else {
+                                    ProgressView()
+                                  }
+                                }
+                              } else {
+                                HStack {
+                                  WebImage(url: URL(string: img.attachment == nil ? ("https://i.electrics01.com" + (img.proxyUrl ?? "")) : ("https://i.electrics01.com/i/" + (img.attachment ?? "")))) { image in
+                                    image.resizable().aspectRatio(contentMode: .fit)
+                                  } placeholder: {
+                                    ProgressView()
+                                  }
+                                }
+                              }
+                            }.frame(minWidth: 0, maxWidth: 600, minHeight: 0, maxHeight: 400).clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                          }
+                        }.padding(embed.text ?? [] != [] ? 8 : 0)
+                      }.frame(minWidth: 0, maxWidth: 600).background().clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                     }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
                   }
                   Button(action: {
@@ -331,6 +342,11 @@ struct ChatView: View {
                     } else { replyingId = -1 }
                   }) {
                     Image(systemName: "arrowshape.turn.up.left.fill").frame(width: 16, height: 16)
+                  }
+                  Button(action: {
+                    deleteMessage(messageId: message.id)
+                  }) {
+                    Image(systemName: "trash.fill").frame(width: 16, height: 16)
                   }
                   Button(action: {
                     pinMessage(messageId: message.id, pinned: message.pinned)
@@ -343,6 +359,7 @@ struct ChatView: View {
                       if editingId != message.id {
                         editingId = message.id
                         editingMessage = message.content ?? ""
+                        focusedField = .editing
                       } else { editingId = -1 }
                     }) {
                       Image(systemName: "pencil").frame(width: 16, height: 16)
@@ -390,36 +407,38 @@ struct ChatView: View {
                      alignment: .topLeading)
           }
           TextField("Keep it civil!", text: $inputMessage)
-            .focused($focusedField, equals: .editing)
+            .focused($focusedField, equals: .sending)
             .onSubmit {
               sendMessage()
             }
             .textFieldStyle(RoundedBorderTextFieldStyle())
         }
-        .navigationTitle(chatsList[chatOpen].recipient?.username ?? chatsList[chatOpen].name)
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar(content: {
-          ToolbarItem(placement: .principal) {
-            Text(chatsList[chatOpen].recipient?.username ?? chatsList[chatOpen].name)
-              .bold()
-              .onTapGesture {
-                showingSheet.toggle()
-              }
-              .sheet(isPresented: $showingSheet) {
-                List {
-                  ForEach(0 ..< chatsList[chatOpen].users.count, id: \.self) { result in
-                    Button(action: { print("Clicked: " + (chatsList[chatOpen].users[result].user?.username ?? "User's name could not be found")) }) {
-                      HStack {
-                        ProfilePicture(avatar: chatsList[chatOpen].users[result].user?.avatar)
-                        Text(chatsList[chatOpen].users[result].user?.username ?? "User's name could not be found")
-                        Spacer()
-                      }.contentShape(Rectangle())
-                    }.buttonStyle(.plain)
-                  }
-                }.padding(EdgeInsets(top: -8, leading: -10, bottom: -8, trailing: 0))
-              }
-          }
-        })
+        .navigationTitle(chatsList.first(where: { $0.association?.id == chatOpen })?.recipient?.username ?? chatsList.first(where: { $0.association?.id == chatOpen })?.name ?? "")
+        #if os(iOS)
+          .navigationBarTitleDisplayMode(.inline)
+          .toolbar(content: {
+            ToolbarItem(placement: .principal) {
+              Text(chatsList[chatOpen].recipient?.username ?? chatsList[chatOpen].name)
+                .bold()
+                .onTapGesture {
+                  showingSheet.toggle()
+                }
+                .sheet(isPresented: $showingSheet) {
+                  List {
+                    ForEach(0 ..< chatsList[chatOpen].users.count, id: \.self) { result in
+                      Button(action: { print("Clicked: " + (chatsList[chatOpen].users[result].user?.username ?? "User's name could not be found")) }) {
+                        HStack {
+                          ProfilePicture(avatar: chatsList[chatOpen].users[result].user?.avatar)
+                          Text(chatsList[chatOpen].users[result].user?.username ?? "User's name could not be found")
+                          Spacer()
+                        }.contentShape(Rectangle())
+                      }.buttonStyle(.plain)
+                    }
+                  }.padding(EdgeInsets(top: -8, leading: -10, bottom: -8, trailing: 0))
+                }
+            }
+          })
+        #endif
       }
       .navigationTitle("Comms")
       .onAppear {
@@ -427,15 +446,13 @@ struct ChatView: View {
         messagesSubscription()
         editingSubscription()
       }
+      .onChange(of: chatOpen) {
+        getChat(chatId: chatOpen)
+      }
       .onDisappear {
         if let subscription = apolloSubscription {
           subscription.cancel()
           apolloSubscription = nil
-        }
-      }
-      .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("NavigateToPage"))) { notification in
-        if let userInfo = notification.userInfo, let pageID = userInfo["to"] as? Int {
-          getChat(chatId: chatsList.firstIndex(where: { $0.id == pageID }))
         }
       }
     #endif
