@@ -289,7 +289,7 @@ struct CommsView: View {
       NavigationStack {
         List {
           ForEach(0 ..< chatsList.count, id: \.self) { result in
-            NavigationLink(destination: ChatView(chatsList: $chatsList, chatOpen: .constant(result))) {
+            NavigationLink(destination: ChatView(chatsList: $chatsList, chatOpen: .constant(chatsList[result].association?.id ?? -1))) {
               HStack {
                 ProfilePicture(avatar: chatsList[result].recipient?.avatar ?? chatsList[result].icon)
                 Text(chatsList[result].recipient?.username ?? chatsList[result].name).lineLimit(1)
@@ -309,7 +309,7 @@ struct CommsView: View {
         }
         .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("NavigateToPage"))) { notification in
           if let userInfo = notification.userInfo, let pageID = userInfo["to"] as? Int {
-            getChat(chatId: chatsList.firstIndex(where: { $0.id == pageID }))
+            chatOpen = chatsList.first(where: { $0.id == pageID })?.association?.id ?? -1
           }
         }
       }
