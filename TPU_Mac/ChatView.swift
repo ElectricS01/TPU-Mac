@@ -214,13 +214,27 @@ struct ChatView: View {
   
   func editingSubscription() {
     _ = Network.shared.apollo.subscribe(subscription: EditedMessageSubscription()) { result in
-      print("e")
       switch result {
       case .success(let graphQLResult):
         if let message = graphQLResult.data?.onEditMessage.message {
           let index = chatMessages.firstIndex(where: { $0.id == message.id })
           let newMessage = editToMessage(messageObject: chatMessages[index ?? 0], editObject: message)
           chatMessages[index ?? 0] = newMessage
+        }
+      case .failure(let error):
+        print("Failed to subscribe \(error)")
+      }
+    }
+  }
+  
+  func deletingSubscription() {
+    _ = Network.shared.apollo.subscribe(subscription: DeletedMessageSubscription()) { result in
+      switch result {
+      case .success(let graphQLResult):
+        if let message = graphQLResult.data?.onDeleteMessage.id {
+          if let index = chatMessages.firstIndex(where: { $0.id == message }) {
+            chatMessages.remove(at: index)
+          }
         }
       case .failure(let error):
         print("Failed to subscribe \(error)")
@@ -446,6 +460,7 @@ struct ChatView: View {
       getChat(chatId: chatOpen)
       messagesSubscription()
       editingSubscription()
+      deletingSubscription()
     }
     .onChange(of: chatOpen) {
       getChat(chatId: chatOpen)

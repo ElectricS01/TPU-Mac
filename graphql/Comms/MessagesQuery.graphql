@@ -34,28 +34,20 @@ subscription UpdateMessages {
 }
 
 subscription EditedMessage {
-    onEditMessage {
-      message {
-        content
-        userId
-        pending
-        error
-        edited
-        id
-        pinned
-        editedAt
-        embeds {
-          ...StandardEmbed
-        }
-        emoji {
-          id
-          chatId
-          name
-          icon
-        }
-      }
+  onEditMessage {
+    associationId
+    message {
+      ...StandardMessage
     }
   }
+}
+
+subscription DeletedMessage {
+  onDeleteMessage {
+    id
+    associationId
+  }
+}
 
 fragment StandardMessage on Message {
   id

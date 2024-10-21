@@ -58,6 +58,7 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "EmbedText": return PrivateUploaderAPI.Objects.EmbedText
     case "ReadReceipt": return PrivateUploaderAPI.Objects.ReadReceipt
     case "EditMessageEvent": return PrivateUploaderAPI.Objects.EditMessageEvent
+    case "DeleteMessage": return PrivateUploaderAPI.Objects.DeleteMessage
     case "PaginatedMessageResponse": return PrivateUploaderAPI.Objects.PaginatedMessageResponse
     default: return nil
     }

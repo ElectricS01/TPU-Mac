@@ -20,7 +20,6 @@ struct CommsView: View {
   @EnvironmentObject var store: Store
   @FocusState private var focusedField: FocusedField?
   @State private var chatsList: [ChatsQuery.Data.Chat] = []
-  @State private var chatMessages: [MessagesQuery.Data.Message] = []
   @State private var chatOpen: Int = -1
   @State private var unreadId: Int = -1
   @State private var editingId: Int = -1
@@ -135,11 +134,6 @@ struct CommsView: View {
         switch result {
         case .success(let graphQLResult):
           if let message = graphQLResult.data?.onMessage.message {
-            if chatOpen != -1 && chatsList.first(where: { $0.association?.id == chatOpen })?.id == message.chatId {
-              let newMessage = convertToMessage(subscriptionObject: message)
-              chatMessages.append(newMessage)
-            }
-            
             let index = chatsList.firstIndex(where: { $0.id == message.chatId })
             let newChat = newToChat(chatObject: chatsList[index ?? 0], self: store.coreUser?.id != message.userId)
             chatsList[index ?? 0] = newChat
@@ -157,22 +151,6 @@ struct CommsView: View {
         case .failure(let error):
           print("Failed to subscribe \(error)")
         }
-      }
-    }
-  }
-  
-  func editingSubscription() {
-    _ = Network.shared.apollo.subscribe(subscription: EditedMessageSubscription()) { result in
-      print("e")
-      switch result {
-      case .success(let graphQLResult):
-        if let message = graphQLResult.data?.onEditMessage.message {
-          let index = chatMessages.firstIndex(where: { $0.id == message.id })
-          let newMessage = editToMessage(messageObject: chatMessages[index ?? 0], editObject: message)
-          chatMessages[index ?? 0] = newMessage
-        }
-      case .failure(let error):
-        print("Failed to subscribe \(error)")
       }
     }
   }
@@ -272,7 +250,6 @@ struct CommsView: View {
       .onAppear {
         getChats()
         messagesSubscription()
-        editingSubscription()
       }
       .onDisappear {
         if let subscription = apolloSubscription {

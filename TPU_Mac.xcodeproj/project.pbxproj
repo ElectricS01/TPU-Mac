@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		C4060AC42B8C10A600236E0E /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4060AC32B8C10A600236E0E /* HomeView.swift */; };
 		C40BC9892B8C8F9800444B56 /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = C40BC9882B8C8F9800444B56 /* NukeUI */; };
-		C40BC98B2B8C8F9800444B56 /* NukeVideo in Frameworks */ = {isa = PBXBuildFile; productRef = C40BC98A2B8C8F9800444B56 /* NukeVideo */; };
 		C428DE892B709ADB00A13E4A /* ApolloWebSocket in Frameworks */ = {isa = PBXBuildFile; productRef = C428DE882B709ADB00A13E4A /* ApolloWebSocket */; };
 		C44156622CB3F86100EE1F96 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = C44156612CB3F86100EE1F96 /* SDWebImageSwiftUI */; };
 		C45099152ACFFA7F00FA9247 /* TPU_MacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45099142ACFFA7F00FA9247 /* TPU_MacApp.swift */; };
@@ -79,7 +78,6 @@
 			files = (
 				C40BC9892B8C8F9800444B56 /* NukeUI in Frameworks */,
 				C4DD4D492C4892AE00DF1A22 /* ApolloSQLite in Frameworks */,
-				C40BC98B2B8C8F9800444B56 /* NukeVideo in Frameworks */,
 				C4569DF12AD17A2A00F17C06 /* PrivateUploaderAPI in Frameworks */,
 				C44156622CB3F86100EE1F96 /* SDWebImageSwiftUI in Frameworks */,
 				C428DE892B709ADB00A13E4A /* ApolloWebSocket in Frameworks */,
@@ -201,7 +199,6 @@
 				C4FE71532AD3F085003E4DC0 /* KeychainSwift */,
 				C428DE882B709ADB00A13E4A /* ApolloWebSocket */,
 				C40BC9882B8C8F9800444B56 /* NukeUI */,
-				C40BC98A2B8C8F9800444B56 /* NukeVideo */,
 				C4DD4D482C4892AE00DF1A22 /* ApolloSQLite */,
 				C44156612CB3F86100EE1F96 /* SDWebImageSwiftUI */,
 			);
@@ -497,7 +494,7 @@
 				CODE_SIGN_ENTITLEMENTS = TPU_Mac/TPU_Mac.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"TPU_Mac/Preview Content\"";
 				DEVELOPMENT_TEAM = PK36GR28A7;
@@ -522,7 +519,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.3.11;
+				MARKETING_VERSION = 0.3.12;
 				PRODUCT_BUNDLE_IDENTIFIER = "ElectricS01.TPU-Mac";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -540,7 +537,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = TPU_Mac/TPU_Mac.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"TPU_Mac/Preview Content\"";
 				DEVELOPMENT_TEAM = PK36GR28A7;
@@ -565,7 +562,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.3.11;
+				MARKETING_VERSION = 0.3.12;
 				PRODUCT_BUNDLE_IDENTIFIER = "ElectricS01.TPU-Mac";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -754,11 +751,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C40BC9872B8C8F9800444B56 /* XCRemoteSwiftPackageReference "Nuke" */;
 			productName = NukeUI;
-		};
-		C40BC98A2B8C8F9800444B56 /* NukeVideo */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C40BC9872B8C8F9800444B56 /* XCRemoteSwiftPackageReference "Nuke" */;
-			productName = NukeVideo;
 		};
 		C428DE882B709ADB00A13E4A /* ApolloWebSocket */ = {
 			isa = XCSwiftPackageProductDependency;
