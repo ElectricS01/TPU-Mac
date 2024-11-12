@@ -1,13 +1,13 @@
 {
-  "originHash" : "32de2e6f1ca705660f7b87d82a1831f853f4c9bc74bfe58ee88fe567972e6a9c",
+  "originHash" : "3ac8319d3ffafff56eee79acf550f2a56c08a076f51ef6246b00b471162074b0",
   "pins" : [
     {
       "identity" : "apollo-ios",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apollographql/apollo-ios.git",
       "state" : {
-        "revision" : "7122421c2ba9ce2d252943cef055c74ef56ea431",
-        "version" : "1.15.2"
+        "revision" : "c3f48d45ec1300bc95243bf19f67284f9dc0d14a",
+        "version" : "1.15.3"
       }
     },
     {
@@ -17,6 +17,15 @@
       "state" : {
         "revision" : "d108a1fa6189e661f91560548ef48651ed8d93b9",
         "version" : "20.0.0"
+      }
+    },
+    {
+      "identity" : "networkimage",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/gonzalezreal/NetworkImage",
+      "state" : {
+        "revision" : "2849f5323265386e200484b0d0f896e73c3411b9",
+        "version" : "6.0.1"
       }
     },
     {
@@ -33,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SDWebImage/SDWebImage.git",
       "state" : {
-        "revision" : "8a1be70a625683bc04d6903e2935bf23f3c6d609",
-        "version" : "5.19.7"
+        "revision" : "10d06f6a33bafae8c164fbfd1f03391f6d4692b3",
+        "version" : "5.20.0"
       }
     },
     {
@@ -42,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SDWebImage/SDWebImageSwiftUI",
       "state" : {
-        "revision" : "5aa947356f4ea49a0c3b9968564267f6ea5abea7",
-        "version" : "3.1.2"
+        "revision" : "451c6dfd5ecec2cf626d1d9ca81c2d4a60355172",
+        "version" : "3.1.3"
       }
     },
     {
@@ -53,6 +62,24 @@
       "state" : {
         "revision" : "a95fc6df17d108bd99210db5e8a9bac90fe984b8",
         "version" : "0.15.3"
+      }
+    },
+    {
+      "identity" : "swift-cmark",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swiftlang/swift-cmark",
+      "state" : {
+        "revision" : "3ccff77b2dc5b96b77db3da0d68d28068593fa53",
+        "version" : "0.5.0"
+      }
+    },
+    {
+      "identity" : "swift-markdown-ui?tab=readme-ov-file#installation",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/gonzalezreal/swift-markdown-ui?tab=readme-ov-file#installation",
+      "state" : {
+        "revision" : "5f613358148239d0292c0cef674a3c2314737f9e",
+        "version" : "2.4.1"
       }
     }
   ],

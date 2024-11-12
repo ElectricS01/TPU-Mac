@@ -10,6 +10,7 @@
 		C4060AC42B8C10A600236E0E /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4060AC32B8C10A600236E0E /* HomeView.swift */; };
 		C40BC9892B8C8F9800444B56 /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = C40BC9882B8C8F9800444B56 /* NukeUI */; };
 		C428DE892B709ADB00A13E4A /* ApolloWebSocket in Frameworks */ = {isa = PBXBuildFile; productRef = C428DE882B709ADB00A13E4A /* ApolloWebSocket */; };
+		C4300EAE2CE3141F000AE0B5 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = C4300EAD2CE3141F000AE0B5 /* MarkdownUI */; };
 		C44156622CB3F86100EE1F96 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = C44156612CB3F86100EE1F96 /* SDWebImageSwiftUI */; };
 		C45099152ACFFA7F00FA9247 /* TPU_MacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45099142ACFFA7F00FA9247 /* TPU_MacApp.swift */; };
 		C45099172ACFFA7F00FA9247 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45099162ACFFA7F00FA9247 /* ContentView.swift */; };
@@ -79,6 +80,7 @@
 				C40BC9892B8C8F9800444B56 /* NukeUI in Frameworks */,
 				C4DD4D492C4892AE00DF1A22 /* ApolloSQLite in Frameworks */,
 				C4569DF12AD17A2A00F17C06 /* PrivateUploaderAPI in Frameworks */,
+				C4300EAE2CE3141F000AE0B5 /* MarkdownUI in Frameworks */,
 				C44156622CB3F86100EE1F96 /* SDWebImageSwiftUI in Frameworks */,
 				C428DE892B709ADB00A13E4A /* ApolloWebSocket in Frameworks */,
 				C48C2E9E2AD0417B0000A362 /* Apollo in Frameworks */,
@@ -201,6 +203,7 @@
 				C40BC9882B8C8F9800444B56 /* NukeUI */,
 				C4DD4D482C4892AE00DF1A22 /* ApolloSQLite */,
 				C44156612CB3F86100EE1F96 /* SDWebImageSwiftUI */,
+				C4300EAD2CE3141F000AE0B5 /* MarkdownUI */,
 			);
 			productName = "TPU Mac";
 			productReference = C45099112ACFFA7F00FA9247 /* TPU Mac.app */;
@@ -280,6 +283,7 @@
 				C4FE71522AD3F084003E4DC0 /* XCRemoteSwiftPackageReference "keychain-swift" */,
 				C40BC9872B8C8F9800444B56 /* XCRemoteSwiftPackageReference "Nuke" */,
 				C44156602CB3F86100EE1F96 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
+				C4300EAC2CE3141F000AE0B5 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 			);
 			productRefGroup = C45099122ACFFA7F00FA9247 /* Products */;
 			projectDirPath = "";
@@ -519,7 +523,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.3.12;
+				MARKETING_VERSION = 0.3.13;
 				PRODUCT_BUNDLE_IDENTIFIER = "ElectricS01.TPU-Mac";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -562,7 +566,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.3.12;
+				MARKETING_VERSION = 0.3.13;
 				PRODUCT_BUNDLE_IDENTIFIER = "ElectricS01.TPU-Mac";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -720,6 +724,14 @@
 				minimumVersion = 12.4.0;
 			};
 		};
+		C4300EAC2CE3141F000AE0B5 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/gonzalezreal/swift-markdown-ui?tab=readme-ov-file#installation";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.4.1;
+			};
+		};
 		C44156602CB3F86100EE1F96 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI";
@@ -756,6 +768,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C48C2E9C2AD0417B0000A362 /* XCRemoteSwiftPackageReference "apollo-ios" */;
 			productName = ApolloWebSocket;
+		};
+		C4300EAD2CE3141F000AE0B5 /* MarkdownUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C4300EAC2CE3141F000AE0B5 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
+			productName = MarkdownUI;
 		};
 		C44156612CB3F86100EE1F96 /* SDWebImageSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;

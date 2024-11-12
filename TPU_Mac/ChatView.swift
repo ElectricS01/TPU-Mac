@@ -6,6 +6,7 @@
 //
 
 import Apollo
+import MarkdownUI
 import NukeUI
 import PrivateUploaderAPI
 import SDWebImageSwiftUI
@@ -279,7 +280,7 @@ struct ChatView: View {
                   if dontMerge {
                     HStack {
                       Text(message.user?.username ?? "User has been deleted")
-                      Text(DateUtils.dateFormat(message.createdAt))
+                      Text(DateUtils.dateFormat(message.createdAt)).foregroundColor(.secondary)
                     }.frame(minWidth: 0,
                             maxWidth: .infinity,
                             minHeight: 0,
@@ -287,12 +288,19 @@ struct ChatView: View {
                             alignment: .topLeading)
                   }
                   if editingId != message.id {
-                    Text(.init(message.content ?? "Message has been deleted"))
+                    Markdown(message.content ?? "Message has been deleted")
+                      .markdownSoftBreakMode(.lineBreak)
                       .textSelection(.enabled)
+                      .markdownBlockStyle(\.blockquote) { configuration in
+                        configuration.label
+                          .padding(EdgeInsets(top: 2, leading: 8, bottom: 2, trailing: 2))
+                          .overlay(alignment: .leading) {
+                            Rectangle().frame(width: 2)
+                          }
+                      }
                       .frame(minWidth: 0,
                              maxWidth: .infinity,
                              alignment: .leading)
-                      .lineLimit(nil)
                   } else {
                     TextField("Keep it civil!", text: $editingMessage)
                       .focused($focusedField, equals: .editing)

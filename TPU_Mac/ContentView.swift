@@ -252,7 +252,7 @@ struct SettingsView: View {
         Text("Coming soon")
       #else
         Text("TPU iOS").font(.system(size: 32, weight: .semibold))
-        Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (21/10/2024)")
+        Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (12/11/2024)")
         Text("Made by ElectricS01")
         Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
       #endif
@@ -272,7 +272,7 @@ struct AboutView: View {
       Text("About")
         .navigationTitle("About")
       Text("TPU Mac").font(.system(size: 32, weight: .semibold))
-      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (21/10/2024)")
+      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (12/11/2024)")
       Text("Made by ElectricS01")
       Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
     }
