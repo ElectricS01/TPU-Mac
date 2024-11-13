@@ -28,7 +28,6 @@ struct CommsView: View {
   @State private var editingMessage: String = ""
   @State var apolloSubscription: Apollo.Cancellable?
   @State private var notifications: Int = 0
-  //  @State private var hoverItem = -1
   
   func getChats() {
     Network.shared.apollo.fetch(query: ChatsQuery(), cachePolicy: .fetchIgnoringCacheData) { result in
@@ -41,56 +40,6 @@ struct CommsView: View {
         print("Failure! Error: \(error)")
       }
     }
-  }
-  
-  func convertToMessage(subscriptionObject: UpdateMessagesSubscription.Data.OnMessage.Message) -> MessagesQuery.Data.Message {
-    var messageData = DataDict(data: [:], fulfilledFragments: Set<ObjectIdentifier>())
-
-    messageData["id"] = subscriptionObject.id
-    messageData["createdAt"] = subscriptionObject.createdAt
-    messageData["updatedAt"] = subscriptionObject.updatedAt
-    messageData["chatId"] = subscriptionObject.chatId
-    messageData["userId"] = subscriptionObject.userId
-    messageData["content"] = subscriptionObject.content
-    messageData["type"] = subscriptionObject.type
-    messageData["emoji"] = subscriptionObject.emoji
-    messageData["embeds"] = subscriptionObject.embeds
-    messageData["reply"] = subscriptionObject.reply
-    messageData["user"] = subscriptionObject.user
-    messageData["edited"] = subscriptionObject.edited
-    messageData["editedAt"] = subscriptionObject.editedAt
-    messageData["replyId"] = subscriptionObject.replyId
-    messageData["pinned"] = subscriptionObject.pinned
-    messageData["readReceipts"] = subscriptionObject.readReceipts
-    
-    let message = MessagesQuery.Data.Message(_dataDict: messageData)
-
-    return message
-  }
-  
-  func editToMessage(messageObject: MessagesQuery.Data.Message, editObject: EditedMessageSubscription.Data.OnEditMessage.Message) -> MessagesQuery.Data.Message {
-    var messageData = DataDict(data: [:], fulfilledFragments: Set<ObjectIdentifier>())
-    
-    messageData["id"] = editObject.id
-    messageData["createdAt"] = messageObject.createdAt
-    messageData["updatedAt"] = messageObject.updatedAt
-    messageData["chatId"] = messageObject.chatId
-    messageData["userId"] = editObject.userId
-    messageData["content"] = editObject.content
-    messageData["type"] = messageObject.type
-    messageData["emoji"] = editObject.emoji
-    messageData["embeds"] = editObject.embeds
-    messageData["reply"] = messageObject.reply
-    messageData["user"] = messageObject.user
-    messageData["edited"] = editObject.edited
-    messageData["editedAt"] = editObject.editedAt
-    messageData["replyId"] = messageObject.replyId
-    messageData["pinned"] = editObject.pinned
-    messageData["readReceipts"] = messageObject.readReceipts
-    
-    let message = MessagesQuery.Data.Message(_dataDict: messageData)
-    
-    return message
   }
   
   func newToChat(chatObject: ChatsQuery.Data.Chat, self: Bool) -> ChatsQuery.Data.Chat {

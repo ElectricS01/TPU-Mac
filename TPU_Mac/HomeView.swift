@@ -6,6 +6,7 @@
 //
 
 import Apollo
+import MarkdownUI
 import PrivateUploaderAPI
 import SwiftUI
 
@@ -23,6 +24,27 @@ struct HomeStat: View {
   }
 }
 
+struct NewsItem: View {
+  @Binding var item: StateQuery.Data.CoreState.Announcement
+
+  var body: some View {
+    ProfilePicture(avatar: item.user?.avatar, size: 48)
+    Text(item.user?.username ?? "Deleted User").font(.system(size: 16, weight: .semibold))
+    Markdown(item.content)
+      .markdownSoftBreakMode(.lineBreak)
+      .textSelection(.enabled)
+      .markdownBlockStyle(\.blockquote) { configuration in
+        configuration.label
+          .padding(EdgeInsets(top: 2, leading: 8, bottom: 2, trailing: 2))
+          .overlay(alignment: .leading) {
+            Rectangle().frame(width: 2)
+          }
+      }
+      .multilineTextAlignment(.center)
+    Text(DateUtils.dateFormat(item.createdAt))
+  }
+}
+
 struct HomeView: View {
   @EnvironmentObject var store: Store
 
@@ -37,10 +59,7 @@ struct HomeView: View {
           Text("Announcments").font(.system(size: 24, weight: .semibold))
           ScrollView {
             ForEach(store.coreState?.announcements ?? [], id: \.self) { item in
-              ProfilePicture(avatar: item.user?.avatar, size: 48)
-              Text(item.user?.username ?? "Deleted User").font(.system(size: 16, weight: .semibold))
-              Text(item.content).multilineTextAlignment(.center)
-              Text(DateUtils.dateFormat(item.createdAt))
+              NewsItem(item: .constant(item))
             }.padding()
           }
         }.frame(maxHeight: .infinity)

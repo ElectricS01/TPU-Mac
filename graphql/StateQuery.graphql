@@ -3,8 +3,6 @@ query StateQuery {
     announcements {
       userId
       content
-      type
-      id
       createdAt
       user {
         username

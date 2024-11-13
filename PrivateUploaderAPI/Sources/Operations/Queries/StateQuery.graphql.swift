@@ -7,7 +7,7 @@ public class StateQuery: GraphQLQuery {
   public static let operationName: String = "StateQuery"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query StateQuery { coreState { __typename announcements { __typename userId content type id createdAt user { __typename username id avatar } } stats { __typename users collections collectionItems uploads messages chats } } currentUser { __typename username description administrator emailVerified banned createdAt avatar moderator banner status storedStatus privacyPolicyAccepted domain { __typename active domain id } badges { __typename color icon id image name priority tooltip } id notifications { __typename id dismissed message route createdAt } } trackedUsers { __typename username id avatar blocked status bot nickname { __typename nickname } friends { __typename friendId id status userId } } }"#
+      #"query StateQuery { coreState { __typename announcements { __typename userId content createdAt user { __typename username id avatar } } stats { __typename users collections collectionItems uploads messages chats } } currentUser { __typename username description administrator emailVerified banned createdAt avatar moderator banner status storedStatus privacyPolicyAccepted domain { __typename active domain id } badges { __typename color icon id image name priority tooltip } id notifications { __typename id dismissed message route createdAt } } trackedUsers { __typename username id avatar blocked status bot nickname { __typename nickname } friends { __typename friendId id status userId } } }"#
     ))
 
   public init() {}
@@ -56,16 +56,12 @@ public class StateQuery: GraphQLQuery {
           .field("__typename", String.self),
           .field("userId", Int?.self),
           .field("content", String.self),
-          .field("type", String?.self),
-          .field("id", Int.self),
           .field("createdAt", PrivateUploaderAPI.Date?.self),
           .field("user", User?.self),
         ] }
 
         public var userId: Int? { __data["userId"] }
         public var content: String { __data["content"] }
-        public var type: String? { __data["type"] }
-        public var id: Int { __data["id"] }
         public var createdAt: PrivateUploaderAPI.Date? { __data["createdAt"] }
         public var user: User? { __data["user"] }
 
