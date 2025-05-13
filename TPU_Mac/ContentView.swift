@@ -45,7 +45,7 @@ class Store: ObservableObject {
 
 struct ContentView: View {
   @StateObject var store = Store()
-  @State private var showingLogin = keychain.get("token") == nil || keychain.get("token") == ""
+  @State private var showingLogin = keychain.get("token2") == nil || keychain.get("token") == ""
   @State private var coreNotifications: [StateQuery.Data.CurrentUser.Notification]?
   @State var isPopover = false
 
@@ -183,12 +183,17 @@ struct ContentView: View {
 
 struct LoginSheet: View {
   @Binding var showingLogin: Bool
+  @State private var email: String = ""
   @State private var username: String = ""
   @State private var password: String = ""
+  @State private var retype: String = ""
   @State private var totp: String = ""
   @State private var errorMessage = ""
+  @State private var page = false
 
   func loginDetails() {
+    errorMessage = ""
+
     Network.shared.apollo.perform(mutation: LoginMutation(input: LoginInput(username: username, password: password, totp: GraphQLNullable(stringLiteral: totp)))) { result in
       switch result {
       case .success(let graphQLResult):
@@ -197,7 +202,43 @@ struct LoginSheet: View {
           showingLogin = false
           return
         }
+
         errorMessage = graphQLResult.errors?[0].localizedDescription ?? "Error"
+      case .failure(let error):
+        print("Failure! Error: \(error)")
+        errorMessage = error.localizedDescription
+      }
+    }
+  }
+
+  func registerDetails() {
+    errorMessage = ""
+
+    if password != retype {
+      errorMessage = "Passwords do not match"
+      return
+    }
+
+    Network.shared.apollo.perform(mutation: RegisterMutation(input: RegisterInput(username: username, password: password, email: email))) { result in
+      switch result {
+      case .success(let graphQLResult):
+        if graphQLResult.errors?[0].message == nil {
+          keychain.set(graphQLResult.data?.register.token ?? "", forKey: "token")
+          showingLogin = false
+          return
+        }
+
+        if let message = graphQLResult.errors?[0].localizedDescription {
+          if message == "Argument Validation Error" {
+            errorMessage = "An input is blank or incorrect"
+            return
+          }
+
+          errorMessage = message
+          return
+        }
+
+        errorMessage = "An unknown error occurred"
       case .failure(let error):
         print("Failure! Error: \(error)")
         errorMessage = error.localizedDescription
@@ -207,36 +248,104 @@ struct LoginSheet: View {
 
   var body: some View {
     VStack {
-      Text("Login").font(.title)
-      TextField("Username", text: $username)
-        .onSubmit {
-          loginDetails()
-        }
-        .frame(width: 200)
-        .textFieldStyle(RoundedBorderTextFieldStyle())
-        .fixedSize(horizontal: true, vertical: false)
-      SecureField("Password", text: $password)
-        .onSubmit {
-          loginDetails()
-        }
-        .frame(width: 200)
-        .textFieldStyle(RoundedBorderTextFieldStyle())
-        .fixedSize(horizontal: true, vertical: false)
-      TextField("2FA code", text: $totp)
-        .onSubmit {
-          loginDetails()
-        }
-        .frame(width: 200)
-        .textFieldStyle(RoundedBorderTextFieldStyle())
-        .fixedSize(horizontal: true, vertical: false)
-      Button("Login") {
-        loginDetails()
+      if page == false {
+        Text("Login").font(.largeTitle)
+        TextField("Username", text: $username)
+          .onSubmit {
+            loginDetails()
+          }
+          .frame(width: 300)
+          .textFieldStyle(RoundedBorderTextFieldStyle())
+          .fixedSize(horizontal: true, vertical: false)
+        SecureField("Password", text: $password)
+          .onSubmit {
+            loginDetails()
+          }
+          .frame(width: 300)
+          .textFieldStyle(RoundedBorderTextFieldStyle())
+          .fixedSize(horizontal: true, vertical: false)
+        TextField("2FA code", text: $totp)
+          .onSubmit {
+            loginDetails()
+          }
+          .frame(width: 300)
+          .textFieldStyle(RoundedBorderTextFieldStyle())
+          .fixedSize(horizontal: true, vertical: false)
+        ZStack {
+          HStack {
+            Spacer()
+            Button("Or register") {
+              page = true
+              username = ""
+              password = ""
+              totp = ""
+              errorMessage = ""
+            }
+            .buttonStyle(.link)
+          }
+
+          Button("Login") {
+            loginDetails()
+          }
+          .padding()
+        }.frame(width: 300)
+      } else {
+        Text("Register").font(.largeTitle)
+        TextField("Email", text: $email)
+          .onSubmit {
+            registerDetails()
+          }
+          .frame(width: 300)
+          .textFieldStyle(RoundedBorderTextFieldStyle())
+          .fixedSize(horizontal: true, vertical: false)
+        TextField("Username", text: $username)
+          .onSubmit {
+            registerDetails()
+          }
+          .frame(width: 300)
+          .textFieldStyle(RoundedBorderTextFieldStyle())
+          .fixedSize(horizontal: true, vertical: false)
+        SecureField("Password", text: $password)
+          .onSubmit {
+            registerDetails()
+          }
+          .frame(width: 300)
+          .textFieldStyle(RoundedBorderTextFieldStyle())
+        SecureField("Retype Password", text: $retype)
+          .onSubmit {
+            registerDetails()
+          }
+          .frame(width: 300)
+          .textFieldStyle(RoundedBorderTextFieldStyle())
+          .fixedSize(horizontal: true, vertical: false)
+          .fixedSize(horizontal: true, vertical: false)
+        ZStack {
+          HStack {
+            Spacer()
+            Button("Back to login") {
+              page = false
+              email = ""
+              username = ""
+              password = ""
+              retype = ""
+              errorMessage = ""
+            }
+            .buttonStyle(.link)
+          }
+
+          Button("Register") {
+            registerDetails()
+          }
+          .padding()
+        }.frame(width: 300)
       }
+
       Text(errorMessage)
         .foregroundColor(.red)
         .multilineTextAlignment(.center)
         .lineLimit(4)
         .fixedSize(horizontal: false, vertical: true)
+        .textSelection(.enabled)
     }.padding()
   }
 }
@@ -252,7 +361,7 @@ struct SettingsView: View {
         Text("Coming soon")
       #else
         Text("TPU iOS").font(.system(size: 32, weight: .semibold))
-        Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (12/11/2024)")
+        Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (13/5/2025)")
         Text("Made by ElectricS01")
         Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
       #endif
@@ -272,7 +381,7 @@ struct AboutView: View {
       Text("About")
         .navigationTitle("About")
       Text("TPU Mac").font(.system(size: 32, weight: .semibold))
-      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (12/11/2024)")
+      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (13/5/2025)")
       Text("Made by ElectricS01")
       Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
     }

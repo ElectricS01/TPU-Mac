@@ -3,16 +3,16 @@
 
 @_exported import ApolloAPI
 
-public class LoginMutation: GraphQLMutation {
-  public static let operationName: String = "Login"
+public class RegisterMutation: GraphQLMutation {
+  public static let operationName: String = "Register"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"mutation Login($input: LoginInput!) { login(input: $input) { __typename token } }"#
+      #"mutation Register($input: RegisterInput!) { register(input: $input) { __typename token } }"#
     ))
 
-  public var input: LoginInput
+  public var input: RegisterInput
 
-  public init(input: LoginInput) {
+  public init(input: RegisterInput) {
     self.input = input
   }
 
@@ -24,15 +24,15 @@ public class LoginMutation: GraphQLMutation {
 
     public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Mutation }
     public static var __selections: [ApolloAPI.Selection] { [
-      .field("login", Login.self, arguments: ["input": .variable("input")]),
+      .field("register", Register.self, arguments: ["input": .variable("input")]),
     ] }
 
-    public var login: Login { __data["login"] }
+    public var register: Register { __data["register"] }
 
-    /// Login
+    /// Register
     ///
     /// Parent Type: `LoginResponse`
-    public struct Login: PrivateUploaderAPI.SelectionSet {
+    public struct Register: PrivateUploaderAPI.SelectionSet {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 

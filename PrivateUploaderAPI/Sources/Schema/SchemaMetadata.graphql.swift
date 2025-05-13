@@ -36,7 +36,6 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "Friend": return PrivateUploaderAPI.Objects.Friend
     case "Mutation": return PrivateUploaderAPI.Objects.Mutation
     case "LoginResponse": return PrivateUploaderAPI.Objects.LoginResponse
-    case "LoginUser": return PrivateUploaderAPI.Objects.LoginUser
     case "PaginatedUploadResponse": return PrivateUploaderAPI.Objects.PaginatedUploadResponse
     case "Pager": return PrivateUploaderAPI.Objects.Pager
     case "Upload": return PrivateUploaderAPI.Objects.Upload
