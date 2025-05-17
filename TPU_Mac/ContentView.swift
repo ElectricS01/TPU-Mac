@@ -45,7 +45,7 @@ class Store: ObservableObject {
 
 struct ContentView: View {
   @StateObject var store = Store()
-  @State private var showingLogin = keychain.get("token2") == nil || keychain.get("token") == ""
+  @State private var showingLogin = keychain.get("token") == nil || keychain.get("token") == ""
   @State private var coreNotifications: [StateQuery.Data.CurrentUser.Notification]?
   @State var isPopover = false
 
@@ -281,7 +281,9 @@ struct LoginSheet: View {
               totp = ""
               errorMessage = ""
             }
+            #if os(macOS)
             .buttonStyle(.link)
+            #endif
           }
 
           Button("Login") {
@@ -330,7 +332,9 @@ struct LoginSheet: View {
               retype = ""
               errorMessage = ""
             }
+            #if os(macOS)
             .buttonStyle(.link)
+            #endif
           }
 
           Button("Register") {
@@ -361,7 +365,7 @@ struct SettingsView: View {
         Text("Coming soon")
       #else
         Text("TPU iOS").font(.system(size: 32, weight: .semibold))
-        Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (13/5/2025)")
+        Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (14/5/2025)")
         Text("Made by ElectricS01")
         Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
       #endif
@@ -381,7 +385,7 @@ struct AboutView: View {
       Text("About")
         .navigationTitle("About")
       Text("TPU Mac").font(.system(size: 32, weight: .semibold))
-      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (13/5/2025)")
+      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (14/5/2025)")
       Text("Made by ElectricS01")
       Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
     }
