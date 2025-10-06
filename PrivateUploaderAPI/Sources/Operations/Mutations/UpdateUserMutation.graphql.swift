@@ -3,16 +3,16 @@
 
 @_exported import ApolloAPI
 
-public class DeleteMessageMutation: GraphQLMutation {
-  public static let operationName: String = "DeleteMessage"
+public class UpdateUserMutation: GraphQLMutation {
+  public static let operationName: String = "UpdateUser"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"mutation DeleteMessage($input: DeleteMessageInput!) { deleteMessage(input: $input) }"#
+      #"mutation UpdateUser($input: UpdateUserInput!) { updateUser(input: $input) }"#
     ))
 
-  public var input: DeleteMessageInput
+  public var input: UpdateUserInput
 
-  public init(input: DeleteMessageInput) {
+  public init(input: UpdateUserInput) {
     self.input = input
   }
 
@@ -24,9 +24,9 @@ public class DeleteMessageMutation: GraphQLMutation {
 
     public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Mutation }
     public static var __selections: [ApolloAPI.Selection] { [
-      .field("deleteMessage", Bool.self, arguments: ["input": .variable("input")]),
+      .field("updateUser", Bool.self, arguments: ["input": .variable("input")]),
     ] }
 
-    public var deleteMessage: Bool { __data["deleteMessage"] }
+    public var updateUser: Bool { __data["updateUser"] }
   }
 }

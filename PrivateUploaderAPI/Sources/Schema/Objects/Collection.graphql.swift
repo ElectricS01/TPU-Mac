@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let Collection = ApolloAPI.Object(
     typename: "Collection",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

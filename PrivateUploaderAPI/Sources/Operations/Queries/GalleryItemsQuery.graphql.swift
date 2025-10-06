@@ -22,7 +22,7 @@ public class GalleryItemsQuery: GraphQLQuery {
     public let __data: DataDict
     public init(_dataDict: DataDict) { __data = _dataDict }
 
-    public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Query }
+    public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
       .field("gallery", Gallery.self, arguments: ["input": .variable("input")]),
     ] }
@@ -36,7 +36,7 @@ public class GalleryItemsQuery: GraphQLQuery {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 
-      public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PaginatedUploadResponse }
+      public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PaginatedUploadResponse }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("pager", Pager.self),
@@ -53,7 +53,7 @@ public class GalleryItemsQuery: GraphQLQuery {
         public let __data: DataDict
         public init(_dataDict: DataDict) { __data = _dataDict }
 
-        public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Pager }
+        public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Pager }
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("totalItems", Int.self),
@@ -73,7 +73,7 @@ public class GalleryItemsQuery: GraphQLQuery {
         public let __data: DataDict
         public init(_dataDict: DataDict) { __data = _dataDict }
 
-        public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Upload }
+        public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Upload }
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("id", Int.self),
@@ -103,7 +103,7 @@ public class GalleryItemsQuery: GraphQLQuery {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Star }
+          public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Star }
           public static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
             .field("id", Int.self),

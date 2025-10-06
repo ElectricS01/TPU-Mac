@@ -16,7 +16,7 @@ public class StateQuery: GraphQLQuery {
     public let __data: DataDict
     public init(_dataDict: DataDict) { __data = _dataDict }
 
-    public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Query }
+    public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
       .field("coreState", CoreState.self),
       .field("currentUser", CurrentUser?.self),
@@ -34,7 +34,7 @@ public class StateQuery: GraphQLQuery {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 
-      public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.CoreState }
+      public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.CoreState }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("announcements", [Announcement].self),
@@ -51,7 +51,7 @@ public class StateQuery: GraphQLQuery {
         public let __data: DataDict
         public init(_dataDict: DataDict) { __data = _dataDict }
 
-        public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Announcement }
+        public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Announcement }
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("userId", Int?.self),
@@ -72,7 +72,7 @@ public class StateQuery: GraphQLQuery {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PartialUserBase }
+          public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PartialUserBase }
           public static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
             .field("username", String.self),
@@ -93,7 +93,7 @@ public class StateQuery: GraphQLQuery {
         public let __data: DataDict
         public init(_dataDict: DataDict) { __data = _dataDict }
 
-        public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.CoreStats }
+        public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.CoreStats }
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("users", Int.self),
@@ -120,7 +120,7 @@ public class StateQuery: GraphQLQuery {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 
-      public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.User }
+      public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.User }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("username", String.self),
@@ -168,7 +168,7 @@ public class StateQuery: GraphQLQuery {
         public let __data: DataDict
         public init(_dataDict: DataDict) { __data = _dataDict }
 
-        public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Domain }
+        public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Domain }
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("active", Bool.self),
@@ -188,7 +188,7 @@ public class StateQuery: GraphQLQuery {
         public let __data: DataDict
         public init(_dataDict: DataDict) { __data = _dataDict }
 
-        public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Badge }
+        public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Badge }
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("color", String?.self),
@@ -216,7 +216,7 @@ public class StateQuery: GraphQLQuery {
         public let __data: DataDict
         public init(_dataDict: DataDict) { __data = _dataDict }
 
-        public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Notification }
+        public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Notification }
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("id", Int.self),
@@ -241,7 +241,7 @@ public class StateQuery: GraphQLQuery {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 
-      public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PartialUserFriend }
+      public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PartialUserFriend }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("username", String.self),
@@ -270,7 +270,7 @@ public class StateQuery: GraphQLQuery {
         public let __data: DataDict
         public init(_dataDict: DataDict) { __data = _dataDict }
 
-        public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.FriendNickname }
+        public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.FriendNickname }
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("nickname", String.self),
@@ -286,7 +286,7 @@ public class StateQuery: GraphQLQuery {
         public let __data: DataDict
         public init(_dataDict: DataDict) { __data = _dataDict }
 
-        public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Friend }
+        public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Friend }
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("friendId", Int.self),

@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let PaginatedCollectionResponse = ApolloAPI.Object(
     typename: "PaginatedCollectionResponse",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

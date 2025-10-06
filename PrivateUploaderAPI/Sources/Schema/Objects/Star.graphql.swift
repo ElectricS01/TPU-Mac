@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let Star = ApolloAPI.Object(
     typename: "Star",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

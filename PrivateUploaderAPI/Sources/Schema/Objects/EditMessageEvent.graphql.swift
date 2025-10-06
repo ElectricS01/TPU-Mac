@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let EditMessageEvent = ApolloAPI.Object(
     typename: "EditMessageEvent",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

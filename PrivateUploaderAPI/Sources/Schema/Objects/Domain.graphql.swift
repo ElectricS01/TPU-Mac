@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let Domain = ApolloAPI.Object(
     typename: "Domain",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

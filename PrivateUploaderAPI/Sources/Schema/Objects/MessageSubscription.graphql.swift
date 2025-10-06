@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let MessageSubscription = ApolloAPI.Object(
     typename: "MessageSubscription",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

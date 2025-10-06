@@ -46,6 +46,7 @@ class Store: ObservableObject {
 struct ContentView: View {
   @StateObject var store = Store()
   @State private var showingLogin = keychain.get("token") == nil || keychain.get("token") == ""
+  @State private var showingTerms = false
   @State private var coreNotifications: [StateQuery.Data.CurrentUser.Notification]?
   @State var isPopover = false
 
@@ -58,6 +59,7 @@ struct ContentView: View {
           store.coreUser = unwrapped.currentUser
           coreNotifications = store.coreUser?.notifications
           store.coreUsers = unwrapped.trackedUsers
+          showingTerms = !(unwrapped.currentUser?.privacyPolicyAccepted ?? false)
         }
       case .failure(let error):
         print("Failure! Error: \(error)")
@@ -92,90 +94,120 @@ struct ContentView: View {
     }
   }
 
+  func acceptTerms() {
+    Network.shared.apollo.perform(mutation: UpdateUserMutation(input: UpdateUserInput(privacyPolicyAccepted: true))) { result in
+      switch result {
+      case .success(let graphQLResult):
+        showingTerms = false
+        return
+      case .failure(let error):
+        print("Failure! Error: \(error)")
+      }
+    }
+  }
+
   var body: some View {
     if showingLogin {
       LoginSheet(showingLogin: $showingLogin)
     } else {
       #if os(macOS)
-        NavigationSplitView {
-          List {
-            NavigationLink(destination: HomeView()) {
-              Label("Home", systemImage: "house")
-            }
-            NavigationLink(destination: SettingsView(showingLogin: $showingLogin)) {
-              Label("Settings", systemImage: "gear")
-            }
-            NavigationLink(destination: GalleryView(stars: .constant(false), collectionId: .constant(nil), collectionName: .constant(nil))) {
-              Label("Gallery", systemImage: "photo.on.rectangle")
-            }
-            NavigationLink(destination: GalleryView(stars: .constant(true), collectionId: .constant(nil), collectionName: .constant(nil))) {
-              Label("Stars", systemImage: "star")
-            }
-            NavigationLink(destination: CollectionsView()) {
-              Label("Collections", systemImage: "person.2.crop.square.stack.fill")
-            }
-            NavigationLink(destination: CommsView()) {
-              Label("Comms", systemImage: "message")
-            }
-            NavigationLink(destination: AboutView()) {
-              Label("About", systemImage: "info.circle")
-            }
-          }
-        } detail: {
-          HomeView()
-        }
-        .onAppear {
-          getState()
-        }.environmentObject(store)
-        .toolbar(id: "nav") {
-          ToolbarItem(id: "bell") {
-            Button(action: {
-              isPopover.toggle()
-            }) {
-              Label("Notifications", systemImage: "bell")
-              Text(String(coreNotifications?.filter { $0.dismissed == false }.count ?? 0))
-            }.help("Notifications").popover(isPresented: $isPopover, arrowEdge: .bottom) {
-              VStack {
-                Text("Notifications").font(.title)
-                ForEach(coreNotifications ?? [], id: \.self) { notification in
-                  Divider()
-                  HStack {
-                    if !notification.dismissed {
-                      Circle()
-                        .fill(Color.accentColor)
-                        .frame(width: 8, height: 8)
-                    } else { Spacer().frame(width: 16) }
-                    Text(notification.message)
-                      .frame(maxWidth: 350, alignment: .topLeading)
-                      .help(notification.message)
-                    Text(DateUtils.relativeFormat(notification.createdAt)).font(.subheadline).foregroundStyle(.gray)
-                  }.frame(maxWidth: .infinity, alignment: .leading).frame(alignment: .top)
-                }
-              }.padding()
-            }.onChange(of: isPopover) { if !isPopover { readNotifications() } }
-          }
-        }
-      #else
-        TabView {
-          HomeView().tabItem {
+      NavigationSplitView {
+        List {
+          NavigationLink(destination: HomeView()) {
             Label("Home", systemImage: "house")
           }
-          GalleryView(stars: .constant(false), collectionId: .constant(nil), collectionName: .constant(nil)).tabItem {
-            Label("Gallery", systemImage: "photo.on.rectangle")
-          }
-          CollectionsView().tabItem {
-            Label("Collections", systemImage: "person.2.crop.square.stack.fill")
-          }
-          CommsView().tabItem {
-            Label("Comms", systemImage: "message")
-          }
-          SettingsView(showingLogin: $showingLogin).tabItem {
+          NavigationLink(destination: SettingsView(showingLogin: $showingLogin)) {
             Label("Settings", systemImage: "gear")
           }
+          NavigationLink(destination: GalleryView(stars: .constant(false), collectionId: .constant(nil), collectionName: .constant(nil))) {
+            Label("Gallery", systemImage: "photo.on.rectangle")
+          }
+          NavigationLink(destination: GalleryView(stars: .constant(true), collectionId: .constant(nil), collectionName: .constant(nil))) {
+            Label("Stars", systemImage: "star")
+          }
+          NavigationLink(destination: CollectionsView()) {
+            Label("Collections", systemImage: "person.2.crop.square.stack.fill")
+          }
+          NavigationLink(destination: CommsView()) {
+            Label("Comms", systemImage: "message")
+          }
+          NavigationLink(destination: AboutView()) {
+            Label("About", systemImage: "info.circle")
+          }
         }
-        .onAppear {
-          getState()
-        }.environmentObject(store)
+      } detail: {
+        HomeView()
+      }
+      .onAppear {
+        getState()
+      }.environmentObject(store)
+      .toolbar(id: "nav") {
+        ToolbarItem(id: "bell") {
+          Button(action: {
+            isPopover.toggle()
+          }) {
+            Label("Notifications", systemImage: "bell")
+            Text(String(coreNotifications?.filter { $0.dismissed == false }.count ?? 0))
+          }.help("Notifications").popover(isPresented: $isPopover, arrowEdge: .bottom) {
+            VStack {
+              Text("Notifications").font(.title)
+              ForEach(coreNotifications ?? [], id: \.self) { notification in
+                Divider()
+                HStack {
+                  if !notification.dismissed {
+                    Circle()
+                      .fill(Color.accentColor)
+                      .frame(width: 8, height: 8)
+                  } else { Spacer().frame(width: 16) }
+                  Text(notification.message)
+                    .frame(maxWidth: 350, alignment: .topLeading)
+                    .help(notification.message)
+                  Text(DateUtils.relativeFormat(notification.createdAt)).font(.subheadline).foregroundStyle(.gray)
+                }.frame(maxWidth: .infinity, alignment: .leading).frame(alignment: .top)
+              }
+            }.padding()
+          }.onChange(of: isPopover) { if !isPopover { readNotifications() } }
+        }
+      }
+      .sheet(isPresented: $showingTerms) {
+        VStack {
+          Text("The Privacy Policy has been updated").font(.system(size: 24, weight: .semibold)).padding()
+          Text("Please accept the [Privacy Policy](https://www.flowinity.com/privacy.html)").padding()
+          Button("Accept") {
+            acceptTerms()
+          }.padding()
+        }.interactiveDismissDisabled()
+      }
+      #else
+      TabView {
+        HomeView().tabItem {
+          Label("Home", systemImage: "house")
+        }
+        GalleryView(stars: .constant(false), collectionId: .constant(nil), collectionName: .constant(nil)).tabItem {
+          Label("Gallery", systemImage: "photo.on.rectangle")
+        }
+        CollectionsView().tabItem {
+          Label("Collections", systemImage: "person.2.crop.square.stack.fill")
+        }
+        CommsView().tabItem {
+          Label("Comms", systemImage: "message")
+        }
+        SettingsView(showingLogin: $showingLogin).tabItem {
+          Label("Settings", systemImage: "gear")
+        }
+      }
+      .onAppear {
+        getState()
+      }.environmentObject(store)
+      .sheet(isPresented: $showingTerms) {
+        VStack {
+          Text("The Privacy Policy has been updated").font(.system(size: 24, weight: .semibold)).padding()
+          Text("Please accept the [Privacy Policy](https://www.flowinity.com/privacy.html)").padding()
+          Button("Accept") {
+            acceptTerms()
+          }.padding()
+        }.interactiveDismissDisabled()
+      }
       #endif
     }
   }
@@ -188,10 +220,21 @@ struct LoginSheet: View {
   @State private var password: String = ""
   @State private var retype: String = ""
   @State private var totp: String = ""
+  @State private var agreeTerms = false
   @State private var errorMessage = ""
-  @State private var page = false
+  @State private var registerPage = false
 
   func loginDetails() {
+    if username.isEmpty {
+      errorMessage = "Please enter a username"
+      return
+    }
+
+    if password.isEmpty {
+      errorMessage = "Please enter a password"
+      return
+    }
+
     errorMessage = ""
 
     Network.shared.apollo.perform(mutation: LoginMutation(input: LoginInput(username: username, password: password, totp: GraphQLNullable(stringLiteral: totp)))) { result in
@@ -212,12 +255,32 @@ struct LoginSheet: View {
   }
 
   func registerDetails() {
-    errorMessage = ""
+    if email.isEmpty {
+      errorMessage = "Please enter an email"
+      return
+    }
+
+    if username.isEmpty {
+      errorMessage = "Please enter a username"
+      return
+    }
+
+    if password.isEmpty {
+      errorMessage = "Please enter a password"
+      return
+    }
 
     if password != retype {
       errorMessage = "Passwords do not match"
       return
     }
+
+    if !agreeTerms {
+      errorMessage = "Please agree to the terms and conditions"
+      return
+    }
+
+    errorMessage = ""
 
     Network.shared.apollo.perform(mutation: RegisterMutation(input: RegisterInput(username: username, password: password, email: email))) { result in
       switch result {
@@ -231,6 +294,7 @@ struct LoginSheet: View {
         if let message = graphQLResult.errors?[0].localizedDescription {
           if message == "Argument Validation Error" {
             errorMessage = "An input is blank or incorrect"
+            print(graphQLResult)
             return
           }
 
@@ -248,7 +312,7 @@ struct LoginSheet: View {
 
   var body: some View {
     VStack {
-      if page == false {
+      if registerPage == false {
         Text("Login").font(.largeTitle)
         TextField("Username", text: $username)
           .onSubmit {
@@ -275,7 +339,7 @@ struct LoginSheet: View {
           HStack {
             Spacer()
             Button("Or register") {
-              page = true
+              registerPage = true
               username = ""
               password = ""
               totp = ""
@@ -297,6 +361,7 @@ struct LoginSheet: View {
           .onSubmit {
             registerDetails()
           }
+          .keyboardType(.emailAddress)
           .frame(width: 300)
           .textFieldStyle(RoundedBorderTextFieldStyle())
           .fixedSize(horizontal: true, vertical: false)
@@ -321,15 +386,19 @@ struct LoginSheet: View {
           .textFieldStyle(RoundedBorderTextFieldStyle())
           .fixedSize(horizontal: true, vertical: false)
           .fixedSize(horizontal: true, vertical: false)
+        Toggle(isOn: $agreeTerms) {
+          Text("I agree to the [Content Policy](https://www.flowinity.com/policies/content) and the [Privacy Policy](https://www.flowinity.com/policies/privacy)")
+        }
         ZStack {
           HStack {
             Spacer()
             Button("Back to login") {
-              page = false
+              registerPage = false
               email = ""
               username = ""
               password = ""
               retype = ""
+              agreeTerms = false
               errorMessage = ""
             }
             #if os(macOS)
@@ -354,38 +423,13 @@ struct LoginSheet: View {
   }
 }
 
-struct SettingsView: View {
-  @Binding var showingLogin: Bool
-  @EnvironmentObject var store: Store
-
-  var body: some View {
-    VStack {
-      Text("Settings")
-      #if os(macOS)
-        Text("Coming soon")
-      #else
-        Text("TPU iOS").font(.system(size: 32, weight: .semibold))
-        Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (14/5/2025)")
-        Text("Made by ElectricS01")
-        Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
-      #endif
-      Text("Logged in as " + (store.coreUser?.username ?? "Unknown"))
-      Button("Log out") {
-        keychain.delete("token")
-        showingLogin = true
-      }
-      .navigationTitle("Settings")
-    }
-  }
-}
-
 struct AboutView: View {
   var body: some View {
     VStack {
       Text("About")
         .navigationTitle("About")
       Text("TPU Mac").font(.system(size: 32, weight: .semibold))
-      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (14/5/2025)")
+      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (6/10/2025)")
       Text("Made by ElectricS01")
       Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
     }

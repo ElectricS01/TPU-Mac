@@ -14,7 +14,7 @@ public struct InfiniteMessagesInput: InputObject {
     associationId: Int,
     position: GraphQLNullable<GraphQLEnum<ScrollPosition>> = nil,
     search: GraphQLNullable<MessagesSearch> = nil,
-    limit: Int?,
+    limit: Int? = nil,
     offset: GraphQLNullable<Int> = nil
   ) {
     __data = InputDict([

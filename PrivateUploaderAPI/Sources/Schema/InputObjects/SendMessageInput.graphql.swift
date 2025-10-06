@@ -13,7 +13,7 @@ public struct SendMessageInput: InputObject {
   public init(
     content: String,
     associationId: Int,
-    attachments: [String]?,
+    attachments: [String]? = nil,
     replyId: GraphQLNullable<Int> = nil,
     embeds: GraphQLNullable<[EmbedInput]> = nil
   ) {

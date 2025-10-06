@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let DeleteMessage = ApolloAPI.Object(
     typename: "DeleteMessage",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

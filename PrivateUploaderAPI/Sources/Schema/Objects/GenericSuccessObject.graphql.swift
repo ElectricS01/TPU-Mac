@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let GenericSuccessObject = ApolloAPI.Object(
     typename: "GenericSuccessObject",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

@@ -17,7 +17,7 @@ public class UpdateMessagesSubscription: GraphQLSubscription {
     public let __data: DataDict
     public init(_dataDict: DataDict) { __data = _dataDict }
 
-    public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Subscription }
+    public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Subscription }
     public static var __selections: [ApolloAPI.Selection] { [
       .field("onMessage", OnMessage.self),
     ] }
@@ -31,7 +31,7 @@ public class UpdateMessagesSubscription: GraphQLSubscription {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 
-      public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.MessageSubscription }
+      public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.MessageSubscription }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("mention", Bool.self),
@@ -50,7 +50,7 @@ public class UpdateMessagesSubscription: GraphQLSubscription {
         public let __data: DataDict
         public init(_dataDict: DataDict) { __data = _dataDict }
 
-        public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Message }
+        public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Message }
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .fragment(StandardMessage.self),
@@ -82,29 +82,7 @@ public class UpdateMessagesSubscription: GraphQLSubscription {
 
         public typealias Emoji = StandardMessage.Emoji
 
-        /// OnMessage.Message.Embed
-        ///
-        /// Parent Type: `EmbedDataV2`
-        public struct Embed: PrivateUploaderAPI.SelectionSet {
-          public let __data: DataDict
-          public init(_dataDict: DataDict) { __data = _dataDict }
-
-          public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedDataV2 }
-
-          public var media: [Medium]? { __data["media"] }
-          public var text: [Text]? { __data["text"] }
-
-          public struct Fragments: FragmentContainer {
-            public let __data: DataDict
-            public init(_dataDict: DataDict) { __data = _dataDict }
-
-            public var standardEmbed: StandardEmbed { _toFragment() }
-          }
-
-          public typealias Medium = StandardEmbed.Medium
-
-          public typealias Text = StandardEmbed.Text
-        }
+        public typealias Embed = StandardMessage.Embed
 
         public typealias Reply = StandardMessage.Reply
 
@@ -120,7 +98,7 @@ public class UpdateMessagesSubscription: GraphQLSubscription {
         public let __data: DataDict
         public init(_dataDict: DataDict) { __data = _dataDict }
 
-        public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Chat }
+        public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Chat }
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("id", Int.self),
@@ -139,7 +117,7 @@ public class UpdateMessagesSubscription: GraphQLSubscription {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PartialUserBase }
+          public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PartialUserBase }
           public static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
             .field("id", Int.self),

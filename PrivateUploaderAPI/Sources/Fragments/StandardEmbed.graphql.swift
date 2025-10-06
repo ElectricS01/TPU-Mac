@@ -11,7 +11,7 @@ public struct StandardEmbed: PrivateUploaderAPI.SelectionSet, Fragment {
   public let __data: DataDict
   public init(_dataDict: DataDict) { __data = _dataDict }
 
-  public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedDataV2 }
+  public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedDataV2 }
   public static var __selections: [ApolloAPI.Selection] { [
     .field("__typename", String.self),
     .field("media", [Medium]?.self),
@@ -28,7 +28,7 @@ public struct StandardEmbed: PrivateUploaderAPI.SelectionSet, Fragment {
     public let __data: DataDict
     public init(_dataDict: DataDict) { __data = _dataDict }
 
-    public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedMedia }
+    public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedMedia }
     public static var __selections: [ApolloAPI.Selection] { [
       .field("__typename", String.self),
       .field("url", String?.self),
@@ -57,7 +57,7 @@ public struct StandardEmbed: PrivateUploaderAPI.SelectionSet, Fragment {
     public let __data: DataDict
     public init(_dataDict: DataDict) { __data = _dataDict }
 
-    public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedText }
+    public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedText }
     public static var __selections: [ApolloAPI.Selection] { [
       .field("__typename", String.self),
       .field("imageProxyUrl", String?.self),

@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let Message = ApolloAPI.Object(
     typename: "Message",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

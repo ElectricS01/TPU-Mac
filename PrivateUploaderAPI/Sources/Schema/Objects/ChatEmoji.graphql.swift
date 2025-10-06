@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let ChatEmoji = ApolloAPI.Object(
     typename: "ChatEmoji",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

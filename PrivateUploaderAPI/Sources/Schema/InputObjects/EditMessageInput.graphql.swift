@@ -12,7 +12,7 @@ public struct EditMessageInput: InputObject {
 
   public init(
     content: GraphQLNullable<String> = nil,
-    attachments: [String]?,
+    attachments: [String]? = nil,
     messageId: Int,
     embeds: GraphQLNullable<[EmbedInput]> = nil,
     associationId: Int,

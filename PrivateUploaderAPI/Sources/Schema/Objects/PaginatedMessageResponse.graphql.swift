@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let PaginatedMessageResponse = ApolloAPI.Object(
     typename: "PaginatedMessageResponse",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

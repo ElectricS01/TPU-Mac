@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let CoreState = ApolloAPI.Object(
     typename: "CoreState",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let StarUploadResponse = ApolloAPI.Object(
     typename: "StarUploadResponse",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

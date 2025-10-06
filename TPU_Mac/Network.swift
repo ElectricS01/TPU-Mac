@@ -26,7 +26,7 @@ class Network {
   let store = ApolloStore(cache: temporarySQLite() ?? InMemoryNormalizedCache())
 
   private lazy var webSocketTransport: WebSocketTransport = {
-    let url = URL(string: "https://privateuploader.com/graphql")!
+    let url = URL(string: "https://api.flowinity.com/graphql")!
     let webSocketClient = WebSocket(url: url, protocol: .graphql_transport_ws)
     let authPayload = ["token": KeychainSwift().get("token")]
     let config = WebSocketTransport.Configuration(connectingPayload: authPayload)
@@ -36,7 +36,7 @@ class Network {
   }()
 
   private lazy var httpTransport: UploadingNetworkTransport = {
-    let url = URL(string: "https://privateuploader.com/graphql")!
+    let url = URL(string: "https://api.flowinity.com/graphql")!
     let provider = NetworkInterceptorProvider(client: URLSessionClient(), store: store)
     let transport = RequestChainNetworkTransport(interceptorProvider: provider, endpointURL: url)
 

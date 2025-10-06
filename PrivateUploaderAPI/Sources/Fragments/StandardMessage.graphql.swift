@@ -11,7 +11,7 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
   public let __data: DataDict
   public init(_dataDict: DataDict) { __data = _dataDict }
 
-  public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Message }
+  public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Message }
   public static var __selections: [ApolloAPI.Selection] { [
     .field("__typename", String.self),
     .field("id", Int.self),
@@ -56,7 +56,7 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
     public let __data: DataDict
     public init(_dataDict: DataDict) { __data = _dataDict }
 
-    public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.ChatEmoji }
+    public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.ChatEmoji }
     public static var __selections: [ApolloAPI.Selection] { [
       .field("__typename", String.self),
       .field("name", String?.self),
@@ -78,7 +78,7 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
     public let __data: DataDict
     public init(_dataDict: DataDict) { __data = _dataDict }
 
-    public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedDataV2 }
+    public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedDataV2 }
     public static var __selections: [ApolloAPI.Selection] { [
       .field("__typename", String.self),
       .fragment(StandardEmbed.self),
@@ -106,7 +106,7 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
     public let __data: DataDict
     public init(_dataDict: DataDict) { __data = _dataDict }
 
-    public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Message }
+    public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Message }
     public static var __selections: [ApolloAPI.Selection] { [
       .field("__typename", String.self),
       .field("content", String?.self),
@@ -129,7 +129,7 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 
-      public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedDataV2 }
+      public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedDataV2 }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("media", [Medium]?.self),
@@ -144,7 +144,7 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
         public let __data: DataDict
         public init(_dataDict: DataDict) { __data = _dataDict }
 
-        public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedMedia }
+        public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedMedia }
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("type", GraphQLEnum<PrivateUploaderAPI.EmbedMediaType>.self),
@@ -161,7 +161,7 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 
-      public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PartialUserBase }
+      public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PartialUserBase }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("username", String.self),
@@ -182,7 +182,7 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
     public let __data: DataDict
     public init(_dataDict: DataDict) { __data = _dataDict }
 
-    public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PartialUserBase }
+    public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PartialUserBase }
     public static var __selections: [ApolloAPI.Selection] { [
       .field("__typename", String.self),
       .field("username", String.self),
@@ -202,7 +202,7 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
     public let __data: DataDict
     public init(_dataDict: DataDict) { __data = _dataDict }
 
-    public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.ReadReceipt }
+    public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.ReadReceipt }
     public static var __selections: [ApolloAPI.Selection] { [
       .field("__typename", String.self),
       .field("user", User?.self),
@@ -217,7 +217,7 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 
-      public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PartialUserBase }
+      public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PartialUserBase }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("id", Int.self),

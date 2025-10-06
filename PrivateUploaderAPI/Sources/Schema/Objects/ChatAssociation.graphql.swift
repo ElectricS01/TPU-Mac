@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let ChatAssociation = ApolloAPI.Object(
     typename: "ChatAssociation",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

@@ -14,8 +14,8 @@ public struct PagedMessagesInput: InputObject {
     associationId: Int,
     position: GraphQLNullable<GraphQLEnum<ScrollPosition>> = nil,
     search: GraphQLNullable<MessagesSearch> = nil,
-    limit: Int?,
-    page: Int?
+    limit: Int? = nil,
+    page: Int? = nil
   ) {
     __data = InputDict([
       "associationId": associationId,

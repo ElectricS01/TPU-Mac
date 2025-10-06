@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let Upload = ApolloAPI.Object(
     typename: "Upload",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

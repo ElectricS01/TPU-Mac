@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let EmbedDataV2 = ApolloAPI.Object(
     typename: "EmbedDataV2",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

@@ -22,7 +22,7 @@ public class SendMessageMutation: GraphQLMutation {
     public let __data: DataDict
     public init(_dataDict: DataDict) { __data = _dataDict }
 
-    public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Mutation }
+    public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Mutation }
     public static var __selections: [ApolloAPI.Selection] { [
       .field("sendMessage", SendMessage.self, arguments: ["input": .variable("input")]),
     ] }
@@ -36,7 +36,7 @@ public class SendMessageMutation: GraphQLMutation {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 
-      public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Message }
+      public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Message }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("id", Int.self),

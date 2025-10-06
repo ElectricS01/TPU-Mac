@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let PermissionsMetadata = ApolloAPI.Object(
     typename: "PermissionsMetadata",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

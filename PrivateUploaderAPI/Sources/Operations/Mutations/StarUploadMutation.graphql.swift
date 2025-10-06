@@ -22,7 +22,7 @@ public class StarUploadMutation: GraphQLMutation {
     public let __data: DataDict
     public init(_dataDict: DataDict) { __data = _dataDict }
 
-    public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Mutation }
+    public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Mutation }
     public static var __selections: [ApolloAPI.Selection] { [
       .field("starUpload", StarUpload.self, arguments: ["input": .variable("input")]),
     ] }
@@ -36,7 +36,7 @@ public class StarUploadMutation: GraphQLMutation {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 
-      public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.StarUploadResponse }
+      public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.StarUploadResponse }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("star", Star?.self),
@@ -51,7 +51,7 @@ public class StarUploadMutation: GraphQLMutation {
         public let __data: DataDict
         public init(_dataDict: DataDict) { __data = _dataDict }
 
-        public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Star }
+        public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Star }
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("id", Int.self),

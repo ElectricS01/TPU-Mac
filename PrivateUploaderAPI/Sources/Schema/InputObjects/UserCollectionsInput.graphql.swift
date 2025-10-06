@@ -11,11 +11,11 @@ public struct UserCollectionsInput: InputObject {
   }
 
   public init(
-    filter: [GraphQLEnum<CollectionFilter>]?,
+    filter: [GraphQLEnum<CollectionFilter>]? = nil,
     search: GraphQLNullable<String> = nil,
     limit: GraphQLNullable<Int> = nil,
-    page: Int?,
-    onlyInvited: Bool?
+    page: Int? = nil,
+    onlyInvited: Bool? = nil
   ) {
     __data = InputDict([
       "filter": filter,

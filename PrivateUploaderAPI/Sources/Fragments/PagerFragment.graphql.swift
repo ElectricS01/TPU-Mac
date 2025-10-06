@@ -11,7 +11,7 @@ public struct PagerFragment: PrivateUploaderAPI.SelectionSet, Fragment {
   public let __data: DataDict
   public init(_dataDict: DataDict) { __data = _dataDict }
 
-  public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Pager }
+  public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Pager }
   public static var __selections: [ApolloAPI.Selection] { [
     .field("__typename", String.self),
     .field("totalItems", Int.self),

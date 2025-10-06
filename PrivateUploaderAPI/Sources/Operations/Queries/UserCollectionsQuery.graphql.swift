@@ -22,7 +22,7 @@ public class UserCollectionsQuery: GraphQLQuery {
     public let __data: DataDict
     public init(_dataDict: DataDict) { __data = _dataDict }
 
-    public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Query }
+    public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
       .field("collections", Collections.self, arguments: ["input": .variable("input")]),
     ] }
@@ -36,7 +36,7 @@ public class UserCollectionsQuery: GraphQLQuery {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 
-      public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PaginatedCollectionResponse }
+      public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PaginatedCollectionResponse }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("items", [Item].self),
@@ -53,7 +53,7 @@ public class UserCollectionsQuery: GraphQLQuery {
         public let __data: DataDict
         public init(_dataDict: DataDict) { __data = _dataDict }
 
-        public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Collection }
+        public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Collection }
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("id", Int.self),
@@ -89,7 +89,7 @@ public class UserCollectionsQuery: GraphQLQuery {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PartialUserBase }
+          public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PartialUserBase }
           public static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
             .field("username", String.self),
@@ -109,7 +109,7 @@ public class UserCollectionsQuery: GraphQLQuery {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.CollectionItem }
+          public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.CollectionItem }
           public static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
             .field("attachment", Attachment.self),
@@ -124,7 +124,7 @@ public class UserCollectionsQuery: GraphQLQuery {
             public let __data: DataDict
             public init(_dataDict: DataDict) { __data = _dataDict }
 
-            public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Upload }
+            public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Upload }
             public static var __selections: [ApolloAPI.Selection] { [
               .field("__typename", String.self),
               .field("attachment", String.self),
@@ -143,7 +143,7 @@ public class UserCollectionsQuery: GraphQLQuery {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PermissionsMetadata }
+          public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PermissionsMetadata }
           public static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
             .field("write", Bool.self),
@@ -164,7 +164,7 @@ public class UserCollectionsQuery: GraphQLQuery {
         public let __data: DataDict
         public init(_dataDict: DataDict) { __data = _dataDict }
 
-        public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Pager }
+        public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Pager }
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("totalItems", Int.self),

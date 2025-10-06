@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let PartialUserBase = ApolloAPI.Object(
     typename: "PartialUserBase",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

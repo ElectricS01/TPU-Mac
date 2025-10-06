@@ -11,13 +11,13 @@ public struct GalleryInput: InputObject {
   }
 
   public init(
-    search: GraphQLNullable<String>,
-    page: GraphQLNullable<Int>,
+    search: GraphQLNullable<String> = nil,
+    page: GraphQLNullable<Int> = nil,
     limit: GraphQLNullable<Int> = nil,
-    filters: GraphQLNullable<[GraphQLEnum<GalleryFilter>]>,
-    sort: GraphQLNullable<GraphQLEnum<GallerySort>>,
-    order: GraphQLNullable<GraphQLEnum<GalleryOrder>>,
-    type: GraphQLNullable<GraphQLEnum<GalleryType>>,
+    filters: GraphQLNullable<[GraphQLEnum<GalleryFilter>]> = nil,
+    sort: GraphQLNullable<GraphQLEnum<GallerySort>> = nil,
+    order: GraphQLNullable<GraphQLEnum<GalleryOrder>> = nil,
+    type: GraphQLNullable<GraphQLEnum<GalleryType>> = nil,
     collectionId: GraphQLNullable<Int> = nil,
     shareLink: GraphQLNullable<String> = nil,
     advanced: GraphQLNullable<[SearchModeInput]> = nil

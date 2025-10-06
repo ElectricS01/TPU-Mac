@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let PartialUserFriend = ApolloAPI.Object(
     typename: "PartialUserFriend",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

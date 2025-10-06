@@ -23,7 +23,7 @@ public class PagedMessagesQuery: GraphQLQuery {
     public let __data: DataDict
     public init(_dataDict: DataDict) { __data = _dataDict }
 
-    public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Query }
+    public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
       .field("messagesPaged", MessagesPaged.self, arguments: ["input": .variable("input")]),
     ] }
@@ -37,7 +37,7 @@ public class PagedMessagesQuery: GraphQLQuery {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 
-      public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PaginatedMessageResponse }
+      public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PaginatedMessageResponse }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("items", [Item].self),
@@ -54,7 +54,7 @@ public class PagedMessagesQuery: GraphQLQuery {
         public let __data: DataDict
         public init(_dataDict: DataDict) { __data = _dataDict }
 
-        public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Message }
+        public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Message }
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .fragment(StandardMessage.self),
@@ -86,29 +86,7 @@ public class PagedMessagesQuery: GraphQLQuery {
 
         public typealias Emoji = StandardMessage.Emoji
 
-        /// MessagesPaged.Item.Embed
-        ///
-        /// Parent Type: `EmbedDataV2`
-        public struct Embed: PrivateUploaderAPI.SelectionSet {
-          public let __data: DataDict
-          public init(_dataDict: DataDict) { __data = _dataDict }
-
-          public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedDataV2 }
-
-          public var media: [Medium]? { __data["media"] }
-          public var text: [Text]? { __data["text"] }
-
-          public struct Fragments: FragmentContainer {
-            public let __data: DataDict
-            public init(_dataDict: DataDict) { __data = _dataDict }
-
-            public var standardEmbed: StandardEmbed { _toFragment() }
-          }
-
-          public typealias Medium = StandardEmbed.Medium
-
-          public typealias Text = StandardEmbed.Text
-        }
+        public typealias Embed = StandardMessage.Embed
 
         public typealias Reply = StandardMessage.Reply
 
@@ -124,7 +102,7 @@ public class PagedMessagesQuery: GraphQLQuery {
         public let __data: DataDict
         public init(_dataDict: DataDict) { __data = _dataDict }
 
-        public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Pager }
+        public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Pager }
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .fragment(PagerFragment.self),

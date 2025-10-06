@@ -16,7 +16,7 @@ public class ChatsQuery: GraphQLQuery {
     public let __data: DataDict
     public init(_dataDict: DataDict) { __data = _dataDict }
 
-    public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Query }
+    public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
       .field("chats", [Chat].self),
     ] }
@@ -30,7 +30,7 @@ public class ChatsQuery: GraphQLQuery {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 
-      public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Chat }
+      public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Chat }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("id", Int.self),
@@ -61,7 +61,7 @@ public class ChatsQuery: GraphQLQuery {
         public let __data: DataDict
         public init(_dataDict: DataDict) { __data = _dataDict }
 
-        public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.ChatAssociation }
+        public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.ChatAssociation }
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("id", Int.self),
@@ -88,7 +88,7 @@ public class ChatsQuery: GraphQLQuery {
         public let __data: DataDict
         public init(_dataDict: DataDict) { __data = _dataDict }
 
-        public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.ChatAssociation }
+        public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.ChatAssociation }
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("id", Int.self),
@@ -116,7 +116,7 @@ public class ChatsQuery: GraphQLQuery {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PartialUserBase }
+          public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PartialUserBase }
           public static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
             .field("username", String.self),
@@ -143,7 +143,7 @@ public class ChatsQuery: GraphQLQuery {
         public let __data: DataDict
         public init(_dataDict: DataDict) { __data = _dataDict }
 
-        public static var __parentType: ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PartialUserBase }
+        public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PartialUserBase }
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("username", String.self),

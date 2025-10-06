@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let Chat = ApolloAPI.Object(
     typename: "Chat",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

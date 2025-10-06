@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let Pager = ApolloAPI.Object(
     typename: "Pager",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

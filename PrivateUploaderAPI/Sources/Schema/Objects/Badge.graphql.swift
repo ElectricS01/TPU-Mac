@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let Badge = ApolloAPI.Object(
     typename: "Badge",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }
