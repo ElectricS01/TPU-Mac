@@ -361,7 +361,9 @@ struct LoginSheet: View {
           .onSubmit {
             registerDetails()
           }
+        #if !os(macOS)
           .keyboardType(.emailAddress)
+        #endif
           .frame(width: 300)
           .textFieldStyle(RoundedBorderTextFieldStyle())
           .fixedSize(horizontal: true, vertical: false)

@@ -94,7 +94,7 @@ struct GalleryView: View {
             ForEach(Array(galleryItems.enumerated()), id: \.element) { index, galleryItem in
               VStack(alignment: .leading) {
                 HStack {
-                  Text(galleryItem.name ?? "Unknown").font(.title2).lineLimit(1)
+                  Text(galleryItem.name ?? "Unknown").font(.title2).lineLimit(1).textSelection(.enabled)
                   Spacer()
                   Image(systemName: galleryItem.starred == nil ? "star" : "star.fill").resizable().frame(width: 16, height: 16).onTapGesture {
                     starUpload(attachment: galleryItem.attachment, index: index)
