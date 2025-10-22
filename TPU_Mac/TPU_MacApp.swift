@@ -10,16 +10,21 @@ import PrivateUploaderAPI
 import SwiftUI
 import UserNotifications
 
+enum Destination: Hashable {
+  case home, settings, gallery, stars, collections, comms, about
+}
+
 @main
 struct TPU_MacApp: App {
   #if os(macOS)
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
   #endif
   @Environment(\.scenePhase) private var scenePhase
+  @State private var selection: Destination = .home
 
   var body: some Scene {
     WindowGroup {
-      ContentView()
+      ContentView(selection: $selection)
         .onAppear {
           UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { _, error in
             if let error = error {
@@ -34,6 +39,17 @@ struct TPU_MacApp: App {
       #if os(macOS)
         .frame(minWidth: 500, maxWidth: .infinity, minHeight: 250, maxHeight: .infinity)
       #endif
+    }
+    .commands {
+      CommandGroup(after: .sidebar) {
+        Button("Home") { selection = .home }.keyboardShortcut("1", modifiers: [.command])
+        Button("Settings") { selection = .settings }.keyboardShortcut("2", modifiers: [.command])
+        Button("Gallery") { selection = .gallery }.keyboardShortcut("3", modifiers: [.command])
+        Button("Stars") { selection = .stars }.keyboardShortcut("4", modifiers: [.command])
+        Button("Collections") { selection = .collections }.keyboardShortcut("5", modifiers: [.command])
+        Button("Comms") { selection = .comms }.keyboardShortcut("6", modifiers: [.command])
+        Button("About") { selection = .about }.keyboardShortcut("7", modifiers: [.command])
+      }
     }
   }
 }

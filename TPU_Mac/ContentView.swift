@@ -44,6 +44,7 @@ class Store: ObservableObject {
 }
 
 struct ContentView: View {
+  @Binding var selection: Destination
   @StateObject var store = Store()
   @State private var showingLogin = keychain.get("token") == nil || keychain.get("token") == ""
   @State private var showingTerms = false
@@ -97,9 +98,8 @@ struct ContentView: View {
   func acceptTerms() {
     Network.shared.apollo.perform(mutation: UpdateUserMutation(input: UpdateUserInput(privacyPolicyAccepted: true))) { result in
       switch result {
-      case .success(let graphQLResult):
+      case .success:
         showingTerms = false
-        return
       case .failure(let error):
         print("Failure! Error: \(error)")
       }
@@ -112,31 +112,47 @@ struct ContentView: View {
     } else {
       #if os(macOS)
       NavigationSplitView {
-        List {
-          NavigationLink(destination: HomeView()) {
+        List(selection: $selection) {
+          NavigationLink(value: Destination.home) {
             Label("Home", systemImage: "house")
           }
-          NavigationLink(destination: SettingsView(showingLogin: $showingLogin)) {
+          NavigationLink(value: Destination.settings) {
             Label("Settings", systemImage: "gear")
           }
-          NavigationLink(destination: GalleryView(stars: .constant(false), collectionId: .constant(nil), collectionName: .constant(nil))) {
+          NavigationLink(value: Destination.gallery) {
             Label("Gallery", systemImage: "photo.on.rectangle")
           }
-          NavigationLink(destination: GalleryView(stars: .constant(true), collectionId: .constant(nil), collectionName: .constant(nil))) {
+          NavigationLink(value: Destination.stars) {
             Label("Stars", systemImage: "star")
           }
-          NavigationLink(destination: CollectionsView()) {
+          NavigationLink(value: Destination.collections) {
             Label("Collections", systemImage: "person.2.crop.square.stack.fill")
           }
-          NavigationLink(destination: CommsView()) {
+          NavigationLink(value: Destination.comms) {
             Label("Comms", systemImage: "message")
           }
-          NavigationLink(destination: AboutView()) {
+          NavigationLink(value: Destination.about) {
             Label("About", systemImage: "info.circle")
           }
         }
+        .navigationTitle("Menu")
       } detail: {
-        HomeView()
+        switch selection {
+        case .home:
+          HomeView()
+        case .settings:
+          SettingsView(showingLogin: $showingLogin)
+        case .gallery:
+          GalleryView(stars: .constant(false), collectionId: .constant(nil), collectionName: .constant(nil))
+        case .stars:
+          GalleryView(stars: .constant(true), collectionId: .constant(nil), collectionName: .constant(nil))
+        case .collections:
+          CollectionsView()
+        case .comms:
+          CommsView()
+        case .about:
+          AboutView()
+        }
       }
       .onAppear {
         getState()
@@ -147,7 +163,7 @@ struct ContentView: View {
             isPopover.toggle()
           }) {
             Label("Notifications", systemImage: "bell")
-            Text(String(coreNotifications?.filter { $0.dismissed == false }.count ?? 0))
+            Text(String(coreNotifications?.filter { !$0.dismissed }.count ?? 0))
           }.help("Notifications").popover(isPresented: $isPopover, arrowEdge: .bottom) {
             VStack {
               Text("Notifications").font(.title)
@@ -163,7 +179,7 @@ struct ContentView: View {
                     .frame(maxWidth: 350, alignment: .topLeading)
                     .help(notification.message)
                   Text(DateUtils.relativeFormat(notification.createdAt)).font(.subheadline).foregroundStyle(.gray)
-                }.frame(maxWidth: .infinity, alignment: .leading).frame(alignment: .top)
+                }
               }
             }.padding()
           }.onChange(of: isPopover) { if !isPopover { readNotifications() } }
@@ -439,5 +455,5 @@ struct AboutView: View {
 }
 
 #Preview {
-  ContentView()
+  ContentView(selection: .constant(.home))
 }
