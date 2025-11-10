@@ -26,6 +26,9 @@ public class DeleteUploadsMutation: GraphQLMutation {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("deleteUploads", DeleteUploads.self, arguments: ["input": .variable("input")]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      DeleteUploadsMutation.Data.self
+    ] }
 
     public var deleteUploads: DeleteUploads { __data["deleteUploads"] }
 
@@ -40,6 +43,9 @@ public class DeleteUploadsMutation: GraphQLMutation {
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("success", Bool.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        DeleteUploadsMutation.Data.DeleteUploads.self
       ] }
 
       public var success: Bool { __data["success"] }

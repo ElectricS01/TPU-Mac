@@ -20,6 +20,9 @@ public class ChatsQuery: GraphQLQuery {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("chats", [Chat].self),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      ChatsQuery.Data.self
+    ] }
 
     public var chats: [Chat] { __data["chats"] }
 
@@ -42,6 +45,9 @@ public class ChatsQuery: GraphQLQuery {
         .field("users", [User].self),
         .field("sortDate", String?.self),
         .field("recipient", Recipient?.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        ChatsQuery.Data.Chat.self
       ] }
 
       public var id: Int { __data["id"] }
@@ -71,6 +77,9 @@ public class ChatsQuery: GraphQLQuery {
           .field("lastRead", Int?.self),
           .field("notifications", String.self),
         ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          ChatsQuery.Data.Chat.Association.self
+        ] }
 
         public var id: Int { __data["id"] }
         public var chatId: Int { __data["chatId"] }
@@ -99,6 +108,9 @@ public class ChatsQuery: GraphQLQuery {
           .field("notifications", String.self),
           .field("user", User?.self),
         ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          ChatsQuery.Data.Chat.User.self
+        ] }
 
         public var id: Int { __data["id"] }
         public var chatId: Int { __data["chatId"] }
@@ -126,6 +138,9 @@ public class ChatsQuery: GraphQLQuery {
             .field("moderator", Bool.self),
             .field("avatar", String?.self),
           ] }
+          public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+            ChatsQuery.Data.Chat.User.User.self
+          ] }
 
           public var username: String { __data["username"] }
           public var id: Int { __data["id"] }
@@ -152,6 +167,9 @@ public class ChatsQuery: GraphQLQuery {
           .field("administrator", Bool.self),
           .field("moderator", Bool.self),
           .field("avatar", String?.self),
+        ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          ChatsQuery.Data.Chat.Recipient.self
         ] }
 
         public var username: String { __data["username"] }

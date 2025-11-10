@@ -26,6 +26,9 @@ public class DeleteMessageMutation: GraphQLMutation {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("deleteMessage", Bool.self, arguments: ["input": .variable("input")]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      DeleteMessageMutation.Data.self
+    ] }
 
     public var deleteMessage: Bool { __data["deleteMessage"] }
   }

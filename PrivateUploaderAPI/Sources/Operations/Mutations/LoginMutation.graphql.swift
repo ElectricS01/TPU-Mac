@@ -26,6 +26,9 @@ public class LoginMutation: GraphQLMutation {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("login", Login.self, arguments: ["input": .variable("input")]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      LoginMutation.Data.self
+    ] }
 
     public var login: Login { __data["login"] }
 
@@ -40,6 +43,9 @@ public class LoginMutation: GraphQLMutation {
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("token", String.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        LoginMutation.Data.Login.self
       ] }
 
       public var token: String { __data["token"] }

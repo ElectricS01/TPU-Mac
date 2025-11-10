@@ -31,6 +31,9 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
     .field("pinned", Bool.self),
     .field("readReceipts", [ReadReceipt].self),
   ] }
+  public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+    StandardMessage.self
+  ] }
 
   public var id: Int { __data["id"] }
   public var createdAt: PrivateUploaderAPI.Date { __data["createdAt"] }
@@ -64,6 +67,9 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
       .field("id", String.self),
       .field("chatId", Int.self),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      StandardMessage.Emoji.self
+    ] }
 
     public var name: String? { __data["name"] }
     public var icon: String? { __data["icon"] }
@@ -82,6 +88,10 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("__typename", String.self),
       .fragment(StandardEmbed.self),
+    ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      StandardMessage.Embed.self,
+      StandardEmbed.self
     ] }
 
     public var media: [Medium]? { __data["media"] }
@@ -115,6 +125,9 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
       .field("embeds", [Embed].self),
       .field("user", User?.self),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      StandardMessage.Reply.self
+    ] }
 
     public var content: String? { __data["content"] }
     public var userId: Int? { __data["userId"] }
@@ -134,6 +147,9 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
         .field("__typename", String.self),
         .field("media", [Medium]?.self),
       ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        StandardMessage.Reply.Embed.self
+      ] }
 
       public var media: [Medium]? { __data["media"] }
 
@@ -148,6 +164,9 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("type", GraphQLEnum<PrivateUploaderAPI.EmbedMediaType>.self),
+        ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          StandardMessage.Reply.Embed.Medium.self
         ] }
 
         public var type: GraphQLEnum<PrivateUploaderAPI.EmbedMediaType> { __data["type"] }
@@ -167,6 +186,9 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
         .field("username", String.self),
         .field("id", Int.self),
         .field("avatar", String?.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        StandardMessage.Reply.User.self
       ] }
 
       public var username: String { __data["username"] }
@@ -189,6 +211,9 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
       .field("id", Int.self),
       .field("avatar", String?.self),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      StandardMessage.User.self
+    ] }
 
     public var username: String { __data["username"] }
     public var id: Int { __data["id"] }
@@ -207,6 +232,9 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
       .field("__typename", String.self),
       .field("user", User?.self),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      StandardMessage.ReadReceipt.self
+    ] }
 
     public var user: User? { __data["user"] }
 
@@ -223,6 +251,9 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
         .field("id", Int.self),
         .field("avatar", String?.self),
         .field("username", String.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        StandardMessage.ReadReceipt.User.self
       ] }
 
       public var id: Int { __data["id"] }

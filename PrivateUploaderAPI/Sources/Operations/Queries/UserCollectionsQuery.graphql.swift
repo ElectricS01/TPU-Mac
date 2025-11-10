@@ -26,6 +26,9 @@ public class UserCollectionsQuery: GraphQLQuery {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("collections", Collections.self, arguments: ["input": .variable("input")]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      UserCollectionsQuery.Data.self
+    ] }
 
     public var collections: Collections { __data["collections"] }
 
@@ -41,6 +44,9 @@ public class UserCollectionsQuery: GraphQLQuery {
         .field("__typename", String.self),
         .field("items", [Item].self),
         .field("pager", Pager.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        UserCollectionsQuery.Data.Collections.self
       ] }
 
       public var items: [Item] { __data["items"] }
@@ -67,6 +73,9 @@ public class UserCollectionsQuery: GraphQLQuery {
           .field("shared", Bool?.self),
           .field("itemCount", Int?.self),
           .field("permissionsMetadata", PermissionsMetadata.self),
+        ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          UserCollectionsQuery.Data.Collections.Item.self
         ] }
 
         public var id: Int { __data["id"] }
@@ -96,6 +105,9 @@ public class UserCollectionsQuery: GraphQLQuery {
             .field("id", Int.self),
             .field("avatar", String?.self),
           ] }
+          public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+            UserCollectionsQuery.Data.Collections.Item.User.self
+          ] }
 
           public var username: String { __data["username"] }
           public var id: Int { __data["id"] }
@@ -114,6 +126,9 @@ public class UserCollectionsQuery: GraphQLQuery {
             .field("__typename", String.self),
             .field("attachment", Attachment.self),
           ] }
+          public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+            UserCollectionsQuery.Data.Collections.Item.Preview.self
+          ] }
 
           public var attachment: Attachment { __data["attachment"] }
 
@@ -129,6 +144,9 @@ public class UserCollectionsQuery: GraphQLQuery {
               .field("__typename", String.self),
               .field("attachment", String.self),
               .field("id", Int.self),
+            ] }
+            public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+              UserCollectionsQuery.Data.Collections.Item.Preview.Attachment.self
             ] }
 
             public var attachment: String { __data["attachment"] }
@@ -150,6 +168,9 @@ public class UserCollectionsQuery: GraphQLQuery {
             .field("read", Bool.self),
             .field("configure", Bool.self),
           ] }
+          public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+            UserCollectionsQuery.Data.Collections.Item.PermissionsMetadata.self
+          ] }
 
           public var write: Bool { __data["write"] }
           public var read: Bool { __data["read"] }
@@ -169,6 +190,9 @@ public class UserCollectionsQuery: GraphQLQuery {
           .field("__typename", String.self),
           .field("totalItems", Int.self),
           .field("totalPages", Int.self),
+        ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          UserCollectionsQuery.Data.Collections.Pager.self
         ] }
 
         public var totalItems: Int { __data["totalItems"] }

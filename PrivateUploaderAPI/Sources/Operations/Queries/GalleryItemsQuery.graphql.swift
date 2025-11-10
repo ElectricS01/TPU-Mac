@@ -26,6 +26,9 @@ public class GalleryItemsQuery: GraphQLQuery {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("gallery", Gallery.self, arguments: ["input": .variable("input")]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      GalleryItemsQuery.Data.self
+    ] }
 
     public var gallery: Gallery { __data["gallery"] }
 
@@ -41,6 +44,9 @@ public class GalleryItemsQuery: GraphQLQuery {
         .field("__typename", String.self),
         .field("pager", Pager.self),
         .field("items", [Item].self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        GalleryItemsQuery.Data.Gallery.self
       ] }
 
       public var pager: Pager { __data["pager"] }
@@ -59,6 +65,9 @@ public class GalleryItemsQuery: GraphQLQuery {
           .field("totalItems", Int.self),
           .field("totalPages", Int.self),
           .field("endPage", Int.self),
+        ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          GalleryItemsQuery.Data.Gallery.Pager.self
         ] }
 
         public var totalItems: Int { __data["totalItems"] }
@@ -85,6 +94,9 @@ public class GalleryItemsQuery: GraphQLQuery {
           .field("starred", Starred?.self),
           .field("createdAt", PrivateUploaderAPI.Date.self),
         ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          GalleryItemsQuery.Data.Gallery.Item.self
+        ] }
 
         public var id: Int { __data["id"] }
         public var attachment: String { __data["attachment"] }
@@ -107,6 +119,9 @@ public class GalleryItemsQuery: GraphQLQuery {
           public static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
             .field("id", Int.self),
+          ] }
+          public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+            GalleryItemsQuery.Data.Gallery.Item.Starred.self
           ] }
 
           public var id: Int { __data["id"] }

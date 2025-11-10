@@ -24,6 +24,9 @@ public struct PagerFragment: PrivateUploaderAPI.SelectionSet, Fragment {
     .field("endIndex", Int.self),
     .field("pages", [Int].self),
   ] }
+  public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+    PagerFragment.self
+  ] }
 
   public var totalItems: Int { __data["totalItems"] }
   public var currentPage: Int { __data["currentPage"] }

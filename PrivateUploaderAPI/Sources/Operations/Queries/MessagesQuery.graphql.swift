@@ -27,6 +27,9 @@ public class MessagesQuery: GraphQLQuery {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("messages", [Message].self, arguments: ["input": .variable("input")]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      MessagesQuery.Data.self
+    ] }
 
     public var messages: [Message] { __data["messages"] }
 
@@ -41,6 +44,10 @@ public class MessagesQuery: GraphQLQuery {
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .fragment(StandardMessage.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        MessagesQuery.Data.Message.self,
+        StandardMessage.self
       ] }
 
       public var id: Int { __data["id"] }

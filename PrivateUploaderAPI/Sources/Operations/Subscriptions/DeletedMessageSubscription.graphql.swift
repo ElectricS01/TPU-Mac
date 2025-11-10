@@ -20,6 +20,9 @@ public class DeletedMessageSubscription: GraphQLSubscription {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("onDeleteMessage", OnDeleteMessage.self),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      DeletedMessageSubscription.Data.self
+    ] }
 
     public var onDeleteMessage: OnDeleteMessage { __data["onDeleteMessage"] }
 
@@ -35,6 +38,9 @@ public class DeletedMessageSubscription: GraphQLSubscription {
         .field("__typename", String.self),
         .field("id", Int.self),
         .field("associationId", Int.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        DeletedMessageSubscription.Data.OnDeleteMessage.self
       ] }
 
       public var id: Int { __data["id"] }

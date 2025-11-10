@@ -144,12 +144,18 @@ struct CommsView: View {
                     }.contentShape(Rectangle())
                   }.buttonStyle(.plain)
                     .contextMenu {
-                      if user.status.rawValue == "ACCEPTED" {
+                      if user.status.rawValue == "NONE" {
                         Button {
                           print("Action for context menu item 1")
                         } label: {
                           Label("Add friend", systemImage: "person.badge.plus")
                         }
+                        Divider()
+                      }
+                      Button {
+                        copyToClipboard(String(user.id))
+                      } label: {
+                        Label("Copy User ID", systemImage: "person.text.rectangle")
                       }
                     }
                 }
@@ -170,12 +176,18 @@ struct CommsView: View {
                     }.contentShape(Rectangle())
                   }.buttonStyle(.plain)
                     .contextMenu {
-                      if user.status.rawValue == "ACCEPTED" {
+                      if user.status.rawValue == "NONE" {
                         Button {
                           print("Action for context menu item 1")
                         } label: {
                           Label("Add friend", systemImage: "person.badge.plus")
                         }
+                        Divider()
+                      }
+                      Button {
+                        copyToClipboard(String(user.id))
+                      } label: {
+                        Label("Copy User ID", systemImage: "person.text.rectangle")
                       }
                     }
                 }
@@ -228,6 +240,13 @@ struct CommsView: View {
                 }
               }.contentShape(Rectangle())
             }.buttonStyle(.plain)
+              .contextMenu {
+                Button {
+                  copyToClipboard(String(chatsList[result].id))
+                } label: {
+                  Label("Copy User ID", systemImage: "person.text.rectangle")
+                }
+              }
           }
         }
         .onAppear {

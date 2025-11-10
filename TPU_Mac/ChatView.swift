@@ -266,7 +266,7 @@ struct ChatView: View {
                     Image(systemName: "arrow.turn.up.right").frame(width: 16, height: 16)
                     ProfilePicture(avatar: message.reply?.user?.avatar, size: 16)
                     Text(message.reply?.user?.username ?? "User has been deleted")
-                    Text((message.reply?.content ?? "Message has been deleted").replacingOccurrences(of: "\n", with: "")).textSelection(.enabled).lineLimit(1)
+                    Text((message.reply?.content ?? "Message has been deleted").replacingOccurrences(of: "\n", with: "")).lineLimit(1)
                   }.padding(EdgeInsets(top: 0, leading: 18, bottom: 0, trailing: 0))
                 }.buttonStyle(.plain)
               }
@@ -359,36 +359,84 @@ struct ChatView: View {
                     }.frame(minWidth: 0, maxWidth: 600).background().clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                   }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
                 }
-                Button(action: {
-                  if replyingId != message.id {
-                    replyingId = message.id
-                  } else { replyingId = -1 }
-                }) {
-                  Image(systemName: "arrowshape.turn.up.left.fill").frame(width: 16, height: 16)
-                }
-                Button(action: {
-                  deleteMessage(messageId: message.id)
-                }) {
-                  Image(systemName: "trash.fill").frame(width: 16, height: 16)
-                }
-                Button(action: {
-                  pinMessage(messageId: message.id, pinned: message.pinned)
-                }) {
-                  Image(systemName: message.pinned ? "pin.slash.fill" : "pin.fill").frame(width: 16, height: 16)
-                }
-                if store.coreUser?.id == message.userId {
+                #if os(macOS)
                   Button(action: {
-                    replyingId = -1
-                    if editingId != message.id {
-                      editingId = message.id
-                      editingMessage = message.content ?? ""
-                      focusedField = .editing
-                    } else { editingId = -1 }
+                    if replyingId != message.id {
+                      replyingId = message.id
+                    } else { replyingId = -1 }
                   }) {
-                    Image(systemName: "pencil").frame(width: 16, height: 16)
+                    Image(systemName: "arrowshape.turn.up.left.fill").frame(width: 16, height: 16)
+                  }
+                  Button(action: {
+                    deleteMessage(messageId: message.id)
+                  }) {
+                    Image(systemName: "trash.fill").frame(width: 16, height: 16)
+                  }
+                  Button(action: {
+                    pinMessage(messageId: message.id, pinned: message.pinned)
+                  }) {
+                    Image(systemName: message.pinned ? "pin.slash.fill" : "pin.fill").frame(width: 16, height: 16)
+                  }
+                  if store.coreUser?.id == message.userId {
+                    Button(action: {
+                      replyingId = -1
+                      if editingId != message.id {
+                        editingId = message.id
+                        editingMessage = message.content ?? ""
+                        focusedField = .editing
+                      } else { editingId = -1 }
+                    }) {
+                      Image(systemName: "pencil").frame(width: 16, height: 16)
+                    }
+                  }
+                #endif
+              }.padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4)).id(message.id)
+                .contentShape(Rectangle())
+                .contextMenu {
+                  if store.coreUser?.id == message.userId {
+                    Button {
+                      replyingId = -1
+                      if editingId != message.id {
+                        editingId = message.id
+                        editingMessage = message.content ?? ""
+                        focusedField = .editing
+                      } else { editingId = -1 }
+                    } label: {
+                      Label("Edit message", systemImage: "pencil")
+                    }
+                  }
+                  Button {
+                    if replyingId != message.id {
+                      replyingId = message.id
+                    } else {
+                      replyingId = -1
+                    }
+                  } label: {
+                    Label("Reply", systemImage: "arrowshape.turn.up.left.fill")
+                  }
+                  Button {
+                    copyToClipboard(message.content ?? "Message was deleted")
+                  } label: {
+                    Label("Copy Text", systemImage: "document.on.document")
+                  }
+                  Button {
+                    pinMessage(messageId: message.id, pinned: message.pinned)
+                  } label: {
+                    Label("Pin message", systemImage: message.pinned ? "pin.slash.fill" : "pin.fill")
+                  }
+                  Divider()
+                  Button {
+                    deleteMessage(messageId: message.id)
+                  } label: {
+                    Label("Delete Message", systemImage: "trash.fill").tint(.red)
+                  }
+                  Divider()
+                  Button {
+                    copyToClipboard(String(message.id))
+                  } label: {
+                    Label("Copy Message ID", systemImage: "person.text.rectangle")
                   }
                 }
-              }.padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4)).id(message.id)
               //                  .background(Color(hoverItem == message.id ? Color.primary : .clear))
               //                  .onHover(perform: { _ in
               //                    hoverItem = message.id
@@ -417,7 +465,6 @@ struct ChatView: View {
             Image(systemName: "arrow.turn.up.right").frame(width: 16, height: 16)
             Text(chatMessages.last(where: { $0.id == replyingId })?.user?.username ?? "User has been deleted")
             Text(chatMessages.last(where: { $0.id == replyingId })?.content ?? "Message has been deleted")
-              .textSelection(.enabled)
               .lineLimit(1)
               .onAppear {
                 if chatMessages.count != 0 {

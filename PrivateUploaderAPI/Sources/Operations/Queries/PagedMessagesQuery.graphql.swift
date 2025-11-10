@@ -27,6 +27,9 @@ public class PagedMessagesQuery: GraphQLQuery {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("messagesPaged", MessagesPaged.self, arguments: ["input": .variable("input")]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      PagedMessagesQuery.Data.self
+    ] }
 
     public var messagesPaged: MessagesPaged { __data["messagesPaged"] }
 
@@ -43,6 +46,9 @@ public class PagedMessagesQuery: GraphQLQuery {
         .field("items", [Item].self),
         .field("pager", Pager.self),
       ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        PagedMessagesQuery.Data.MessagesPaged.self
+      ] }
 
       public var items: [Item] { __data["items"] }
       public var pager: Pager { __data["pager"] }
@@ -58,6 +64,10 @@ public class PagedMessagesQuery: GraphQLQuery {
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .fragment(StandardMessage.self),
+        ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          PagedMessagesQuery.Data.MessagesPaged.Item.self,
+          StandardMessage.self
         ] }
 
         public var id: Int { __data["id"] }
@@ -106,6 +116,10 @@ public class PagedMessagesQuery: GraphQLQuery {
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .fragment(PagerFragment.self),
+        ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          PagedMessagesQuery.Data.MessagesPaged.Pager.self,
+          PagerFragment.self
         ] }
 
         public var totalItems: Int { __data["totalItems"] }

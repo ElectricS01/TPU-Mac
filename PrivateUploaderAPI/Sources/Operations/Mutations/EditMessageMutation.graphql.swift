@@ -26,6 +26,9 @@ public class EditMessageMutation: GraphQLMutation {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("editMessage", EditMessage?.self, arguments: ["input": .variable("input")]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      EditMessageMutation.Data.self
+    ] }
 
     public var editMessage: EditMessage? { __data["editMessage"] }
 
@@ -40,6 +43,9 @@ public class EditMessageMutation: GraphQLMutation {
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("id", Int.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        EditMessageMutation.Data.EditMessage.self
       ] }
 
       public var id: Int { __data["id"] }

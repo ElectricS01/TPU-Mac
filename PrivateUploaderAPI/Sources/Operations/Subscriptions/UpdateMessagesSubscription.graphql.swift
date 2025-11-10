@@ -21,6 +21,9 @@ public class UpdateMessagesSubscription: GraphQLSubscription {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("onMessage", OnMessage.self),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      UpdateMessagesSubscription.Data.self
+    ] }
 
     public var onMessage: OnMessage { __data["onMessage"] }
 
@@ -38,6 +41,9 @@ public class UpdateMessagesSubscription: GraphQLSubscription {
         .field("message", Message.self),
         .field("chat", Chat.self),
       ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        UpdateMessagesSubscription.Data.OnMessage.self
+      ] }
 
       public var mention: Bool { __data["mention"] }
       public var message: Message { __data["message"] }
@@ -54,6 +60,10 @@ public class UpdateMessagesSubscription: GraphQLSubscription {
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .fragment(StandardMessage.self),
+        ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          UpdateMessagesSubscription.Data.OnMessage.Message.self,
+          StandardMessage.self
         ] }
 
         public var id: Int { __data["id"] }
@@ -105,6 +115,9 @@ public class UpdateMessagesSubscription: GraphQLSubscription {
           .field("recipient", Recipient?.self),
           .field("type", String.self),
         ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          UpdateMessagesSubscription.Data.OnMessage.Chat.self
+        ] }
 
         public var id: Int { __data["id"] }
         public var recipient: Recipient? { __data["recipient"] }
@@ -122,6 +135,9 @@ public class UpdateMessagesSubscription: GraphQLSubscription {
             .field("__typename", String.self),
             .field("id", Int.self),
             .field("username", String.self),
+          ] }
+          public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+            UpdateMessagesSubscription.Data.OnMessage.Chat.Recipient.self
           ] }
 
           public var id: Int { __data["id"] }

@@ -17,6 +17,9 @@ public struct StandardEmbed: PrivateUploaderAPI.SelectionSet, Fragment {
     .field("media", [Medium]?.self),
     .field("text", [Text]?.self),
   ] }
+  public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+    StandardEmbed.self
+  ] }
 
   public var media: [Medium]? { __data["media"] }
   public var text: [Text]? { __data["text"] }
@@ -38,6 +41,9 @@ public struct StandardEmbed: PrivateUploaderAPI.SelectionSet, Fragment {
       .field("videoEmbedUrl", String?.self),
       .field("mimeType", String?.self),
       .field("type", GraphQLEnum<PrivateUploaderAPI.EmbedMediaType>.self),
+    ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      StandardEmbed.Medium.self
     ] }
 
     public var url: String? { __data["url"] }
@@ -64,6 +70,9 @@ public struct StandardEmbed: PrivateUploaderAPI.SelectionSet, Fragment {
       .field("text", String.self),
       .field("heading", Bool?.self),
       .field("imageUrl", String?.self),
+    ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      StandardEmbed.Text.self
     ] }
 
     public var imageProxyUrl: String? { __data["imageProxyUrl"] }

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		C4060AC42B8C10A600236E0E /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4060AC32B8C10A600236E0E /* HomeView.swift */; };
 		C40BC9892B8C8F9800444B56 /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = C40BC9882B8C8F9800444B56 /* NukeUI */; };
+		C427C6A62EC1F5A700A718FA /* TPU Mac.icon in Resources */ = {isa = PBXBuildFile; fileRef = C427C6A52EC1F5A600A718FA /* TPU Mac.icon */; };
 		C428DE892B709ADB00A13E4A /* ApolloWebSocket in Frameworks */ = {isa = PBXBuildFile; productRef = C428DE882B709ADB00A13E4A /* ApolloWebSocket */; };
 		C4300EAE2CE3141F000AE0B5 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = C4300EAD2CE3141F000AE0B5 /* MarkdownUI */; };
 		C44156622CB3F86100EE1F96 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = C44156612CB3F86100EE1F96 /* SDWebImageSwiftUI */; };
@@ -16,7 +17,6 @@
 		C45099152ACFFA7F00FA9247 /* TPU_MacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45099142ACFFA7F00FA9247 /* TPU_MacApp.swift */; };
 		C45099172ACFFA7F00FA9247 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45099162ACFFA7F00FA9247 /* ContentView.swift */; };
 		C45099192ACFFA8100FA9247 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C45099182ACFFA8100FA9247 /* Assets.xcassets */; };
-		C450991D2ACFFA8100FA9247 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C450991C2ACFFA8100FA9247 /* Preview Assets.xcassets */; };
 		C45099272ACFFA8100FA9247 /* TPU_MacTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45099262ACFFA8100FA9247 /* TPU_MacTests.swift */; };
 		C45099312ACFFA8100FA9247 /* TPU_MacUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45099302ACFFA8100FA9247 /* TPU_MacUITests.swift */; };
 		C45099332ACFFA8100FA9247 /* TPU_MacUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45099322ACFFA8100FA9247 /* TPU_MacUITestsLaunchTests.swift */; };
@@ -52,13 +52,13 @@
 
 /* Begin PBXFileReference section */
 		C4060AC32B8C10A600236E0E /* HomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		C427C6A52EC1F5A600A718FA /* TPU Mac.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "TPU Mac.icon"; sourceTree = "<group>"; };
 		C44AE4142E93836000EB7230 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		C45099112ACFFA7F00FA9247 /* TPU Mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "TPU Mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C45099142ACFFA7F00FA9247 /* TPU_MacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPU_MacApp.swift; sourceTree = "<group>"; };
 		C45099162ACFFA7F00FA9247 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		C45099182ACFFA8100FA9247 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C450991A2ACFFA8100FA9247 /* TPU_Mac.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TPU_Mac.entitlements; sourceTree = "<group>"; };
-		C450991C2ACFFA8100FA9247 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C45099222ACFFA8100FA9247 /* TPU-MacTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "TPU-MacTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C45099262ACFFA8100FA9247 /* TPU_MacTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TPU_MacTests.swift; sourceTree = "<group>"; };
 		C450992C2ACFFA8100FA9247 /* TPU-MacUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "TPU-MacUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -151,19 +151,11 @@
 				C4DC9A012C9FD5E000C80E8C /* CollectionView.swift */,
 				C45099162ACFFA7F00FA9247 /* ContentView.swift */,
 				C4FD79E22CABE2ED00A6FDEB /* ChatView.swift */,
+				C427C6A52EC1F5A600A718FA /* TPU Mac.icon */,
 				C45099182ACFFA8100FA9247 /* Assets.xcassets */,
 				C450991A2ACFFA8100FA9247 /* TPU_Mac.entitlements */,
-				C450991B2ACFFA8100FA9247 /* Preview Content */,
 			);
 			path = TPU_Mac;
-			sourceTree = "<group>";
-		};
-		C450991B2ACFFA8100FA9247 /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				C450991C2ACFFA8100FA9247 /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 		C45099252ACFFA8100FA9247 /* TPU MacTests */ = {
@@ -312,7 +304,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C450991D2ACFFA8100FA9247 /* Preview Assets.xcassets in Resources */,
+				C427C6A62EC1F5A700A718FA /* TPU Mac.icon in Resources */,
 				C45099192ACFFA8100FA9247 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -509,7 +501,7 @@
 		C45099372ACFFA8100FA9247 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "TPU Mac";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = TPU_Mac/TPU_Mac.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
@@ -543,7 +535,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.3.17;
+				MARKETING_VERSION = 0.3.18;
 				PRODUCT_BUNDLE_IDENTIFIER = "ElectricS01.TPU-Mac";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -557,7 +549,7 @@
 		C45099382ACFFA8100FA9247 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "TPU Mac";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = TPU_Mac/TPU_Mac.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -590,7 +582,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.3.17;
+				MARKETING_VERSION = 0.3.18;
 				PRODUCT_BUNDLE_IDENTIFIER = "ElectricS01.TPU-Mac";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;

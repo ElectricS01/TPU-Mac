@@ -20,6 +20,9 @@ public class MarkNotificationsAsReadMutation: GraphQLMutation {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("markNotificationsAsRead", [MarkNotificationsAsRead].self),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      MarkNotificationsAsReadMutation.Data.self
+    ] }
 
     public var markNotificationsAsRead: [MarkNotificationsAsRead] { __data["markNotificationsAsRead"] }
 
@@ -38,6 +41,9 @@ public class MarkNotificationsAsReadMutation: GraphQLMutation {
         .field("message", String.self),
         .field("route", String?.self),
         .field("createdAt", PrivateUploaderAPI.Date.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        MarkNotificationsAsReadMutation.Data.MarkNotificationsAsRead.self
       ] }
 
       public var id: Int { __data["id"] }

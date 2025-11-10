@@ -21,6 +21,9 @@ public class EditedMessageSubscription: GraphQLSubscription {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("onEditMessage", OnEditMessage.self),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      EditedMessageSubscription.Data.self
+    ] }
 
     public var onEditMessage: OnEditMessage { __data["onEditMessage"] }
 
@@ -37,6 +40,9 @@ public class EditedMessageSubscription: GraphQLSubscription {
         .field("associationId", Int.self),
         .field("message", Message.self),
       ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        EditedMessageSubscription.Data.OnEditMessage.self
+      ] }
 
       public var associationId: Int { __data["associationId"] }
       public var message: Message { __data["message"] }
@@ -52,6 +58,10 @@ public class EditedMessageSubscription: GraphQLSubscription {
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .fragment(StandardMessage.self),
+        ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          EditedMessageSubscription.Data.OnEditMessage.Message.self,
+          StandardMessage.self
         ] }
 
         public var id: Int { __data["id"] }

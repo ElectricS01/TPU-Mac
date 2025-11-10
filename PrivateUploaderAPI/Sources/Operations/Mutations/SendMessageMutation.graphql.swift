@@ -26,6 +26,9 @@ public class SendMessageMutation: GraphQLMutation {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("sendMessage", SendMessage.self, arguments: ["input": .variable("input")]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      SendMessageMutation.Data.self
+    ] }
 
     public var sendMessage: SendMessage { __data["sendMessage"] }
 
@@ -40,6 +43,9 @@ public class SendMessageMutation: GraphQLMutation {
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("id", Int.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        SendMessageMutation.Data.SendMessage.self
       ] }
 
       public var id: Int { __data["id"] }

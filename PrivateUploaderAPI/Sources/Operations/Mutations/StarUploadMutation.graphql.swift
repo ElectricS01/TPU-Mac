@@ -26,6 +26,9 @@ public class StarUploadMutation: GraphQLMutation {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("starUpload", StarUpload.self, arguments: ["input": .variable("input")]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      StarUploadMutation.Data.self
+    ] }
 
     public var starUpload: StarUpload { __data["starUpload"] }
 
@@ -41,6 +44,9 @@ public class StarUploadMutation: GraphQLMutation {
         .field("__typename", String.self),
         .field("star", Star?.self),
       ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        StarUploadMutation.Data.StarUpload.self
+      ] }
 
       public var star: Star? { __data["star"] }
 
@@ -55,6 +61,9 @@ public class StarUploadMutation: GraphQLMutation {
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("id", Int.self),
+        ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          StarUploadMutation.Data.StarUpload.Star.self
         ] }
 
         public var id: Int { __data["id"] }

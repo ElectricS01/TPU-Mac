@@ -22,6 +22,9 @@ public class StateQuery: GraphQLQuery {
       .field("currentUser", CurrentUser?.self),
       .field("trackedUsers", [TrackedUser].self),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      StateQuery.Data.self
+    ] }
 
     public var coreState: CoreState { __data["coreState"] }
     public var currentUser: CurrentUser? { __data["currentUser"] }
@@ -39,6 +42,9 @@ public class StateQuery: GraphQLQuery {
         .field("__typename", String.self),
         .field("announcements", [Announcement].self),
         .field("stats", Stats.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        StateQuery.Data.CoreState.self
       ] }
 
       public var announcements: [Announcement] { __data["announcements"] }
@@ -59,6 +65,9 @@ public class StateQuery: GraphQLQuery {
           .field("createdAt", PrivateUploaderAPI.Date?.self),
           .field("user", User?.self),
         ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          StateQuery.Data.CoreState.Announcement.self
+        ] }
 
         public var userId: Int? { __data["userId"] }
         public var content: String { __data["content"] }
@@ -78,6 +87,9 @@ public class StateQuery: GraphQLQuery {
             .field("username", String.self),
             .field("id", Int.self),
             .field("avatar", String?.self),
+          ] }
+          public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+            StateQuery.Data.CoreState.Announcement.User.self
           ] }
 
           public var username: String { __data["username"] }
@@ -102,6 +114,9 @@ public class StateQuery: GraphQLQuery {
           .field("uploads", Int.self),
           .field("messages", Int.self),
           .field("chats", Int.self),
+        ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          StateQuery.Data.CoreState.Stats.self
         ] }
 
         public var users: Int { __data["users"] }
@@ -140,6 +155,9 @@ public class StateQuery: GraphQLQuery {
         .field("id", Int.self),
         .field("notifications", [Notification].self),
       ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        StateQuery.Data.CurrentUser.self
+      ] }
 
       public var username: String { __data["username"] }
       public var description: String? { __data["description"] }
@@ -175,6 +193,9 @@ public class StateQuery: GraphQLQuery {
           .field("domain", String.self),
           .field("id", Int.self),
         ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          StateQuery.Data.CurrentUser.Domain.self
+        ] }
 
         public var active: Bool { __data["active"] }
         public var domain: String { __data["domain"] }
@@ -198,6 +219,9 @@ public class StateQuery: GraphQLQuery {
           .field("name", String.self),
           .field("priority", Int?.self),
           .field("tooltip", String?.self),
+        ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          StateQuery.Data.CurrentUser.Badge.self
         ] }
 
         public var color: String? { __data["color"] }
@@ -224,6 +248,9 @@ public class StateQuery: GraphQLQuery {
           .field("message", String.self),
           .field("route", String?.self),
           .field("createdAt", PrivateUploaderAPI.Date.self),
+        ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          StateQuery.Data.CurrentUser.Notification.self
         ] }
 
         public var id: Int { __data["id"] }
@@ -253,6 +280,9 @@ public class StateQuery: GraphQLQuery {
         .field("nickname", Nickname?.self),
         .field("friends", [Friend].self),
       ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        StateQuery.Data.TrackedUser.self
+      ] }
 
       public var username: String { __data["username"] }
       public var id: Int { __data["id"] }
@@ -275,6 +305,9 @@ public class StateQuery: GraphQLQuery {
           .field("__typename", String.self),
           .field("nickname", String.self),
         ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          StateQuery.Data.TrackedUser.Nickname.self
+        ] }
 
         public var nickname: String { __data["nickname"] }
       }
@@ -293,6 +326,9 @@ public class StateQuery: GraphQLQuery {
           .field("id", Int.self),
           .field("status", GraphQLEnum<PrivateUploaderAPI.FriendStatus>.self),
           .field("userId", Int?.self),
+        ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          StateQuery.Data.TrackedUser.Friend.self
         ] }
 
         public var friendId: Int { __data["friendId"] }
