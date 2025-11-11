@@ -122,6 +122,13 @@ struct CommsView: View {
                 }
               }.contentShape(Rectangle())
             }.buttonStyle(.plain)
+              .contextMenu {
+                Button {
+                  copyToClipboard(String(chatsList[result].association?.id ?? chatsList[result].id))
+                } label: {
+                  Label("Copy Chat ID", systemImage: "person.text.rectangle")
+                }
+              }
           }
         }
         .frame(width: 150)
@@ -225,37 +232,47 @@ struct CommsView: View {
       }
     #else
       NavigationStack {
-        List {
-          ForEach(0 ..< chatsList.count, id: \.self) { result in
-            NavigationLink(destination: ChatView(chatsList: $chatsList, chatOpen: .constant(chatsList[result].association?.id ?? -1))) {
-              HStack {
-                ProfilePicture(avatar: chatsList[result].recipient?.avatar ?? chatsList[result].icon)
-                Text(chatsList[result].recipient?.username ?? chatsList[result].name).lineLimit(1)
-                Spacer()
-                if chatsList[result].unread != 0 {
-                  Text(String(chatsList[result].unread!))
-                    .frame(minWidth: 16, minHeight: 16)
-                    .background(Color.red)
-                    .cornerRadius(10)
+        if chatsList.isEmpty {
+          VStack {
+            Spacer()
+            Text("No chats")
+              .foregroundColor(.secondary)
+              .font(.headline)
+            Spacer()
+          }
+        } else {
+          List {
+            ForEach(0 ..< chatsList.count, id: \.self) { result in
+              NavigationLink(destination: ChatView(chatsList: $chatsList, chatOpen: .constant(chatsList[result].association?.id ?? -1))) {
+                HStack {
+                  ProfilePicture(avatar: chatsList[result].recipient?.avatar ?? chatsList[result].icon)
+                  Text(chatsList[result].recipient?.username ?? chatsList[result].name).lineLimit(1)
+                  Spacer()
+                  if chatsList[result].unread != 0 {
+                    Text(String(chatsList[result].unread!))
+                      .frame(minWidth: 16, minHeight: 16)
+                      .background(Color.red)
+                      .cornerRadius(10)
+                  }
+                }.contentShape(Rectangle())
+              }.buttonStyle(.plain)
+                .contextMenu {
+                  Button {
+                    copyToClipboard(String(chatsList[result].association?.id ?? chatsList[result].id))
+                  } label: {
+                    Label("Copy Chat ID", systemImage: "person.text.rectangle")
+                  }
                 }
-              }.contentShape(Rectangle())
-            }.buttonStyle(.plain)
-              .contextMenu {
-                Button {
-                  copyToClipboard(String(chatsList[result].id))
-                } label: {
-                  Label("Copy User ID", systemImage: "person.text.rectangle")
-                }
-              }
+            }
           }
         }
-        .onAppear {
-          getChats()
-        }
-        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("NavigateToPage"))) { notification in
-          if let userInfo = notification.userInfo, let pageID = userInfo["to"] as? Int {
-            chatOpen = chatsList.first(where: { $0.id == pageID })?.association?.id ?? -1
-          }
+      }
+      .onAppear {
+        getChats()
+      }
+      .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("NavigateToPage"))) { notification in
+        if let userInfo = notification.userInfo, let pageID = userInfo["to"] as? Int {
+          chatOpen = chatsList.first(where: { $0.id == pageID })?.association?.id ?? -1
         }
       }
     #endif

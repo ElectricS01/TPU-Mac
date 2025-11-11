@@ -481,7 +481,15 @@ struct ChatView: View {
           .onSubmit {
             sendMessage()
           }
+          .padding(EdgeInsets(top: 0, leading: 0, bottom: 10, trailing: 0))
           .textFieldStyle(RoundedBorderTextFieldStyle())
+          .gesture(
+            DragGesture(minimumDistance: 20, coordinateSpace: .local)
+              .onEnded { value in
+                if value.translation.height > 0 {
+                  focusedField = .none
+                }
+              })
       }
       .navigationTitle(chatsList.first(where: { $0.association?.id == chatOpen })?.recipient?.username ?? chatsList.first(where: { $0.association?.id == chatOpen })?.name ?? "Chat name error")
       #if os(iOS)
@@ -503,6 +511,23 @@ struct ChatView: View {
                         Spacer()
                       }.contentShape(Rectangle())
                     }.buttonStyle(.plain)
+                      .contextMenu {
+                        if let user = chatsList.first(where: { $0.association?.id == chatOpen })?.users[result].user {
+                          if store.coreUsers.unsafelyUnwrapped.first(where: { $0.id == user.id })?.status.rawValue == "NONE" {
+                            Button {
+                              print("Action for context menu item 1")
+                            } label: {
+                              Label("Add friend", systemImage: "person.badge.plus")
+                            }
+                            Divider()
+                          }
+                          Button {
+                            copyToClipboard(String(user.id))
+                          } label: {
+                            Label("Copy User ID", systemImage: "person.text.rectangle")
+                          }
+                        }
+                      }
                   }
                 }.padding(EdgeInsets(top: -8, leading: -10, bottom: -8, trailing: 0))
               }

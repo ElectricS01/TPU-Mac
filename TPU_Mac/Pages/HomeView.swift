@@ -18,9 +18,14 @@ struct HomeStat: View {
     VStack {
       Text(stat).font(.system(size: 24, weight: .semibold))
       Text(type)
-    }.frame(minWidth: 150, minHeight: 150)
-      .background()
-      .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+    }
+    #if os(macOS)
+    .frame(minWidth: 150, minHeight: 150)
+    #else
+    .frame(minWidth: 150, minHeight: 100)
+    #endif
+    .background(.ultraThinMaterial)
+    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
   }
 }
 
@@ -64,7 +69,7 @@ struct HomeView: View {
           }
         }.frame(maxHeight: .infinity)
       }.frame(maxWidth: .infinity)
-      LazyVGrid(columns: [GridItem(.adaptive(minimum: 150))], spacing: 10) {
+      LazyVGrid(columns: [GridItem(.adaptive(minimum: 160))], spacing: 20) {
         HomeStat(stat: .constant(String(store.coreState?.stats.collections ?? 0)), type: .constant("Collections"))
         HomeStat(stat: .constant(String(store.coreState?.stats.collectionItems ?? 0)), type: .constant("Collection Items"))
         HomeStat(stat: .constant(String(store.coreState?.stats.users ?? 0)), type: .constant("Users"))
