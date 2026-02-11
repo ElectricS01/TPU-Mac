@@ -738,7 +738,7 @@
 		};
 		C4300EAC2CE3141F000AE0B5 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/gonzalezreal/swift-markdown-ui?tab=readme-ov-file#installation";
+			repositoryURL = "https://github.com/gonzalezreal/swift-markdown-ui";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 2.4.1;

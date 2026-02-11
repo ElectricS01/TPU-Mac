@@ -65,9 +65,9 @@
       }
     },
     {
-      "identity" : "swift-markdown-ui?tab=readme-ov-file#installation",
+      "identity" : "swift-markdown-ui",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/gonzalezreal/swift-markdown-ui?tab=readme-ov-file#installation",
+      "location" : "https://github.com/gonzalezreal/swift-markdown-ui",
       "state" : {
         "revision" : "5f613358148239d0292c0cef674a3c2314737f9e",
         "version" : "2.4.1"
