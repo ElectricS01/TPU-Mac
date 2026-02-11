@@ -40,7 +40,7 @@ jobs:
             -configuration Debug \
             -destination 'platform=macOS' \
             CODE_SIGN_STYLE=Manual \
-            CODE_SIGN_IDENTITY="9R84L57UN4" \
+            CODE_SIGN_IDENTITY="PK36GR28A7" \
             build
 
       - name: Upload build
