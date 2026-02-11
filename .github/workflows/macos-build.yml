@@ -36,7 +36,7 @@ jobs:
         run: |
           xcodebuild \
             -project TPU_Mac.xcodeproj \
-            -scheme TPU_Mac \
+            -scheme "TPU Mac" \
             -configuration Debug \
             -destination 'platform=macOS' \
             CODE_SIGN_STYLE=Manual \
