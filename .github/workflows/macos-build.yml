@@ -40,7 +40,7 @@ jobs:
             -configuration Debug \
             -destination 'platform=macOS' \
             CODE_SIGN_STYLE=Manual \
-            CODE_SIGN_IDENTITY="Apple Development" \
+            CODE_SIGN_IDENTITY="9R84L57UN4" \
             build
 
       - name: Upload build
