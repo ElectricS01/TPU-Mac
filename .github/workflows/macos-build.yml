@@ -2,7 +2,7 @@ name: Build TPU Mac
 
 on:
   push:
-    branches: [ main, test-github-action ]
+    branches: [main, test-github-action]
   pull_request:
 
 jobs:
@@ -40,7 +40,7 @@ jobs:
             -configuration Debug \
             -destination 'platform=macOS' \
             CODE_SIGN_STYLE=Manual \
-            CODE_SIGN_IDENTITY="PK36GR28A7" \
+            CODE_SIGN_IDENTITY="46B23S6B94" \
             build
 
       - name: Upload build

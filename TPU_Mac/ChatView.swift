@@ -50,7 +50,6 @@ struct ChatView: View {
         if let unwrapped = graphQLResult.data {
           chatMessages = unwrapped.messages.reversed()
           chatOpen = chatId ?? -1
-          focusedField = .sending
           if chatsList.first(where: { $0.association?.id == chatOpen })?.unread != 0 {
             if let unreadMessageIndex = chatMessages.firstIndex(where: { $0.id == chatsList.first(where: { $0.association?.id == chatOpen })?.association?.lastRead }) {
               unreadId = chatMessages[unreadMessageIndex + 1].id
@@ -243,6 +242,36 @@ struct ChatView: View {
     }
   }
   
+  func renderMentions(
+    _ text: String
+  ) -> String {
+    print(text)
+    var result = text
+    
+    let regex = try! NSRegularExpression(pattern: #"<@(\d+)>"#)
+    let matches = regex.matches(
+      in: text,
+      range: NSRange(text.startIndex..., in: text)
+    )
+    
+    for match in matches.reversed() {
+      guard
+        let idRange = Range(match.range(at: 1), in: result),
+        let fullRange = Range(match.range(at: 0), in: result)
+      else { continue }
+      
+      let id = result[idRange]
+      let username = store.coreUsers.unsafelyUnwrapped.first(where: {$0.id == Int(id)})?.username ?? "Unknown"
+      
+      result.replaceSubrange(
+        fullRange,
+        with: "[@\(username)](mention://\(id))"
+      )
+    }
+    
+    return result
+  }
+  
   var body: some View {
     VStack {
       ScrollViewReader { proxy in
@@ -288,7 +317,7 @@ struct ChatView: View {
                             alignment: .topLeading)
                   }
                   if editingId != message.id {
-                    Markdown(message.content ?? "Message has been deleted")
+                    Markdown(renderMentions(message.content ?? ""))
                       .markdownSoftBreakMode(.lineBreak)
                       .textSelection(.enabled)
                       .markdownBlockStyle(\.blockquote) { configuration in
@@ -301,6 +330,16 @@ struct ChatView: View {
                       .frame(minWidth: 0,
                              maxWidth: .infinity,
                              alignment: .leading)
+                      .environment(\.openURL, OpenURLAction { url in
+                        if url.scheme == "mention" {
+                          let id = url.host ?? ""
+                          print("Clicked:", id)
+                          return .handled
+                        }
+                        
+                        return .systemAction
+                      })
+
                   } else {
                     TextField("Keep it civil!", text: $editingMessage)
                       .focused($focusedField, equals: .editing)
