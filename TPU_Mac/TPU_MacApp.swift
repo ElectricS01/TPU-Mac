@@ -86,7 +86,7 @@ struct ProfilePicture: View {
       .frame(width: size, height: size)
       .cornerRadius(size / 2)
     } else {
-      Image(systemName: "person.crop.circle").frame(width: size, height: size).font(.largeTitle)
+      Image(systemName: "person.crop.circle").frame(width: size, height: size).font(.system(size: CGFloat(size)))
     }
   }
 }
