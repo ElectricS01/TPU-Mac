@@ -26,6 +26,7 @@
 		C461D9D22F46617F00E566DE /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C461D9D12F46617F00E566DE /* ChatMessage.swift */; };
 		C47E19752BEE04D1004B14C4 /* CollectionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47E19742BEE04D1004B14C4 /* CollectionsView.swift */; };
 		C48C2E9E2AD0417B0000A362 /* Apollo in Frameworks */ = {isa = PBXBuildFile; productRef = C48C2E9D2AD0417B0000A362 /* Apollo */; };
+		C49FC7E52F4EEA6400987EEC /* UserRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C49FC7E42F4EEA6400987EEC /* UserRow.swift */; };
 		C4D7E5062AF4D4FC008308CA /* CommsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D7E5052AF4D4FC008308CA /* CommsView.swift */; };
 		C4DC9A022C9FD5E000C80E8C /* CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4DC9A012C9FD5E000C80E8C /* CollectionView.swift */; };
 		C4DD4D492C4892AE00DF1A22 /* ApolloSQLite in Frameworks */ = {isa = PBXBuildFile; productRef = C4DD4D482C4892AE00DF1A22 /* ApolloSQLite */; };
@@ -70,6 +71,7 @@
 		C461D9D12F46617F00E566DE /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		C47E19742BEE04D1004B14C4 /* CollectionsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionsView.swift; sourceTree = "<group>"; };
 		C48D5DB72AF4D2DB00067554 /* graphql */ = {isa = PBXFileReference; lastKnownFileType = folder; path = graphql; sourceTree = "<group>"; };
+		C49FC7E42F4EEA6400987EEC /* UserRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRow.swift; sourceTree = "<group>"; };
 		C4D7E5052AF4D4FC008308CA /* CommsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommsView.swift; sourceTree = "<group>"; };
 		C4DC9A012C9FD5E000C80E8C /* CollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionView.swift; sourceTree = "<group>"; };
 		C4FD79E22CABE2ED00A6FDEB /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
@@ -146,6 +148,7 @@
 		C45099132ACFFA7F00FA9247 /* TPU_Mac */ = {
 			isa = PBXGroup;
 			children = (
+				C49FC7E42F4EEA6400987EEC /* UserRow.swift */,
 				C44AE4112E9382B800EB7230 /* Pages */,
 				C45099142ACFFA7F00FA9247 /* TPU_MacApp.swift */,
 				C4569DF62AD1828300F17C06 /* Network.swift */,
@@ -338,6 +341,7 @@
 				C4569DF72AD1828300F17C06 /* Network.swift in Sources */,
 				C45099172ACFFA7F00FA9247 /* ContentView.swift in Sources */,
 				C47E19752BEE04D1004B14C4 /* CollectionsView.swift in Sources */,
+				C49FC7E52F4EEA6400987EEC /* UserRow.swift in Sources */,
 				C4FD79E32CABE2ED00A6FDEB /* ChatView.swift in Sources */,
 				C4FE71582AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift in Sources */,
 				C4D7E5062AF4D4FC008308CA /* CommsView.swift in Sources */,
@@ -540,7 +544,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.3.21;
+				MARKETING_VERSION = 0.3.22;
 				PRODUCT_BUNDLE_IDENTIFIER = "ElectricS01.TPU-Mac";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -590,7 +594,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.3.21;
+				MARKETING_VERSION = 0.3.22;
 				PRODUCT_BUNDLE_IDENTIFIER = "ElectricS01.TPU-Mac";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

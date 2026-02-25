@@ -25,7 +25,6 @@ struct ChatView: View {
   @State private var inputMessage: String = ""
   @State var apolloSubscription: Apollo.Cancellable?
   @State private var showingSheet: Bool = false
-  //  @State private var hoverItem = -1
   
   private var currentChat: ChatsQuery.Data.Chat? {
     chatsList.first { $0.association?.id == chatOpen }
@@ -33,6 +32,16 @@ struct ChatView: View {
   
   private var replyingMessage: MessagesQuery.Data.Message? {
     chatMessages.last { $0.id == replyingId }
+  }
+  
+  private var chatUsers: [StateQuery.Data.TrackedUser] {
+    guard let currentUsers = currentChat?.users,
+          let coreUsers = store.coreUsers
+    else { return [] }
+    
+    return currentUsers.compactMap { member in
+      coreUsers.first { $0.id == member.user?.id }
+    }
   }
   
   func getMessages(chat: Int, completion: @escaping (Result<GraphQLResult<MessagesQuery.Data>, Error>) -> Void) {
@@ -283,33 +292,18 @@ struct ChatView: View {
               }
               .sheet(isPresented: $showingSheet) {
                 List {
-                  ForEach(0 ..< (currentChat?.users.count ?? 0), id: \.self) { result in
-                    Button(action: { print("Clicked: " + (currentChat?.users[result].user?.username ?? "User's name could not be found")) }) {
-                      HStack {
-                        ProfilePicture(avatar: currentChat?.users[result].user?.avatar)
-                        Text(currentChat?.users[result].user?.username ?? "User's name could not be found")
-                        Spacer()
-                      }.contentShape(Rectangle())
-                    }.buttonStyle(.plain)
-                      .contextMenu {
-                        if let user = currentChat?.users[result].user {
-                          if store.coreUsers.unsafelyUnwrapped.first(where: { $0.id == user.id })?.status.rawValue == "NONE" {
-                            Button {
-                              print("Action for context menu item 1")
-                            } label: {
-                              Label("Add friend", systemImage: "person.badge.plus")
-                            }
-                            Divider()
-                          }
-                          Button {
-                            copyToClipboard(String(user.id))
-                          } label: {
-                            Label("Copy User ID", systemImage: "person.text.rectangle")
-                          }
-                        }
-                      }
+                  Section("Online") {
+                    ForEach(chatUsers.filter { $0.status.value != .offline }, id: \.id) { user in
+                      UserRow(user: user)
+                    }
                   }
-                }.padding(EdgeInsets(top: -8, leading: -10, bottom: -8, trailing: 0))
+                  
+                  Section("Offline") {
+                    ForEach(chatUsers.filter { $0.status.value == .offline }, id: \.id) { user in
+                      UserRow(user: user, isOffline: true)
+                    }
+                  }
+                }
               }
           }
         })

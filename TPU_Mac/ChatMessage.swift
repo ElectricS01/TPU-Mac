@@ -23,6 +23,7 @@ struct ChatMessageView: View {
   let onInputClear: () -> Void
   @EnvironmentObject var store: Store
   @State private var editingMessage: String = ""
+  @State private var hovered: Bool = false
   
   func editMessage() {
     Network.shared.apollo.perform(mutation: EditMessageMutation(input: EditMessageInput(content: GraphQLNullable<String>(stringLiteral: editingMessage), attachments: [], messageId: editingId, associationId: chatOpen))) { result in
@@ -97,7 +98,9 @@ struct ChatMessageView: View {
 
   var body: some View {
     let dontMerge = merge(message: message, previousMessage: previousMessage)
-    Spacer(minLength: dontMerge ? 16 : 0)
+    if dontMerge {
+      Spacer(minLength: 16)
+    }
     if unread {
       HStack {
         VStack { Divider().background(.red) }
@@ -113,7 +116,7 @@ struct ChatMessageView: View {
           Image(systemName: "arrow.turn.up.right").frame(width: 16, height: 16)
           ProfilePicture(avatar: message.reply?.user?.avatar, size: 16)
           Text(message.reply?.user?.username ?? "User has been deleted")
-          Text((message.reply?.content ?? "Message has been deleted").replacingOccurrences(of: "\n", with: "")).lineLimit(1)
+          Text(renderMentions(message.reply?.content ?? "Message has been deleted").replacingOccurrences(of: "\n", with: "")).lineLimit(1)
         }.padding(EdgeInsets(top: 0, leading: 18, bottom: 0, trailing: 0))
       }.buttonStyle(.plain)
     }
@@ -217,35 +220,40 @@ struct ChatMessageView: View {
         }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
       }
 #if os(macOS)
-      Button(action: {
-        onReplyClick(message.id)
-      }) {
-        Image(systemName: "arrowshape.turn.up.left.fill").frame(width: 16, height: 16)
-      }
-      Button(action: {
-        deleteMessage(messageId: message.id)
-      }) {
-        Image(systemName: "trash.fill").frame(width: 16, height: 16)
-      }
-      Button(action: {
-        pinMessage(messageId: message.id, pinned: message.pinned)
-      }) {
-        Image(systemName: message.pinned ? "pin.slash.fill" : "pin.fill").frame(width: 16, height: 16)
-      }
-      if store.coreUser?.id == message.userId {
-        Button(action: {
-          if editingId != message.id {
-            editingId = message.id
-            editingMessage = message.content ?? ""
-            focusedField = .editing
-          } else {
-            editingId = -1
-            focusedField = .sending
+      HStack {
+        if hovered {
+          Spacer()
+          Button(action: {
+            onReplyClick(message.id)
+          }) {
+            Image(systemName: "arrowshape.turn.up.left.fill").frame(width: 16, height: 16)
+          }.buttonStyle(.borderless).frame(width: 20, height: 20)
+          Button(action: {
+            deleteMessage(messageId: message.id)
+          }) {
+            Image(systemName: "trash.fill").frame(width: 16, height: 16)
+          }.buttonStyle(.borderless).frame(width: 20, height: 20)
+          Button(action: {
+            pinMessage(messageId: message.id, pinned: message.pinned)
+          }) {
+            Image(systemName: message.pinned ? "pin.slash.fill" : "pin.fill").frame(width: 16, height: 16)
+          }.buttonStyle(.borderless).frame(width: 20, height: 20)
+          if store.coreUser?.id == message.userId {
+            Button(action: {
+              if editingId != message.id {
+                editingId = message.id
+                editingMessage = message.content ?? ""
+                focusedField = .editing
+              } else {
+                editingId = -1
+                focusedField = .sending
+              }
+            }) {
+              Image(systemName: "pencil").frame(width: 16, height: 16)
+            }.buttonStyle(.borderless).frame(width: 20, height: 20)
           }
-        }) {
-          Image(systemName: "pencil").frame(width: 16, height: 16)
         }
-      }
+      }.frame(width: 104, height: 20)
 #endif
     }.padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4)).id(message.id)
       .contentShape(Rectangle())
@@ -292,9 +300,9 @@ struct ChatMessageView: View {
           Label("Copy Message ID", systemImage: "person.text.rectangle")
         }
       }
-    //                  .background(Color(hoverItem == message.id ? Color.primary : .clear))
-    //                  .onHover(perform: { _ in
-    //                    hoverItem = message.id
-    //                  })
+      .background(Color(hovered ? Color.primary : .clear).opacity(0.1))
+      .onHover { hover in
+        hovered = hover
+      }
   }
 }

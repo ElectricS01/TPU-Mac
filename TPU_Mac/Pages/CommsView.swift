@@ -29,6 +29,16 @@ struct CommsView: View {
   @State var apolloSubscription: Apollo.Cancellable?
   @State private var notifications: Int = 0
   
+  private var chatUsers: [StateQuery.Data.TrackedUser] {
+    guard let association = chatsList.first(where: { $0.association?.id == chatOpen }),
+          let coreUsers = store.coreUsers
+    else { return [] }
+    
+    return association.users.compactMap { member in
+      coreUsers.first { $0.id == member.user?.id }
+    }
+  }
+  
   func getChats() {
     Network.shared.apollo.fetch(query: ChatsQuery(), cachePolicy: .fetchIgnoringCacheData) { result in
       switch result {
@@ -136,68 +146,15 @@ struct CommsView: View {
         if chatOpen != -1 {
           ChatView(chatsList: $chatsList, chatOpen: $chatOpen)
           List {
-            Section(header: Text("Online")) {
-              ForEach(0 ..< (chatsList.first(where: { $0.association?.id == chatOpen })?.users.count ?? 0), id: \.self) { index in
-                let user = store.coreUsers.unsafelyUnwrapped.first { $0.id == chatsList.first(where: { $0.association?.id == chatOpen })?.users[index].user?.id }
-                if let user = user, user.status.value != .offline {
-                  Button(action: {
-                    print(user.username)
-                  }) {
-                    HStack {
-                      Circle().fill(user.status.value != .online ? user.status.value == .busy ? .red : .yellow : .green).frame(width: 6, height: 6)
-                      ProfilePicture(avatar: user.avatar)
-                      Text(user.username)
-                      Spacer()
-                    }.contentShape(Rectangle())
-                  }.buttonStyle(.plain)
-                    .contextMenu {
-                      if user.status.rawValue == "NONE" {
-                        Button {
-                          print("Action for context menu item 1")
-                        } label: {
-                          Label("Add friend", systemImage: "person.badge.plus")
-                        }
-                        Divider()
-                      }
-                      Button {
-                        copyToClipboard(String(user.id))
-                      } label: {
-                        Label("Copy User ID", systemImage: "person.text.rectangle")
-                      }
-                    }
-                }
+            Section("Online") {
+              ForEach(chatUsers.filter { $0.status.value != .offline }, id: \.id) { user in
+                UserRow(user: user)
               }
             }
-            Section(header: Text("Offline")) {
-              ForEach(0 ..< (chatsList.first(where: { $0.association?.id == chatOpen })?.users.count ?? 0), id: \.self) { index in
-                let user = store.coreUsers.unsafelyUnwrapped.first { $0.id == chatsList.first(where: { $0.association?.id == chatOpen })?.users[index].user?.id }
-                if let user = user, user.status.value == .offline {
-                  Button(action: {
-                    print("Clicked: " + (user.username))
-                  }) {
-                    HStack {
-                      Circle().fill(.gray).frame(width: 6, height: 6)
-                      ProfilePicture(avatar: user.avatar)
-                      Text(user.username).foregroundStyle(.gray)
-                      Spacer()
-                    }.contentShape(Rectangle())
-                  }.buttonStyle(.plain)
-                    .contextMenu {
-                      if user.status.rawValue == "NONE" {
-                        Button {
-                          print("Action for context menu item 1")
-                        } label: {
-                          Label("Add friend", systemImage: "person.badge.plus")
-                        }
-                        Divider()
-                      }
-                      Button {
-                        copyToClipboard(String(user.id))
-                      } label: {
-                        Label("Copy User ID", systemImage: "person.text.rectangle")
-                      }
-                    }
-                }
+            
+            Section("Offline") {
+              ForEach(chatUsers.filter { $0.status.value == .offline }, id: \.id) { user in
+                UserRow(user: user, isOffline: true)
               }
             }
           }.frame(width: 150)
@@ -243,7 +200,7 @@ struct CommsView: View {
         } else {
           List {
             ForEach(0 ..< chatsList.count, id: \.self) { result in
-              NavigationLink(destination: ChatView(chatsList: $chatsList, chatOpen: .constant(chatsList[result].association?.id ?? -1))) {
+              NavigationLink(destination: ChatView(chatsList: $chatsList, chatOpen: .constant(chatsList[result].association?.id ?? -1)).toolbar(.hidden, for: .tabBar)) {
                 HStack {
                   ProfilePicture(avatar: chatsList[result].recipient?.avatar ?? chatsList[result].icon)
                   Text(chatsList[result].recipient?.username ?? chatsList[result].name).lineLimit(1)
