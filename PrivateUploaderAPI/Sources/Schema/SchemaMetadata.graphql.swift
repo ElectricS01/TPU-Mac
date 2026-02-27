@@ -35,7 +35,6 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "EmbedDataV2": return PrivateUploaderAPI.Objects.EmbedDataV2
     case "EmbedMedia": return PrivateUploaderAPI.Objects.EmbedMedia
     case "EmbedText": return PrivateUploaderAPI.Objects.EmbedText
-    case "Friend": return PrivateUploaderAPI.Objects.Friend
     case "FriendNickname": return PrivateUploaderAPI.Objects.FriendNickname
     case "GenericSuccessObject": return PrivateUploaderAPI.Objects.GenericSuccessObject
     case "LoginResponse": return PrivateUploaderAPI.Objects.LoginResponse

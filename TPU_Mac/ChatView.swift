@@ -13,6 +13,37 @@ enum FocusedField {
   case editing, sending
 }
 
+func renderMentions(
+  _ text: String,
+  users: [StateQuery.Data.TrackedUser]
+) -> String {
+  print(text)
+  var result = text
+  
+  let regex = try! NSRegularExpression(pattern: #"<@(\d+)>"#)
+  let matches = regex.matches(
+    in: text,
+    range: NSRange(text.startIndex..., in: text)
+  )
+  
+  for match in matches.reversed() {
+    guard
+      let idRange = Range(match.range(at: 1), in: result),
+      let fullRange = Range(match.range(at: 0), in: result)
+    else { continue }
+    
+    let id = result[idRange]
+    let username = users.first(where: { $0.id == Int(id) })?.username ?? "Unknown"
+    
+    result.replaceSubrange(
+      fullRange,
+      with: "[@\(username)](mention://\(id))"
+    )
+  }
+  
+  return result
+}
+
 struct ChatView: View {
   @Binding var chatsList: [ChatsQuery.Data.Chat]
   @EnvironmentObject var store: Store
@@ -253,7 +284,7 @@ struct ChatView: View {
           HStack {
             Image(systemName: "arrow.turn.up.right").frame(width: 16, height: 16)
             Text(replyingMessage?.user?.username ?? "User has been deleted")
-            Text(replyingMessage?.content ?? "Message has been deleted")
+            Text(renderMentions(replyingMessage?.content ?? "Message has been deleted", users: store.coreUsers ?? []))
               .lineLimit(1)
               .onAppear {
                 if chatMessages.count != 0 {
@@ -279,6 +310,11 @@ struct ChatView: View {
                   focusedField = .none
                 }
               })
+        #if !os(iOS)
+              .onExitCommand(perform: {
+                replyingId = -1
+              })
+        #endif
       }
       .navigationTitle(currentChat?.recipient?.username ?? currentChat?.name ?? "Chat name error")
       #if os(iOS)

@@ -24,7 +24,7 @@ struct ChatMessageView: View {
   @EnvironmentObject var store: Store
   @State private var editingMessage: String = ""
   @State private var hovered: Bool = false
-  
+
   func editMessage() {
     Network.shared.apollo.perform(mutation: EditMessageMutation(input: EditMessageInput(content: GraphQLNullable<String>(stringLiteral: editingMessage), attachments: [], messageId: editingId, associationId: chatOpen))) { result in
       switch result {
@@ -35,7 +35,7 @@ struct ChatMessageView: View {
       }
     }
   }
-  
+
   func pinMessage(messageId: Int, pinned: Bool) {
     Network.shared.apollo.perform(mutation: EditMessageMutation(input: EditMessageInput(attachments: [], messageId: messageId, associationId: chatOpen, pinned: GraphQLNullable<Bool>(booleanLiteral: pinned)))) { result in
       switch result {
@@ -46,7 +46,7 @@ struct ChatMessageView: View {
       }
     }
   }
-  
+
   func deleteMessage(messageId: Int) {
     Network.shared.apollo.perform(mutation: DeleteMessageMutation(input: DeleteMessageInput(messageId: messageId, associationId: chatOpen))) { result in
       switch result {
@@ -64,36 +64,6 @@ struct ChatMessageView: View {
       return false
     }
     return true
-  }
-  
-  func renderMentions(
-    _ text: String
-  ) -> String {
-    print(text)
-    var result = text
-    
-    let regex = try! NSRegularExpression(pattern: #"<@(\d+)>"#)
-    let matches = regex.matches(
-      in: text,
-      range: NSRange(text.startIndex..., in: text)
-    )
-    
-    for match in matches.reversed() {
-      guard
-        let idRange = Range(match.range(at: 1), in: result),
-        let fullRange = Range(match.range(at: 0), in: result)
-      else { continue }
-      
-      let id = result[idRange]
-      let username = store.coreUsers.unsafelyUnwrapped.first(where: { $0.id == Int(id) })?.username ?? "Unknown"
-      
-      result.replaceSubrange(
-        fullRange,
-        with: "[@\(username)](mention://\(id))"
-      )
-    }
-    
-    return result
   }
 
   var body: some View {
@@ -116,7 +86,7 @@ struct ChatMessageView: View {
           Image(systemName: "arrow.turn.up.right").frame(width: 16, height: 16)
           ProfilePicture(avatar: message.reply?.user?.avatar, size: 16)
           Text(message.reply?.user?.username ?? "User has been deleted")
-          Text(renderMentions(message.reply?.content ?? "Message has been deleted").replacingOccurrences(of: "\n", with: "")).lineLimit(1)
+          Text(renderMentions(message.reply?.content ?? "Message has been deleted", users: store.coreUsers ?? []).replacingOccurrences(of: "\n", with: "")).lineLimit(1)
         }.padding(EdgeInsets(top: 0, leading: 18, bottom: 0, trailing: 0))
       }.buttonStyle(.plain)
     }
@@ -138,7 +108,7 @@ struct ChatMessageView: View {
                   alignment: .topLeading)
         }
         if editingId != message.id {
-          Markdown(renderMentions(message.content ?? ""))
+          Markdown(renderMentions(message.content ?? "", users: store.coreUsers ?? []))
             .markdownSoftBreakMode(.lineBreak)
             .textSelection(.enabled)
             .markdownBlockStyle(\.blockquote) { configuration in
@@ -157,10 +127,10 @@ struct ChatMessageView: View {
                 print("Clicked:", id)
                 return .handled
               }
-              
+
               return .systemAction
             })
-          
+
         } else {
           TextField("Keep it civil!", text: $editingMessage)
             .focused($focusedField, equals: .editing)

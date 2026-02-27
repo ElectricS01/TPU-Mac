@@ -65,11 +65,6 @@ query StateQuery {
       nickname {
         nickname
       }
-      friends {
-        friendId
-        id
-        status
-        userId
-      }
+      friend
     }
 }

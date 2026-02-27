@@ -148,7 +148,6 @@
 		C45099132ACFFA7F00FA9247 /* TPU_Mac */ = {
 			isa = PBXGroup;
 			children = (
-				C49FC7E42F4EEA6400987EEC /* UserRow.swift */,
 				C44AE4112E9382B800EB7230 /* Pages */,
 				C45099142ACFFA7F00FA9247 /* TPU_MacApp.swift */,
 				C4569DF62AD1828300F17C06 /* Network.swift */,
@@ -157,6 +156,7 @@
 				C45099162ACFFA7F00FA9247 /* ContentView.swift */,
 				C4FD79E22CABE2ED00A6FDEB /* ChatView.swift */,
 				C461D9D12F46617F00E566DE /* ChatMessage.swift */,
+				C49FC7E42F4EEA6400987EEC /* UserRow.swift */,
 				C427C6A52EC1F5A600A718FA /* TPU Mac.icon */,
 				C45099182ACFFA8100FA9247 /* Assets.xcassets */,
 				C450991A2ACFFA8100FA9247 /* TPU_Mac.entitlements */,
@@ -544,7 +544,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.3.22;
+				MARKETING_VERSION = 0.3.23;
 				PRODUCT_BUNDLE_IDENTIFIER = "ElectricS01.TPU-Mac";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -594,7 +594,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.3.22;
+				MARKETING_VERSION = 0.3.23;
 				PRODUCT_BUNDLE_IDENTIFIER = "ElectricS01.TPU-Mac";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

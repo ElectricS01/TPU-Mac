@@ -7,7 +7,7 @@ public class StateQuery: GraphQLQuery {
   public static let operationName: String = "StateQuery"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query StateQuery { coreState { __typename announcements { __typename userId content createdAt user { __typename username id avatar } } stats { __typename users collections collectionItems uploads messages chats } } currentUser { __typename username description administrator emailVerified banned createdAt avatar moderator banner status storedStatus privacyPolicyAccepted domain { __typename active domain id } badges { __typename color icon id image name priority tooltip } id notifications { __typename id dismissed message route createdAt } } trackedUsers { __typename username id avatar blocked status bot nickname { __typename nickname } friends { __typename friendId id status userId } } }"#
+      #"query StateQuery { coreState { __typename announcements { __typename userId content createdAt user { __typename username id avatar } } stats { __typename users collections collectionItems uploads messages chats } } currentUser { __typename username description administrator emailVerified banned createdAt avatar moderator banner status storedStatus privacyPolicyAccepted domain { __typename active domain id } badges { __typename color icon id image name priority tooltip } id notifications { __typename id dismissed message route createdAt } } trackedUsers { __typename username id avatar blocked status bot nickname { __typename nickname } friend } }"#
     ))
 
   public init() {}
@@ -278,7 +278,7 @@ public class StateQuery: GraphQLQuery {
         .field("status", GraphQLEnum<PrivateUploaderAPI.UserStatus>.self),
         .field("bot", Bool.self),
         .field("nickname", Nickname?.self),
-        .field("friends", [Friend].self),
+        .field("friend", GraphQLEnum<PrivateUploaderAPI.FriendStatus>.self),
       ] }
       public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
         StateQuery.Data.TrackedUser.self
@@ -291,7 +291,7 @@ public class StateQuery: GraphQLQuery {
       public var status: GraphQLEnum<PrivateUploaderAPI.UserStatus> { __data["status"] }
       public var bot: Bool { __data["bot"] }
       public var nickname: Nickname? { __data["nickname"] }
-      public var friends: [Friend] { __data["friends"] }
+      public var friend: GraphQLEnum<PrivateUploaderAPI.FriendStatus> { __data["friend"] }
 
       /// TrackedUser.Nickname
       ///
@@ -310,31 +310,6 @@ public class StateQuery: GraphQLQuery {
         ] }
 
         public var nickname: String { __data["nickname"] }
-      }
-
-      /// TrackedUser.Friend
-      ///
-      /// Parent Type: `Friend`
-      public struct Friend: PrivateUploaderAPI.SelectionSet {
-        public let __data: DataDict
-        public init(_dataDict: DataDict) { __data = _dataDict }
-
-        public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Friend }
-        public static var __selections: [ApolloAPI.Selection] { [
-          .field("__typename", String.self),
-          .field("friendId", Int.self),
-          .field("id", Int.self),
-          .field("status", GraphQLEnum<PrivateUploaderAPI.FriendStatus>.self),
-          .field("userId", Int?.self),
-        ] }
-        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-          StateQuery.Data.TrackedUser.Friend.self
-        ] }
-
-        public var friendId: Int { __data["friendId"] }
-        public var id: Int { __data["id"] }
-        public var status: GraphQLEnum<PrivateUploaderAPI.FriendStatus> { __data["status"] }
-        public var userId: Int? { __data["userId"] }
       }
     }
   }

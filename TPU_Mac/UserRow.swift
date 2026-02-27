@@ -1,16 +1,17 @@
 //
 //  UserRow.swift
-//  TPU_Mac
+//  TPU Mac
 //
 //  Created by ElectricS01  on 25/2/2026.
 //
 
-import SwiftUI
 import PrivateUploaderAPI
+import SwiftUI
 
 struct UserRow: View {
   let user: StateQuery.Data.TrackedUser
   var isOffline = false
+  @EnvironmentObject var store: Store
 
   private var statusColor: Color {
     if isOffline { return .gray }
@@ -26,11 +27,16 @@ struct UserRow: View {
       print(user.username)
     } label: {
       HStack {
-        Circle()
-          .fill(statusColor)
-          .frame(width: 6, height: 6)
-
         ProfilePicture(avatar: user.avatar)
+          .overlay(alignment: .bottomTrailing) {
+            Circle()
+              .fill(statusColor)
+              .frame(width: 10, height: 10)
+              .overlay(
+                Circle()
+                  .stroke(.background, lineWidth: 2)
+              )
+          }
 
         Text(user.username)
           .foregroundStyle(isOffline ? .gray : .primary)
@@ -41,11 +47,41 @@ struct UserRow: View {
     }
     .buttonStyle(.plain)
     .contextMenu {
-      if user.status.rawValue == "NONE" {
+      Button {
+        print(user.username)
+      } label: {
+        Label("Show Profile", systemImage: "person")
+      }
+      Divider()
+      if user.friend == .none && user.id != store.coreUser?.id {
         Button {
           print("Action for context menu item 1")
         } label: {
           Label("Add friend", systemImage: "person.badge.plus")
+        }
+        Divider()
+      }
+      else if user.friend == .incoming {
+        Button {
+          print("Action for context menu item 2")
+        } label: {
+          Label("Accept friend", systemImage: "person.badge.plus")
+        }
+        Divider()
+      }
+      else if user.friend == .outgoing {
+        Button {
+          print("Action for context menu item 3")
+        } label: {
+          Label("Cancel friend", systemImage: "person.badge.minus")
+        }
+        Divider()
+      }
+      else if user.friend == .accepted {
+        Button {
+          print("Action for context menu item 4")
+        } label: {
+          Label("Remove friend", systemImage: "person.badge.minus")
         }
         Divider()
       }
