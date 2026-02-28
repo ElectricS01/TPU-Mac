@@ -13,35 +13,46 @@ enum FocusedField {
   case editing, sending
 }
 
-func renderMentions(
+func renderRichText(
   _ text: String,
   users: [StateQuery.Data.TrackedUser]
 ) -> String {
   print(text)
-  var result = text
+  var result = text as NSString
   
-  let regex = try! NSRegularExpression(pattern: #"<@(\d+)>"#)
+  let regex = try! NSRegularExpression(
+    pattern: #"<@(\d+)>|:([a-zA-Z0-9_+-]+):"#
+  )
+  
   let matches = regex.matches(
     in: text,
-    range: NSRange(text.startIndex..., in: text)
+    range: NSRange(location: 0, length: result.length)
   )
   
   for match in matches.reversed() {
-    guard
-      let idRange = Range(match.range(at: 1), in: result),
-      let fullRange = Range(match.range(at: 0), in: result)
-    else { continue }
+    let fullRange = match.range(at: 0)
     
-    let id = result[idRange]
-    let username = users.first(where: { $0.id == Int(id) })?.username ?? "Unknown"
+    if match.range(at: 1).location != NSNotFound {
+      let idString = result.substring(with: match.range(at: 1))
+      let idInt = Int(idString)
+      
+      let username = users.first(where: { $0.id == idInt })?.username ?? "Unknown"
+      
+      let replacement = "[@\(username)](mention://\(idString))"
+      result = result.replacingCharacters(in: fullRange, with: replacement) as NSString
+      continue
+    }
     
-    result.replaceSubrange(
-      fullRange,
-      with: "[@\(username)](mention://\(id))"
-    )
+    if match.range(at: 2).location != NSNotFound {
+      let name = result.substring(with: match.range(at: 2))
+      
+      if let emoji = EmojiMapper.shared.map[name] {
+        result = result.replacingCharacters(in: fullRange, with: emoji) as NSString
+      }
+    }
   }
   
-  return result
+  return result as String
 }
 
 struct ChatView: View {
@@ -284,7 +295,7 @@ struct ChatView: View {
           HStack {
             Image(systemName: "arrow.turn.up.right").frame(width: 16, height: 16)
             Text(replyingMessage?.user?.username ?? "User has been deleted")
-            Text(renderMentions(replyingMessage?.content ?? "Message has been deleted", users: store.coreUsers ?? []))
+            Text(renderRichText(replyingMessage?.content ?? "Message has been deleted", users: store.coreUsers ?? []))
               .lineLimit(1)
               .onAppear {
                 if chatMessages.count != 0 {

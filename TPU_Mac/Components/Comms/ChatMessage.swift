@@ -69,7 +69,7 @@ struct ChatMessageView: View {
   var body: some View {
     let dontMerge = merge(message: message, previousMessage: previousMessage)
     if dontMerge {
-      Spacer(minLength: 16)
+      Spacer(minLength: 8)
     }
     if unread {
       HStack {
@@ -86,7 +86,7 @@ struct ChatMessageView: View {
           Image(systemName: "arrow.turn.up.right").frame(width: 16, height: 16)
           ProfilePicture(avatar: message.reply?.user?.avatar, size: 16)
           Text(message.reply?.user?.username ?? "User has been deleted")
-          Text(renderMentions(message.reply?.content ?? "Message has been deleted", users: store.coreUsers ?? []).replacingOccurrences(of: "\n", with: "")).lineLimit(1)
+          Text(renderRichText(message.reply?.content ?? "Message has been deleted", users: store.coreUsers ?? []).replacingOccurrences(of: "\n", with: "")).lineLimit(1)
         }.padding(EdgeInsets(top: 0, leading: 18, bottom: 0, trailing: 0))
       }.buttonStyle(.plain)
     }
@@ -108,7 +108,7 @@ struct ChatMessageView: View {
                   alignment: .topLeading)
         }
         if editingId != message.id {
-          Markdown(renderMentions(message.content ?? "", users: store.coreUsers ?? []))
+          Markdown(renderRichText(message.content ?? "", users: store.coreUsers ?? []))
             .markdownSoftBreakMode(.lineBreak)
             .textSelection(.enabled)
             .markdownBlockStyle(\.blockquote) { configuration in
@@ -225,7 +225,7 @@ struct ChatMessageView: View {
         }
       }.frame(width: 104, height: 20)
 #endif
-    }.padding(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4)).id(message.id)
+    }.padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4)).id(message.id)
       .contentShape(Rectangle())
       .contextMenu {
         if store.coreUser?.id == message.userId {
