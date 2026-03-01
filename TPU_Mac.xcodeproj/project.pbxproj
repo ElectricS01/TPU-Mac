@@ -30,6 +30,7 @@
 		C4B507C32F517495004EE562 /* emoji.json in Resources */ = {isa = PBXBuildFile; fileRef = C4B507C22F51748B004EE562 /* emoji.json */; };
 		C4B507CB2F51788C004EE562 /* EmojiMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B507CA2F517885004EE562 /* EmojiMapper.swift */; };
 		C4B507CD2F517A54004EE562 /* ProfilePicture.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B507CC2F517A54004EE562 /* ProfilePicture.swift */; };
+		C4CB94AF2F544B060050C4B7 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CB94AE2F544B060050C4B7 /* AboutView.swift */; };
 		C4D7E5062AF4D4FC008308CA /* CommsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D7E5052AF4D4FC008308CA /* CommsView.swift */; };
 		C4DC9A022C9FD5E000C80E8C /* CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4DC9A012C9FD5E000C80E8C /* CollectionView.swift */; };
 		C4DD4D492C4892AE00DF1A22 /* ApolloSQLite in Frameworks */ = {isa = PBXBuildFile; productRef = C4DD4D482C4892AE00DF1A22 /* ApolloSQLite */; };
@@ -78,6 +79,7 @@
 		C4B507C22F51748B004EE562 /* emoji.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = emoji.json; sourceTree = "<group>"; };
 		C4B507CA2F517885004EE562 /* EmojiMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiMapper.swift; sourceTree = "<group>"; };
 		C4B507CC2F517A54004EE562 /* ProfilePicture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePicture.swift; sourceTree = "<group>"; };
+		C4CB94AE2F544B060050C4B7 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		C4D7E5052AF4D4FC008308CA /* CommsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommsView.swift; sourceTree = "<group>"; };
 		C4DC9A012C9FD5E000C80E8C /* CollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionView.swift; sourceTree = "<group>"; };
 		C4FD79E22CABE2ED00A6FDEB /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
@@ -125,6 +127,7 @@
 				C45C3D9A2B68DCB300D5AB4D /* GalleryView.swift */,
 				C47E19742BEE04D1004B14C4 /* CollectionsView.swift */,
 				C4D7E5052AF4D4FC008308CA /* CommsView.swift */,
+				C4CB94AE2F544B060050C4B7 /* AboutView.swift */,
 			);
 			path = Pages;
 			sourceTree = "<group>";
@@ -378,6 +381,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C4CB94AF2F544B060050C4B7 /* AboutView.swift in Sources */,
 				C4DC9A022C9FD5E000C80E8C /* CollectionView.swift in Sources */,
 				C461D9D22F46617F00E566DE /* ChatMessage.swift in Sources */,
 				C4569DF72AD1828300F17C06 /* Network.swift in Sources */,
@@ -588,7 +592,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.3.24;
+				MARKETING_VERSION = 0.3.25;
 				PRODUCT_BUNDLE_IDENTIFIER = "ElectricS01.TPU-Mac";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -638,7 +642,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.3.24;
+				MARKETING_VERSION = 0.3.25;
 				PRODUCT_BUNDLE_IDENTIFIER = "ElectricS01.TPU-Mac";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

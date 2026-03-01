@@ -59,11 +59,34 @@ struct ChatMessageView: View {
   }
 
   func merge(message: MessagesQuery.Data.Message, previousMessage: MessagesQuery.Data.Message?) -> Bool {
-    print(message.content)
     if message.userId == previousMessage?.userId && message.replyId == nil {
       return false
     }
     return true
+  }
+
+  func pinAttributedText(_ message: MessagesQuery.Data.Message) -> AttributedString {
+    var result = AttributedString(message.user?.username ?? "User has been deleted")
+    result.link = URL(string: "user://\(message.user?.id ?? 0)")
+
+    var pinned = AttributedString(" pinned ")
+    pinned.foregroundColor = .secondary
+    result += pinned
+
+    var linkPart = AttributedString("a message")
+    linkPart.link = URL(string: "message://\(message.replyId ?? 0)")
+    result += linkPart
+
+    var suffix = AttributedString(" to this chat. ")
+    suffix.foregroundColor = .secondary
+    result += suffix
+
+    var date = AttributedString(DateUtils.dateFormat(message.createdAt))
+    date.foregroundColor = .secondary
+    date.font = .caption
+    result += date
+
+    return result
   }
 
   var body: some View {
@@ -78,157 +101,176 @@ struct ChatMessageView: View {
         VStack { Divider().background(.red) }
       }
     }
-    if message.reply != nil {
-      Button(action: {
-        scrollProxy.scrollTo(message.replyId)
-      }) {
-        HStack {
-          Image(systemName: "arrow.turn.up.right").frame(width: 16, height: 16)
-          ProfilePicture(avatar: message.reply?.user?.avatar, size: 16)
-          Text(message.reply?.user?.username ?? "User has been deleted")
-          Text(renderRichText(message.reply?.content ?? "Message has been deleted", users: store.coreUsers ?? []).replacingOccurrences(of: "\n", with: "")).lineLimit(1)
-        }.padding(EdgeInsets(top: 0, leading: 18, bottom: 0, trailing: 0))
-      }.buttonStyle(.plain)
-    }
-    HStack(alignment: .top, spacing: 6) {
-      if dontMerge {
-        ProfilePicture(avatar: message.user?.avatar)
-      } else {
-        Spacer().frame(width: 32)
-      }
-      VStack {
-        if dontMerge {
+    VStack {
+      if message.type == .message && message.reply != nil {
+        Button(action: {
+          scrollProxy.scrollTo(message.replyId)
+        }) {
           HStack {
-            Text(message.user?.username ?? "User has been deleted")
-            Text(DateUtils.dateFormat(message.createdAt)).foregroundColor(.secondary)
-          }.frame(minWidth: 0,
-                  maxWidth: .infinity,
-                  minHeight: 0,
-                  maxHeight: 10,
-                  alignment: .topLeading)
-        }
-        if editingId != message.id {
-          Markdown(renderRichText(message.content ?? "", users: store.coreUsers ?? []))
-            .markdownSoftBreakMode(.lineBreak)
-            .textSelection(.enabled)
-            .markdownBlockStyle(\.blockquote) { configuration in
-              configuration.label
-                .padding(EdgeInsets(top: 2, leading: 8, bottom: 2, trailing: 2))
-                .overlay(alignment: .leading) {
-                  Rectangle().frame(width: 2)
-                }
-            }
-            .frame(minWidth: 0,
-                   maxWidth: .infinity,
-                   alignment: .leading)
-            .environment(\.openURL, OpenURLAction { url in
-              if url.scheme == "mention" {
-                let id = url.host ?? ""
-                print("Clicked:", id)
-                return .handled
-              }
-
-              return .systemAction
-            })
-
-        } else {
-          TextField("Keep it civil!", text: $editingMessage)
-            .focused($focusedField, equals: .editing)
-#if !os(iOS)
-            .onExitCommand(perform: {
-              editingId = -1
-              focusedField = .sending
-            })
-#endif
-            .onSubmit {
-              editMessage()
-            }
-            .textFieldStyle(RoundedBorderTextFieldStyle())
-        }
-        ForEach(message.embeds, id: \.self) { embed in
-          VStack {
-            VStack {
-              if let text = embed.text, embed.text != [] {
-                ForEach(Array(text.enumerated()), id: \.element) { index, line in
-                  if index == 0 {
-                    Text(line.text).font(.title2).lineLimit(1)
-                  } else {
-                    Text(line.text)
-                  }
-                }
-              }
-              if let media = embed.media, embed.media != [] {
-                ForEach(media, id: \.self) { img in
-                  if img.mimeType != "image/gif" {
-                    LazyImage(url: URL(string: img.attachment == nil ? ("https://i.electrics01.com" + (img.proxyUrl ?? "")) : ("https://i.electrics01.com/i/" + (img.attachment ?? "")))) { state in
-                      if let image = state.image {
-                        image.resizable().aspectRatio(contentMode: .fit)
-                        //                                .onAppear {
-                        ////                                  if chatMessages.count != 0 {
-                        ////                                    proxy.scrollTo(0, anchor: .bottom)
-                        ////                                  }
-                        //                                }
-                      } else if state.error != nil {
-                        Color.red
-                      } else {
-                        ProgressView()
-                      }
-                    }
-                  } else {
-                    HStack {
-                      WebImage(url: URL(string: img.attachment == nil ? ("https://i.electrics01.com" + (img.proxyUrl ?? "")) : ("https://i.electrics01.com/i/" + (img.attachment ?? "")))) { image in
-                        image.resizable().aspectRatio(contentMode: .fit)
-                      } placeholder: {
-                        ProgressView()
-                      }
-                    }
-                  }
-                }.frame(minWidth: 0, maxWidth: 600, minHeight: 0, maxHeight: 400).clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-              }
-            }.padding(embed.text ?? [] != [] ? 8 : 0)
-          }.frame(minWidth: 0, maxWidth: 600).background().clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-        }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
+            Image(systemName: "arrow.turn.up.right").frame(width: 16, height: 16)
+            ProfilePicture(avatar: message.reply?.user?.avatar, size: 16)
+            Text(message.reply?.user?.username ?? "User has been deleted")
+            Markdown(renderRichText(message.reply?.content ?? "Message has been deleted", users: store.coreUsers ?? []).replacingOccurrences(of: "\n", with: "")).lineLimit(1)
+          }.padding(EdgeInsets(top: 0, leading: 14, bottom: 0, trailing: 0))
+        }.frame(maxWidth: .infinity, alignment: .leading).buttonStyle(.plain)
       }
-#if os(macOS)
-      HStack {
-        if hovered {
-          Spacer()
-          Button(action: {
-            onReplyClick(message.id)
-          }) {
-            Image(systemName: "arrowshape.turn.up.left.fill").frame(width: 16, height: 16)
-          }.buttonStyle(.borderless).frame(width: 20, height: 20)
-          Button(action: {
-            deleteMessage(messageId: message.id)
-          }) {
-            Image(systemName: "trash.fill").frame(width: 16, height: 16)
-          }.buttonStyle(.borderless).frame(width: 20, height: 20)
-          Button(action: {
-            pinMessage(messageId: message.id, pinned: message.pinned)
-          }) {
-            Image(systemName: message.pinned ? "pin.slash.fill" : "pin.fill").frame(width: 16, height: 16)
-          }.buttonStyle(.borderless).frame(width: 20, height: 20)
-          if store.coreUser?.id == message.userId {
-            Button(action: {
-              if editingId != message.id {
-                editingId = message.id
-                editingMessage = message.content ?? ""
-                focusedField = .editing
-              } else {
-                editingId = -1
-                focusedField = .sending
-              }
-            }) {
-              Image(systemName: "pencil").frame(width: 16, height: 16)
-            }.buttonStyle(.borderless).frame(width: 20, height: 20)
+      HStack(alignment: .top, spacing: 6) {
+        if message.type == .pin {
+          HStack(alignment: .firstTextBaseline) {
+            Image(systemName: "pin.fill")
+              .frame(width: 32, height: 16)
+
+            Text(pinAttributedText(message))
+              .environment(\.openURL, OpenURLAction { url in
+                switch url.scheme {
+                case "user":
+                  print("User tapped:", url.host ?? "")
+                  return .handled
+
+                case "message":
+                  if let id = Int(url.host ?? "") {
+                    scrollProxy.scrollTo(id)
+                  }
+                  return .handled
+
+                default:
+                  return .systemAction
+                }
+              })
+          }.frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+        } else {
+          if dontMerge {
+            ProfilePicture(avatar: message.user?.avatar)
+          } else {
+            Spacer().frame(width: 32)
+          }
+          VStack {
+            if dontMerge {
+              HStack {
+                Text(message.user?.username ?? "User has been deleted")
+                Text(DateUtils.dateFormat(message.createdAt)).foregroundColor(.secondary).font(.caption)
+              }.frame(minWidth: 0,
+                      maxWidth: .infinity,
+                      minHeight: 0,
+                      maxHeight: 10,
+                      alignment: .topLeading)
+            }
+            if editingId != message.id {
+              Markdown(renderRichText(message.content ?? "", users: store.coreUsers ?? []))
+                .markdownSoftBreakMode(.lineBreak)
+                .textSelection(.enabled)
+                .markdownBlockStyle(\.blockquote) { configuration in
+                  configuration.label
+                    .padding(EdgeInsets(top: 2, leading: 8, bottom: 2, trailing: 2))
+                    .overlay(alignment: .leading) {
+                      Rectangle().frame(width: 2)
+                    }
+                }
+                .frame(minWidth: 0,
+                       maxWidth: .infinity,
+                       alignment: .leading)
+            } else {
+              TextField("Keep it civil!", text: $editingMessage)
+                .focused($focusedField, equals: .editing)
+#if !os(iOS)
+                .onExitCommand(perform: {
+                  editingId = -1
+                  focusedField = .sending
+                })
+#endif
+                .onSubmit {
+                  editMessage()
+                }
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+            }
+            ForEach(message.embeds, id: \.self) { embed in
+              VStack {
+                VStack {
+                  if let text = embed.text, embed.text != [] {
+                    ForEach(Array(text.enumerated()), id: \.element) { index, line in
+                      if index == 0 {
+                        Text(line.text).font(.title2).lineLimit(1)
+                      } else {
+                        Text(line.text)
+                      }
+                    }
+                  }
+                  if let media = embed.media, embed.media != [] {
+                    ForEach(media, id: \.self) { img in
+                      if img.mimeType != "image/gif" {
+                        LazyImage(url: URL(string: img.attachment == nil ? ("https://i.electrics01.com" + (img.proxyUrl ?? "")) : ("https://i.electrics01.com/i/" + (img.attachment ?? "")))) { state in
+                          if let image = state.image {
+                            image.resizable().aspectRatio(contentMode: .fit)
+                            //                                .onAppear {
+                            ////                                  if chatMessages.count != 0 {
+                            ////                                    proxy.scrollTo(0, anchor: .bottom)
+                            ////                                  }
+                            //                                }
+                          } else if state.error != nil {
+                            Color.red
+                          } else {
+                            ProgressView()
+                          }
+                        }
+                      } else {
+                        HStack {
+                          WebImage(url: URL(string: img.attachment == nil ? ("https://i.electrics01.com" + (img.proxyUrl ?? "")) : ("https://i.electrics01.com/i/" + (img.attachment ?? "")))) { image in
+                            image.resizable().aspectRatio(contentMode: .fit)
+                          } placeholder: {
+                            ProgressView()
+                          }
+                        }
+                      }
+                    }.frame(minWidth: 0, maxWidth: 600, minHeight: 0, maxHeight: 400).clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                  }
+                }.padding(embed.text ?? [] != [] ? 8 : 0)
+              }.frame(minWidth: 0, maxWidth: 600).background().clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+            }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
           }
         }
-      }.frame(width: 104, height: 20)
+#if os(macOS)
+        HStack {
+          if hovered {
+            Spacer()
+            Button(action: {
+              onReplyClick(message.id)
+            }) {
+              Image(systemName: "arrowshape.turn.up.left.fill").frame(width: 16, height: 16)
+            }.buttonStyle(.borderless).frame(width: 20, height: 20)
+            if message.type == .message {
+              Button(action: {
+                deleteMessage(messageId: message.id)
+              }) {
+                Image(systemName: "trash.fill").frame(width: 16, height: 16)
+              }.buttonStyle(.borderless).frame(width: 20, height: 20)
+              Button(action: {
+                pinMessage(messageId: message.id, pinned: message.pinned)
+              }) {
+                Image(systemName: message.pinned ? "pin.slash.fill" : "pin.fill").frame(width: 16, height: 16)
+              }.buttonStyle(.borderless).frame(width: 20, height: 20)
+              if store.coreUser?.id == message.userId {
+                Button(action: {
+                  if editingId != message.id {
+                    editingId = message.id
+                    editingMessage = message.content ?? ""
+                    focusedField = .editing
+                  } else {
+                    editingId = -1
+                    focusedField = .sending
+                  }
+                }) {
+                  Image(systemName: "pencil").frame(width: 16, height: 16)
+                }.buttonStyle(.borderless).frame(width: 20, height: 20)
+              }
+            }
+          }
+        }.frame(width: 104, height: 20)
 #endif
+      }
     }.padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4)).id(message.id)
       .contentShape(Rectangle())
       .contextMenu {
-        if store.coreUser?.id == message.userId {
+        if message.type == .message && store.coreUser?.id == message.userId {
           Button {
             if editingId != message.id {
               editingId = message.id
@@ -252,16 +294,18 @@ struct ChatMessageView: View {
         } label: {
           Label("Copy Text", systemImage: "document.on.document")
         }
-        Button {
-          pinMessage(messageId: message.id, pinned: message.pinned)
-        } label: {
-          Label("Pin message", systemImage: message.pinned ? "pin.slash.fill" : "pin.fill")
-        }
-        Divider()
-        Button {
-          deleteMessage(messageId: message.id)
-        } label: {
-          Label("Delete Message", systemImage: "trash.fill").tint(.red)
+        if message.type == .message {
+          Button {
+            pinMessage(messageId: message.id, pinned: message.pinned)
+          } label: {
+            Label("Pin message", systemImage: message.pinned ? "pin.slash.fill" : "pin.fill")
+          }
+          Divider()
+          Button {
+            deleteMessage(messageId: message.id)
+          } label: {
+            Label("Delete Message", systemImage: "trash.fill").tint(.red)
+          }
         }
         Divider()
         Button {

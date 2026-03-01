@@ -6,6 +6,7 @@
 //
 
 import Apollo
+import MarkdownUI
 import PrivateUploaderAPI
 import SwiftUI
 
@@ -295,7 +296,7 @@ struct ChatView: View {
           HStack {
             Image(systemName: "arrow.turn.up.right").frame(width: 16, height: 16)
             Text(replyingMessage?.user?.username ?? "User has been deleted")
-            Text(renderRichText(replyingMessage?.content ?? "Message has been deleted", users: store.coreUsers ?? []))
+            Markdown(renderRichText(replyingMessage?.content ?? "Message has been deleted", users: store.coreUsers ?? []))
               .lineLimit(1)
               .onAppear {
                 if chatMessages.count != 0 {
@@ -328,32 +329,41 @@ struct ChatView: View {
         #endif
       }
       .navigationTitle(currentChat?.recipient?.username ?? currentChat?.name ?? "Chat name error")
+      .environment(\.openURL, OpenURLAction { url in
+        if url.scheme == "mention" {
+          let id = url.host ?? ""
+          print("User tapped:", id)
+          return .handled
+        }
+        
+        return .systemAction
+      })
       #if os(iOS)
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar(content: {
-          ToolbarItem(placement: .principal) {
-            Text(currentChat?.recipient?.username ?? currentChat?.name ?? "Chat name error")
-              .bold()
-              .onTapGesture {
-                showingSheet.toggle()
-              }
-              .sheet(isPresented: $showingSheet) {
-                List {
-                  Section("Online") {
-                    ForEach(chatUsers.filter { $0.status.value != .offline }, id: \.id) { user in
-                      UserRow(user: user)
-                    }
+      .navigationBarTitleDisplayMode(.inline)
+      .toolbar(content: {
+        ToolbarItem(placement: .principal) {
+          Text(currentChat?.recipient?.username ?? currentChat?.name ?? "Chat name error")
+            .bold()
+            .onTapGesture {
+              showingSheet.toggle()
+            }
+            .sheet(isPresented: $showingSheet) {
+              List {
+                Section("Online") {
+                  ForEach(chatUsers.filter { $0.status.value != .offline }, id: \.id) { user in
+                    UserRow(user: user)
                   }
+                }
                   
-                  Section("Offline") {
-                    ForEach(chatUsers.filter { $0.status.value == .offline }, id: \.id) { user in
-                      UserRow(user: user, isOffline: true)
-                    }
+                Section("Offline") {
+                  ForEach(chatUsers.filter { $0.status.value == .offline }, id: \.id) { user in
+                    UserRow(user: user, isOffline: true)
                   }
                 }
               }
-          }
-        })
+            }
+        }
+      })
       #endif
     }
     .navigationTitle("Comms")
