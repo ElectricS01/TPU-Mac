@@ -59,7 +59,7 @@ struct ChatMessageView: View {
   }
 
   func merge(message: MessagesQuery.Data.Message, previousMessage: MessagesQuery.Data.Message?) -> Bool {
-    if message.userId == previousMessage?.userId && message.replyId == nil {
+    if message.userId == previousMessage?.userId && message.replyId == nil && previousMessage?.type == .message {
       return false
     }
     return true
@@ -80,6 +80,22 @@ struct ChatMessageView: View {
     var suffix = AttributedString(" to this chat. ")
     suffix.foregroundColor = .secondary
     result += suffix
+
+    var date = AttributedString(DateUtils.dateFormat(message.createdAt))
+    date.foregroundColor = .secondary
+    date.font = .caption
+    result += date
+
+    return result
+  }
+
+  func joinAttributedText(_ message: MessagesQuery.Data.Message) -> AttributedString {
+    var result = AttributedString(message.user?.username ?? "User has been deleted")
+    result.link = URL(string: "user://\(message.user?.id ?? 0)")
+
+    var pinned = AttributedString(" joined the chat. ")
+    pinned.foregroundColor = .secondary
+    result += pinned
 
     var date = AttributedString(DateUtils.dateFormat(message.createdAt))
     date.foregroundColor = .secondary
@@ -117,26 +133,15 @@ struct ChatMessageView: View {
       HStack(alignment: .top, spacing: 6) {
         if message.type == .pin {
           HStack(alignment: .firstTextBaseline) {
-            Image(systemName: "pin.fill")
-              .frame(width: 32, height: 16)
+            Image(systemName: "pin.fill").frame(width: 32, height: 16)
 
             Text(pinAttributedText(message))
-              .environment(\.openURL, OpenURLAction { url in
-                switch url.scheme {
-                case "user":
-                  print("User tapped:", url.host ?? "")
-                  return .handled
+          }.frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+        } else if message.type == .join {
+          HStack(alignment: .firstTextBaseline) {
+            Image(systemName: "arrow.right").frame(width: 32, height: 16)
 
-                case "message":
-                  if let id = Int(url.host ?? "") {
-                    scrollProxy.scrollTo(id)
-                  }
-                  return .handled
-
-                default:
-                  return .systemAction
-                }
-              })
+            Text(joinAttributedText(message))
           }.frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
         } else {
           if dontMerge {
@@ -238,11 +243,13 @@ struct ChatMessageView: View {
               Image(systemName: "arrowshape.turn.up.left.fill").frame(width: 16, height: 16)
             }.buttonStyle(.borderless).frame(width: 20, height: 20)
             if message.type == .message {
-              Button(action: {
-                deleteMessage(messageId: message.id)
-              }) {
-                Image(systemName: "trash.fill").frame(width: 16, height: 16)
-              }.buttonStyle(.borderless).frame(width: 20, height: 20)
+              if store.coreUser?.id == message.userId {
+                Button(action: {
+                  deleteMessage(messageId: message.id)
+                }) {
+                  Image(systemName: "trash.fill").frame(width: 16, height: 16)
+                }.buttonStyle(.borderless).frame(width: 20, height: 20)
+              }
               Button(action: {
                 pinMessage(messageId: message.id, pinned: message.pinned)
               }) {
@@ -318,5 +325,21 @@ struct ChatMessageView: View {
       .onHover { hover in
         hovered = hover
       }
+      .environment(\.openURL, OpenURLAction { url in
+        switch url.scheme {
+        case "user":
+          print("User tapped:", url.host ?? "")
+          return .handled
+
+        case "message":
+          if let id = Int(url.host ?? "") {
+            scrollProxy.scrollTo(id)
+          }
+          return .handled
+
+        default:
+          return .systemAction
+        }
+      })
   }
 }

@@ -263,16 +263,31 @@ struct ChatView: View {
     inputMessage = ""
   }
   
+  func previousMessage(for message: MessagesQuery.Data.Message)
+    -> MessagesQuery.Data.Message?
+  {
+    guard let index = chatMessages.firstIndex(where: { $0.id == message.id }),
+          index > 0 else { return nil }
+    return chatMessages[index - 1]
+  }
+  
   var body: some View {
     VStack {
       ScrollViewReader { proxy in
         ScrollView {
           LazyVStack(alignment: .leading, spacing: 0) {
-            ForEach(chatMessages.indices, id: \.self) { index in
-              let message = chatMessages[index]
-              let previous = index > 0 ? chatMessages[index - 1] : nil
-              
-              ChatMessageView(message: message, previousMessage: previous, chatOpen: chatOpen, scrollProxy: proxy, focusedField: $focusedField, unread: message.id == unreadId, onReplyClick: handleReplyClick, editingId: $editingId, onInputClear: handleInputClear)
+            ForEach(chatMessages, id: \.id) { message in
+              ChatMessageView(
+                message: message,
+                previousMessage: previousMessage(for: message),
+                chatOpen: chatOpen,
+                scrollProxy: proxy,
+                focusedField: $focusedField,
+                unread: message.id == unreadId,
+                onReplyClick: handleReplyClick,
+                editingId: $editingId,
+                onInputClear: handleInputClear
+              )
             }.padding(EdgeInsets(top: 0, leading: 8, bottom: 0, trailing: 12))
           }
           .id(0)
@@ -313,7 +328,7 @@ struct ChatView: View {
           .onSubmit {
             sendMessage()
           }
-          .padding(EdgeInsets(top: 0, leading: 0, bottom: 10, trailing: 0))
+          .padding(EdgeInsets(top: 0, leading: 10, bottom: 10, trailing: 10))
           .textFieldStyle(RoundedBorderTextFieldStyle())
           .gesture(
             DragGesture(minimumDistance: 20, coordinateSpace: .local)

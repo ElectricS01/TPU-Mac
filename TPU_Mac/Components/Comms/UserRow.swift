@@ -46,6 +46,7 @@ struct UserRow: View {
       .contentShape(Rectangle())
     }
     .buttonStyle(.plain)
+    .listRowSeparator(.hidden)
     .contextMenu {
       Button {
         print(user.username)

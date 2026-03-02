@@ -26,8 +26,9 @@ struct CommsView: View {
   @State private var replyingId: Int = -1
   @State private var inputMessage: String = ""
   @State private var editingMessage: String = ""
-  @State var apolloSubscription: Apollo.Cancellable?
+  @State private var apolloSubscription: Apollo.Cancellable?
   @State private var notifications: Int = 0
+  @State private var showUsers: Bool = true
   
   private var chatUsers: [StateQuery.Data.TrackedUser] {
     guard let association = chatsList.first(where: { $0.association?.id == chatOpen }),
@@ -145,20 +146,26 @@ struct CommsView: View {
         .padding(EdgeInsets(top: -8, leading: -10, bottom: -8, trailing: 0))
         if chatOpen != -1 {
           ChatView(chatsList: $chatsList, chatOpen: $chatOpen)
-          List {
-            Section("Online") {
-              ForEach(chatUsers.filter { $0.status.value != .offline }, id: \.id) { user in
-                UserRow(user: user)
-              }
+            .inspector(isPresented: $showUsers) {
+              List {
+                Section("Online") {
+                  ForEach(chatUsers.filter { $0.status.value != .offline }, id: \.id) { user in
+                    UserRow(user: user)
+                  }
+                }
+                
+                Section("Offline") {
+                  ForEach(chatUsers.filter { $0.status.value == .offline }, id: \.id) { user in
+                    UserRow(user: user, isOffline: true)
+                  }
+                }
+              }.scrollContentBackground(.hidden).inspectorColumnWidth(min: 160, ideal: 160, max: 220)
             }
-            
-            Section("Offline") {
-              ForEach(chatUsers.filter { $0.status.value == .offline }, id: \.id) { user in
-                UserRow(user: user, isOffline: true)
-              }
+            .toolbar {
+              Toggle(isOn: $showUsers) {
+                Label("Users", systemImage: "person.2.fill")
+              }.help("Users list")
             }
-          }.frame(width: 150)
-            .padding(EdgeInsets(top: -8, leading: -10, bottom: -8, trailing: 0))
         } else {
           VStack {
             Spacer()
