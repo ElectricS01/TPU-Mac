@@ -14,6 +14,7 @@ enum FocusedField {
   case editing, sending
 }
 
+@MainActor
 func renderRichText(
   _ text: String,
   users: [StateQuery.Data.TrackedUser]

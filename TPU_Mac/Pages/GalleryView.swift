@@ -11,6 +11,68 @@ import NukeUI
 import PrivateUploaderAPI
 import SwiftUI
 
+func uniqueFileURL(for url: URL) -> URL {
+  let fm = FileManager.default
+  
+  if !fm.fileExists(atPath: url.path) {
+    return url
+  }
+  
+  let dir = url.deletingLastPathComponent()
+  let ext = url.pathExtension
+  let name = url.deletingPathExtension().lastPathComponent
+  
+  for i in 1...99 {
+    let candidate = dir
+      .appendingPathComponent("\(name) (\(i))")
+      .appendingPathExtension(ext)
+    
+    if !fm.fileExists(atPath: candidate.path) {
+      return candidate
+    }
+  }
+  
+  return dir
+    .appendingPathComponent("\(name) (\(Int(Date().timeIntervalSince1970 * 1_000)))")
+    .appendingPathExtension(ext)
+}
+
+func downloadFile(_ attachment: String) async {
+  guard let url = URL(string: "https://i.electrics01.com/i/\(attachment)") else {
+    print("Invalid URL")
+    return
+  }
+  
+  do {
+    let (location, _) = try await URLSession.shared.download(from: url)
+    
+    guard let downloadsDirectory = FileManager.default.urls(
+      for: .downloadsDirectory,
+      in: .userDomainMask
+    ).first else {
+      print("Could not access Downloads directory")
+      return
+    }
+    
+    let destination = uniqueFileURL(
+      for: downloadsDirectory.appendingPathComponent(attachment)
+    )
+    
+    try FileManager.default.moveItem(at: location, to: destination)
+    
+    print("File downloaded to \(destination)")
+  } catch {
+    print("Download failed:", error.localizedDescription)
+  }
+}
+
+func formatFileSize(_ size: Double) -> String {
+  let byteCountFormatter = ByteCountFormatter()
+  byteCountFormatter.allowedUnits = [.useKB, .useMB, .useGB]
+  byteCountFormatter.countStyle = .file
+  return byteCountFormatter.string(fromByteCount: Int64(size))
+}
+
 struct GalleryView: View {
   @Binding var stars: Bool
   @Binding var collectionId: Int?
@@ -79,13 +141,6 @@ struct GalleryView: View {
     }
   }
 
-  func formatFileSize(_ size: Double) -> String {
-    let byteCountFormatter = ByteCountFormatter()
-    byteCountFormatter.allowedUnits = [.useKB, .useMB, .useGB]
-    byteCountFormatter.countStyle = .file
-    return byteCountFormatter.string(fromByteCount: Int64(size))
-  }
-
   var body: some View {
     NavigationStack {
       ScrollViewReader { proxy in
@@ -150,23 +205,9 @@ struct GalleryView: View {
                     openURL(URL(string: "https://i.electrics01.com/i/" + galleryItem.attachment)!)
                   }
                   Button("Download") {
-                    let downloadTask = URLSession.shared.downloadTask(with: URL(string: "https://i.electrics01.com/i/" + galleryItem.attachment)!) { location, _, error in
-                      guard let location = location else {
-                        if let error = error {
-                          print("Download failed with error: \(error.localizedDescription)")
-                        }
-                        return
-                      }
-                      do {
-                        let documentsDirectory = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first!
-                        let destinationURL = documentsDirectory.appendingPathComponent(galleryItem.attachment)
-                        try FileManager.default.moveItem(at: location, to: destinationURL)
-                        print("File downloaded successfully and moved to \(destinationURL)")
-                      } catch {
-                        print("Error moving file: \(error.localizedDescription)")
-                      }
+                    Task {
+                      await downloadFile(galleryItem.attachment)
                     }
-                    downloadTask.resume()
                   }
                   Button("Delete") {
                     Network.shared.apollo.perform(mutation: DeleteUploadsMutation(input: DeleteUploadInput(items: [galleryItem.id]))) { result in

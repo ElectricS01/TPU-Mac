@@ -189,7 +189,7 @@ struct ChatMessageView: View {
                 .textFieldStyle(RoundedBorderTextFieldStyle())
             }
             ForEach(message.embeds, id: \.self) { embed in
-              VStack {
+              HStack(alignment: .top) {
                 VStack {
                   if let text = embed.text, embed.text != [] {
                     ForEach(Array(text.enumerated()), id: \.element) { index, line in
@@ -202,34 +202,81 @@ struct ChatMessageView: View {
                   }
                   if let media = embed.media, embed.media != [] {
                     ForEach(media, id: \.self) { img in
-                      if img.mimeType != "image/gif" {
+                      if let upload = img.upload, img.type == .file {
+                        VStack(alignment: .leading) {
+                          HStack {
+                            Image(systemName: "doc")
+                            Text(upload.name ?? "File has been deleted.").font(.title2)
+                          }
+                          HStack {
+                            Text(formatFileSize(upload.fileSize)).foregroundColor(.secondary)
+                            Spacer().frame(maxWidth: 100)
+                            Button("Download") {
+                              Task {
+                                await downloadFile(img.attachment ?? "")
+                              }
+                            }
+                          }
+                        }.padding()
+                      } else if img.mimeType != "image/gif" {
+                        let widthScale = 600 / CGFloat(img.width ?? 600)
+                        let heightScale = 400 / CGFloat(img.height ?? 400)
+                        let scale = min(widthScale, heightScale, 1)
+
+                        let finalWidth = CGFloat(img.width ?? 600) * scale
+                        let finalHeight = CGFloat(img.height ?? 400) * scale
+
                         LazyImage(url: URL(string: img.attachment == nil ? ("https://i.electrics01.com" + (img.proxyUrl ?? "")) : ("https://i.electrics01.com/i/" + (img.attachment ?? "")))) { state in
                           if let image = state.image {
-                            image.resizable().aspectRatio(contentMode: .fit)
-                            //                                .onAppear {
-                            ////                                  if chatMessages.count != 0 {
-                            ////                                    proxy.scrollTo(0, anchor: .bottom)
-                            ////                                  }
-                            //                                }
+                            image.resizable()
+                              .scaledToFit()
+                              .frame(maxWidth: finalWidth, maxHeight: finalHeight)
+                              .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                              .padding(4)
                           } else if state.error != nil {
-                            Color.red
+                            Color.red.frame(maxWidth: finalWidth, maxHeight: finalHeight)
+                              .aspectRatio(CGFloat(img.width ?? 600) / CGFloat(img.height ?? 400), contentMode: .fit)
+                              .padding(4)
                           } else {
-                            ProgressView()
+                            ZStack {
+                              RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                .fill(.secondary.opacity(0.1)).frame(maxWidth: finalWidth, maxHeight: finalHeight)
+                              ProgressView()
+                            }.frame(maxWidth: finalWidth, maxHeight: finalHeight)
+                              .aspectRatio(CGFloat(img.width ?? 600) / CGFloat(img.height ?? 400), contentMode: .fit)
+                              .padding(4)
                           }
                         }
                       } else {
                         HStack {
+                          let widthScale = 600 / CGFloat(img.width ?? 600)
+                          let heightScale = 400 / CGFloat(img.height ?? 400)
+                          let scale = min(widthScale, heightScale, 1)
+
+                          let finalWidth = CGFloat(img.width ?? 600) * scale
+                          let finalHeight = CGFloat(img.height ?? 400) * scale
+
                           WebImage(url: URL(string: img.attachment == nil ? ("https://i.electrics01.com" + (img.proxyUrl ?? "")) : ("https://i.electrics01.com/i/" + (img.attachment ?? "")))) { image in
-                            image.resizable().aspectRatio(contentMode: .fit)
+                            image.resizable()
+                              .scaledToFit()
+                              .frame(maxWidth: finalWidth, maxHeight: finalHeight)
+                              .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                              .padding(4)
                           } placeholder: {
-                            ProgressView()
+                            ZStack {
+                              RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                .fill(.secondary.opacity(0.1)).frame(maxWidth: finalWidth, maxHeight: finalHeight)
+                              ProgressView()
+                            }.frame(maxWidth: finalWidth, maxHeight: finalHeight)
+                              .aspectRatio(CGFloat(img.width ?? 600) / CGFloat(img.height ?? 400), contentMode: .fit)
+                              .padding(4)
                           }
                         }
                       }
-                    }.frame(minWidth: 0, maxWidth: 600, minHeight: 0, maxHeight: 400).clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                    }
                   }
                 }.padding(embed.text ?? [] != [] ? 8 : 0)
-              }.frame(minWidth: 0, maxWidth: 600).background().clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+              }.background().clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
             }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
           }
         }

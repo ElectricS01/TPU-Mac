@@ -58,30 +58,29 @@ struct CollectionsView: View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 316))], spacing: 10) {
           ForEach($collectionItems.wrappedValue, id: \.self) { collectionItem in
             NavigationLink(destination: CollectionView(collection: .constant(collectionItem))) {
-              HStack(alignment: .center) {
+              ZStack(alignment: .bottomLeading) {
                 LazyImage(url: URL(string: "https://i.electrics01.com/i/" + (collectionItem.banner ?? "a050d6f271c3.png"))) { state in
                   if let image = state.image {
-                    image.resizable().aspectRatio(contentMode: .fill).clipped()
+                    image.resizable().aspectRatio(contentMode: .fill)
                   } else if state.error != nil {
                     Color.red
                   } else {
                     ProgressView()
                   }
-                }.frame(minWidth: 300, maxWidth: .infinity, minHeight: 200, maxHeight: 200).overlay(alignment: .bottom) {
-                  VStack(alignment: .leading, spacing: 4) {
-                    Text(collectionItem.name).font(.title2).lineLimit(1)
-                    Text("Upload count: " + String(collectionItem.itemCount ?? 0))
-                    Text("Created at: " + DateUtils.dateFormat(collectionItem.createdAt))
-                    Text("Owner: " + (collectionItem.user?.username ?? "none"))
-                  }
-                  .padding()
+                }.frame(minWidth: 300, maxWidth: .infinity, minHeight: 200, maxHeight: 200)
+                  .clipped()
+
+                VStack(alignment: .leading, spacing: 4) {
+                  Text(collectionItem.name).font(.title2).lineLimit(1)
+                  Text("Upload count: " + String(collectionItem.itemCount ?? 0))
+                  Text("Created at: " + DateUtils.dateFormat(collectionItem.createdAt))
+                  Text("Owner: " + (collectionItem.user?.username ?? "none"))
+                }.padding()
                   .frame(maxWidth: .infinity, alignment: .leading)
-                  .background(Color.black.opacity(0.7)) // Dark background with opacity
-                }
+                  .background(Color.black.opacity(0.7))
               }
-              .frame(minWidth: 300, minHeight: 200)
-              .background()
               .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+              .contentShape(Rectangle())
             }.buttonStyle(.plain)
           }
         }

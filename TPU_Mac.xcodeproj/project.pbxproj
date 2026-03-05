@@ -24,6 +24,7 @@
 		C4569DF72AD1828300F17C06 /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4569DF62AD1828300F17C06 /* Network.swift */; };
 		C45C3D9B2B68DCB300D5AB4D /* GalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45C3D9A2B68DCB300D5AB4D /* GalleryView.swift */; };
 		C461D9D22F46617F00E566DE /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C461D9D12F46617F00E566DE /* ChatMessage.swift */; };
+		C47699562F59802E00A8F437 /* DateUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47699552F59802E00A8F437 /* DateUtils.swift */; };
 		C47E19752BEE04D1004B14C4 /* CollectionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C47E19742BEE04D1004B14C4 /* CollectionsView.swift */; };
 		C48C2E9E2AD0417B0000A362 /* Apollo in Frameworks */ = {isa = PBXBuildFile; productRef = C48C2E9D2AD0417B0000A362 /* Apollo */; };
 		C49FC7E52F4EEA6400987EEC /* UserRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C49FC7E42F4EEA6400987EEC /* UserRow.swift */; };
@@ -73,6 +74,7 @@
 		C4569DF62AD1828300F17C06 /* Network.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
 		C45C3D9A2B68DCB300D5AB4D /* GalleryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryView.swift; sourceTree = "<group>"; };
 		C461D9D12F46617F00E566DE /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
+		C47699552F59802E00A8F437 /* DateUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateUtils.swift; sourceTree = "<group>"; };
 		C47E19742BEE04D1004B14C4 /* CollectionsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionsView.swift; sourceTree = "<group>"; };
 		C48D5DB72AF4D2DB00067554 /* graphql */ = {isa = PBXFileReference; lastKnownFileType = folder; path = graphql; sourceTree = "<group>"; };
 		C49FC7E42F4EEA6400987EEC /* UserRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRow.swift; sourceTree = "<group>"; };
@@ -227,6 +229,7 @@
 		C4B507C62F517843004EE562 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				C47699552F59802E00A8F437 /* DateUtils.swift */,
 				C4B507CA2F517885004EE562 /* EmojiMapper.swift */,
 			);
 			path = Utilities;
@@ -394,6 +397,7 @@
 				C4FE71582AD3F47B003E4DC0 /* NetworkInterceptorProvider.swift in Sources */,
 				C4D7E5062AF4D4FC008308CA /* CommsView.swift in Sources */,
 				C4060AC42B8C10A600236E0E /* HomeView.swift in Sources */,
+				C47699562F59802E00A8F437 /* DateUtils.swift in Sources */,
 				C45099152ACFFA7F00FA9247 /* TPU_MacApp.swift in Sources */,
 				C44AE4152E93836300EB7230 /* SettingsView.swift in Sources */,
 				C45C3D9B2B68DCB300D5AB4D /* GalleryView.swift in Sources */,
@@ -592,14 +596,14 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.3.26;
+				MARKETING_VERSION = 0.3.27;
 				PRODUCT_BUNDLE_IDENTIFIER = "ElectricS01.TPU-Mac";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -642,14 +646,14 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.3.26;
+				MARKETING_VERSION = 0.3.27;
 				PRODUCT_BUNDLE_IDENTIFIER = "ElectricS01.TPU-Mac";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

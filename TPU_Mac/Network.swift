@@ -20,6 +20,7 @@ func temporarySQLite() -> SQLiteNormalizedCache? {
   return try? SQLiteNormalizedCache(fileURL: URL(fileURLWithPath: dbPath).appendingPathComponent("db.sqlite3"))
 }
 
+@MainActor
 class Network {
   static let shared = Network()
 

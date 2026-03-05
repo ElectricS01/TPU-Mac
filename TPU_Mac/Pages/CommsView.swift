@@ -41,7 +41,7 @@ struct CommsView: View {
   }
   
   func getChats() {
-    Network.shared.apollo.fetch(query: ChatsQuery(), cachePolicy: .fetchIgnoringCacheData) { result in
+    Network.shared.apollo.fetch(query: ChatsQuery()) { result in
       switch result {
       case .success(let graphQLResult):
         if let unwrapped = graphQLResult.data {

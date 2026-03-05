@@ -5,7 +5,7 @@
 
 public struct StandardEmbed: PrivateUploaderAPI.SelectionSet, Fragment {
   public static var fragmentDefinition: StaticString {
-    #"fragment StandardEmbed on EmbedDataV2 { __typename media { __typename url proxyUrl attachment isInternal videoEmbedUrl mimeType type } text { __typename imageProxyUrl text heading imageUrl } }"#
+    #"fragment StandardEmbed on EmbedDataV2 { __typename media { __typename url proxyUrl attachment width height isInternal upload { __typename name fileSize } videoEmbedUrl mimeType type } text { __typename imageProxyUrl text heading imageUrl } }"#
   }
 
   public let __data: DataDict
@@ -37,7 +37,10 @@ public struct StandardEmbed: PrivateUploaderAPI.SelectionSet, Fragment {
       .field("url", String?.self),
       .field("proxyUrl", String?.self),
       .field("attachment", String?.self),
+      .field("width", Int?.self),
+      .field("height", Int?.self),
       .field("isInternal", Bool.self),
+      .field("upload", Upload?.self),
       .field("videoEmbedUrl", String?.self),
       .field("mimeType", String?.self),
       .field("type", GraphQLEnum<PrivateUploaderAPI.EmbedMediaType>.self),
@@ -49,11 +52,35 @@ public struct StandardEmbed: PrivateUploaderAPI.SelectionSet, Fragment {
     public var url: String? { __data["url"] }
     public var proxyUrl: String? { __data["proxyUrl"] }
     public var attachment: String? { __data["attachment"] }
+    public var width: Int? { __data["width"] }
+    public var height: Int? { __data["height"] }
     public var isInternal: Bool { __data["isInternal"] }
+    public var upload: Upload? { __data["upload"] }
     /// Used for trusted video embed sources, such as YouTube.
     public var videoEmbedUrl: String? { __data["videoEmbedUrl"] }
     public var mimeType: String? { __data["mimeType"] }
     public var type: GraphQLEnum<PrivateUploaderAPI.EmbedMediaType> { __data["type"] }
+
+    /// Medium.Upload
+    ///
+    /// Parent Type: `Upload`
+    public struct Upload: PrivateUploaderAPI.SelectionSet {
+      public let __data: DataDict
+      public init(_dataDict: DataDict) { __data = _dataDict }
+
+      public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Upload }
+      public static var __selections: [ApolloAPI.Selection] { [
+        .field("__typename", String.self),
+        .field("name", String?.self),
+        .field("fileSize", Double.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        StandardEmbed.Medium.Upload.self
+      ] }
+
+      public var name: String? { __data["name"] }
+      public var fileSize: Double { __data["fileSize"] }
+    }
   }
 
   /// Text

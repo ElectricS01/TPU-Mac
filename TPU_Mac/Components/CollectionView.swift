@@ -25,7 +25,7 @@ struct CollectionView: View {
           } else {
             ProgressView()
           }
-        }.frame(minWidth: 300, maxWidth: .infinity, minHeight: 200, maxHeight: 200).overlay(alignment: .bottom) {
+        }.frame(minWidth: 300, maxWidth: .infinity, minHeight: 200, maxHeight: 200).clipped().overlay(alignment: .bottom) {
           VStack(alignment: .leading, spacing: 4) {
             Text(collection.name).font(.title2).lineLimit(1)
             Text("Upload count: " + String(collection.itemCount ?? 0))

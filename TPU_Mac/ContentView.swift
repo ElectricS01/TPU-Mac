@@ -6,36 +6,11 @@
 //
 
 import Apollo
-import KeychainSwift
+@preconcurrency import KeychainSwift
 import PrivateUploaderAPI
 import SwiftUI
 
 let keychain = KeychainSwift()
-
-enum DateUtils {
-  static let dateFormat: (String?) -> String = { date in
-    let formatter = DateFormatter()
-    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
-    if let date = formatter.date(from: date ?? "") {
-      formatter.dateFormat = "dd/MM/yyyy HH:mm:ss"
-      return formatter.string(from: date)
-    } else {
-      return "Invalid Date"
-    }
-  }
-
-  static let relativeFormat: (String?) -> String = { date in
-    let formatter = DateFormatter()
-    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
-    if let date = formatter.date(from: date ?? "") {
-      let formatter = RelativeDateTimeFormatter()
-      formatter.unitsStyle = .full
-      return formatter.localizedString(for: date, relativeTo: Date.now)
-    } else {
-      return "Invalid Date"
-    }
-  }
-}
 
 class Store: ObservableObject {
   @Published var coreState: StateQuery.Data.CoreState?
