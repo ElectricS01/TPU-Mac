@@ -14,11 +14,11 @@ struct UserRow: View {
   @EnvironmentObject var store: Store
 
   private var statusColor: Color {
-    if isOffline { return .gray }
+    if isOffline { return .gray.opacity(1) }
     switch user.status.value {
-    case .online: return .green
-    case .busy: return .red
-    default: return .yellow
+    case .online: return .green.opacity(1)
+    case .busy: return .red.opacity(1)
+    default: return .yellow.opacity(1)
     }
   }
 
@@ -32,10 +32,10 @@ struct UserRow: View {
             Circle()
               .fill(statusColor)
               .frame(width: 10, height: 10)
-              .overlay(
+              .overlay {
                 Circle()
-                  .stroke(.background, lineWidth: 2)
-              )
+                  .stroke(Color(NSColor.windowBackgroundColor), lineWidth: 2)
+              }
           }
 
         Text(user.username)

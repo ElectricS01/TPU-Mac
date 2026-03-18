@@ -11,6 +11,7 @@ import SwiftUI
 struct ProfilePicture: View {
   var avatar: String?
   var size: CGFloat = 32
+  var placeholder: String = "person.crop.circle"
 
   var body: some View {
     if let avatar = avatar, avatar.count < 21 {
@@ -26,7 +27,7 @@ struct ProfilePicture: View {
       .frame(width: size, height: size)
       .cornerRadius(size / 2)
     } else {
-      Image(systemName: "person.crop.circle").frame(width: size, height: size).font(.system(size: CGFloat(size)))
+      Image(systemName: placeholder).resizable().scaledToFit().frame(width: size, height: size)
     }
   }
 }

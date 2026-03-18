@@ -21,6 +21,7 @@ struct CollectionsView: View {
   @State private var showOwned: Bool = true
   @State private var showShared: Bool = true
   @State private var showingSheet: Bool = false
+  @State private var path = NavigationPath()
 
   func getCollections() {
     var filters: [String] = []
@@ -53,7 +54,7 @@ struct CollectionsView: View {
   }
 
   var body: some View {
-    NavigationStack {
+    NavigationStack(path: $path) {
       ScrollView {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 316))], spacing: 10) {
           ForEach($collectionItems.wrappedValue, id: \.self) { collectionItem in

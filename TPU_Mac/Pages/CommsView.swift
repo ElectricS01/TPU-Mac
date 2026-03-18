@@ -114,6 +114,15 @@ struct CommsView: View {
       }
     }
   }
+  
+  func getStatusColor(_ status: PrivateUploaderAPI.UserStatus) -> Color {
+    switch status {
+    case .offline: return .gray
+    case .online: return .green
+    case .busy: return .red
+    default: return .yellow
+    }
+  }
 
   var body: some View {
     #if os(macOS)
@@ -122,7 +131,19 @@ struct CommsView: View {
           ForEach(0 ..< chatsList.count, id: \.self) { result in
             Button(action: { chatOpen = chatsList[result].association?.id ?? -1 }) {
               HStack {
-                ProfilePicture(avatar: chatsList[result].recipient?.avatar ?? chatsList[result].icon)
+                let recipient = chatsList[result].recipient
+                ProfilePicture(avatar: chatsList[result].recipient?.avatar ?? chatsList[result].icon, placeholder: recipient != nil ? "person.crop.circle" : "person.3.fill")
+                  .overlay(alignment: .bottomTrailing) {
+                    if let recipient2 = recipient {
+                      Circle()
+                        .fill(getStatusColor(store.coreUsers?.first { $0.id == recipient2.id }?.status.value ?? .offline))
+                        .frame(width: 10, height: 10)
+                        .overlay(
+                          Circle()
+                            .stroke(.background, lineWidth: 2)
+                        )
+                    }
+                  }
                 Text(chatsList[result].recipient?.username ?? chatsList[result].name).lineLimit(1)
                 Spacer()
                 if chatsList[result].unread != 0 {

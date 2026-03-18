@@ -104,6 +104,22 @@ struct ChatMessageView: View {
 
     return result
   }
+  
+  func leaveAttributedText(_ message: MessagesQuery.Data.Message) -> AttributedString {
+    var result = AttributedString(message.user?.username ?? "User has been deleted")
+    result.link = URL(string: "user://\(message.user?.id ?? 0)")
+    
+    var pinned = AttributedString(" left the chat. ")
+    pinned.foregroundColor = .secondary
+    result += pinned
+    
+    var date = AttributedString(DateUtils.dateFormat(message.createdAt))
+    date.foregroundColor = .secondary
+    date.font = .caption
+    result += date
+    
+    return result
+  }
 
   var body: some View {
     let dontMerge = merge(message: message, previousMessage: previousMessage)
@@ -142,6 +158,12 @@ struct ChatMessageView: View {
             Image(systemName: "arrow.right").frame(width: 32, height: 16)
 
             Text(joinAttributedText(message))
+          }.frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+        } else if message.type == .leave {
+          HStack(alignment: .firstTextBaseline) {
+            Image(systemName: "arrow.left").frame(width: 32, height: 16)
+
+            Text(leaveAttributedText(message))
           }.frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
         } else {
           if dontMerge {
