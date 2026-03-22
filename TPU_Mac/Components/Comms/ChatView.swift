@@ -21,39 +21,39 @@ func renderRichText(
 ) -> String {
   print(text)
   var result = text as NSString
-  
+
   let regex = try! NSRegularExpression(
     pattern: #"<@(\d+)>|:([a-zA-Z0-9_+-]+):"#
   )
-  
+
   let matches = regex.matches(
     in: text,
     range: NSRange(location: 0, length: result.length)
   )
-  
+
   for match in matches.reversed() {
     let fullRange = match.range(at: 0)
-    
+
     if match.range(at: 1).location != NSNotFound {
       let idString = result.substring(with: match.range(at: 1))
       let idInt = Int(idString)
-      
+
       let username = users.first(where: { $0.id == idInt })?.username ?? "Unknown"
-      
+
       let replacement = "[@\(username)](mention://\(idString))"
       result = result.replacingCharacters(in: fullRange, with: replacement) as NSString
       continue
     }
-    
+
     if match.range(at: 2).location != NSNotFound {
       let name = result.substring(with: match.range(at: 2))
-      
+
       if let emoji = EmojiMapper.shared.map[name] {
         result = result.replacingCharacters(in: fullRange, with: emoji) as NSString
       }
     }
   }
-  
+
   return result as String
 }
 
@@ -69,41 +69,41 @@ struct ChatView: View {
   @State private var inputMessage: String = ""
   @State var apolloSubscription: Apollo.Cancellable?
   @State private var showingSheet: Bool = false
-  
+
   private var currentChat: ChatsQuery.Data.Chat? {
     chatsList.first { $0.association?.id == chatOpen }
   }
-  
+
   private var replyingMessage: MessagesQuery.Data.Message? {
     chatMessages.last { $0.id == replyingId }
   }
-  
+
   private var chatUsers: [StateQuery.Data.TrackedUser] {
     guard let currentUsers = currentChat?.users,
           let coreUsers = store.coreUsers
     else { return [] }
-    
+
     return currentUsers.compactMap { member in
       coreUsers.first { $0.id == member.user?.id }
     }
   }
-  
+
   func getMessages(chat: Int, completion: @escaping (Result<GraphQLResult<MessagesQuery.Data>, Error>) -> Void) {
     Network.shared.apollo.fetch(query: MessagesQuery(input: InfiniteMessagesInput(associationId: chat, position: GraphQLNullable(ScrollPosition.top), limit: 60)), cachePolicy: .fetchIgnoringCacheData) { result in
       switch result {
       case .success:
         completion(result)
-      case .failure(let error):
+      case let .failure(error):
         print("Failure! Error: \(error)")
         completion(result)
       }
     }
   }
-  
+
   func getChat(chatId: Int?) {
     getMessages(chat: chatId ?? 0) { result in
       switch result {
-      case .success(let graphQLResult):
+      case let .success(graphQLResult):
         if let unwrapped = graphQLResult.data {
           chatMessages = unwrapped.messages.reversed()
           chatOpen = chatId ?? -1
@@ -118,7 +118,7 @@ struct ChatView: View {
             }
           }
         }
-      case .failure(let error):
+      case let .failure(error):
         print(error)
       }
     }
@@ -132,15 +132,15 @@ struct ChatView: View {
       case .success:
         replyingId = -1
         inputMessage = ""
-      case .failure(let error):
+      case let .failure(error):
         print("Failure! Error: \(error)")
       }
     }
   }
-  
+
   func convertToMessage(subscriptionObject: UpdateMessagesSubscription.Data.OnMessage.Message) -> MessagesQuery.Data.Message {
     var messageData = DataDict(data: [:], fulfilledFragments: Set<ObjectIdentifier>())
-    
+
     messageData["id"] = subscriptionObject.id
     messageData["createdAt"] = subscriptionObject.createdAt
     messageData["updatedAt"] = subscriptionObject.updatedAt
@@ -157,15 +157,13 @@ struct ChatView: View {
     messageData["replyId"] = subscriptionObject.replyId
     messageData["pinned"] = subscriptionObject.pinned
     messageData["readReceipts"] = subscriptionObject.readReceipts
-    
-    let message = MessagesQuery.Data.Message(_dataDict: messageData)
-    
-    return message
+
+    return MessagesQuery.Data.Message(_dataDict: messageData)
   }
-  
+
   func editToMessage(messageObject: MessagesQuery.Data.Message, editObject: EditedMessageSubscription.Data.OnEditMessage.Message) -> MessagesQuery.Data.Message {
     var messageData = DataDict(data: [:], fulfilledFragments: Set<ObjectIdentifier>())
-    
+
     messageData["id"] = editObject.id
     messageData["createdAt"] = messageObject.createdAt
     messageData["updatedAt"] = messageObject.updatedAt
@@ -182,15 +180,13 @@ struct ChatView: View {
     messageData["replyId"] = messageObject.replyId
     messageData["pinned"] = editObject.pinned
     messageData["readReceipts"] = messageObject.readReceipts
-    
-    let message = MessagesQuery.Data.Message(_dataDict: messageData)
-    
-    return message
+
+    return MessagesQuery.Data.Message(_dataDict: messageData)
   }
-  
+
   func newToChat(chatObject: ChatsQuery.Data.Chat, self: Bool) -> ChatsQuery.Data.Chat {
     var chatData = DataDict(data: [:], fulfilledFragments: Set<ObjectIdentifier>())
-    
+
     chatData["id"] = chatObject.id
     chatData["type"] = chatObject.type
     chatData["name"] = chatObject.name
@@ -200,70 +196,95 @@ struct ChatView: View {
     chatData["users"] = chatObject.users
     chatData["sortDate"] = String(Date().timeIntervalSince1970 * 1000)
     chatData["recipient"] = chatObject.recipient
-    
-    let chat = ChatsQuery.Data.Chat(_dataDict: chatData)
-    
-    return chat
+
+    return ChatsQuery.Data.Chat(_dataDict: chatData)
   }
-  
+
   func messagesSubscription() {
     if apolloSubscription == nil {
       apolloSubscription = Network.shared.apollo.subscribe(subscription: UpdateMessagesSubscription()) { result in
         switch result {
-        case .success(let graphQLResult):
+        case let .success(graphQLResult):
           if let message = graphQLResult.data?.onMessage.message {
-            if chatOpen != -1 && currentChat?.id == message.chatId {
+            if chatOpen != -1, currentChat?.id == message.chatId {
               let newMessage = convertToMessage(subscriptionObject: message)
               chatMessages.append(newMessage)
             }
           }
-        case .failure(let error):
+        case let .failure(error):
           print("Failed to subscribe \(error)")
         }
       }
     }
   }
-  
+
   func editingSubscription() {
     _ = Network.shared.apollo.subscribe(subscription: EditedMessageSubscription()) { result in
       switch result {
-      case .success(let graphQLResult):
+      case let .success(graphQLResult):
         if let message = graphQLResult.data?.onEditMessage.message {
           let index = chatMessages.firstIndex(where: { $0.id == message.id })
           let newMessage = editToMessage(messageObject: chatMessages[index ?? 0], editObject: message)
           chatMessages[index ?? 0] = newMessage
         }
-      case .failure(let error):
+      case let .failure(error):
         print("Failed to subscribe \(error)")
       }
     }
   }
-  
+
   func deletingSubscription() {
     _ = Network.shared.apollo.subscribe(subscription: DeletedMessageSubscription()) { result in
       switch result {
-      case .success(let graphQLResult):
-        if let message = graphQLResult.data?.onDeleteMessage.id {
-          if let index = chatMessages.firstIndex(where: { $0.id == message }) {
+      case let .success(graphQLResult):
+        if let messageId = graphQLResult.data?.onDeleteMessage.id {
+          if let index = chatMessages.firstIndex(where: { $0.id == messageId }) {
             chatMessages.remove(at: index)
           }
         }
-      case .failure(let error):
+      case let .failure(error):
         print("Failed to subscribe \(error)")
       }
     }
   }
-  
+
+  func updateStatus(
+    for user: StateQuery.Data.TrackedUser,
+    to newStatus: GraphQLEnum<PrivateUploaderAPI.UserStatus>
+  ) -> StateQuery.Data.TrackedUser {
+    var dict = user.__data
+    dict["status"] = newStatus
+    return StateQuery.Data.TrackedUser(_dataDict: dict)
+  }
+
+  func userStatusSubscription() {
+    _ = Network.shared.apollo.subscribe(subscription: UpdatedUserSubscription()) { result in
+      switch result {
+      case let .success(graphQLResult):
+        if let userId = graphQLResult.data?.onUserStatus.id,
+           let status = graphQLResult.data?.onUserStatus.status,
+           let index = store.coreUsers?.firstIndex(where: { $0.id == userId })
+        {
+          if let existingUser = store.coreUsers?[index] {
+            store.coreUsers?[index] = updateStatus(for: existingUser, to: status)
+          }
+        }
+      case let .failure(error):
+        print("Failed to subscribe \(error)")
+      }
+    }
+  }
+
   func handleReplyClick(id: Int) {
     replyingId = id
   }
-  
+
   func handleInputClear() {
     replyingId = -1
     editingId = -1
     inputMessage = ""
   }
-  
+
   func previousMessage(for message: MessagesQuery.Data.Message)
     -> MessagesQuery.Data.Message?
   {
@@ -271,7 +292,7 @@ struct ChatView: View {
           index > 0 else { return nil }
     return chatMessages[index - 1]
   }
-  
+
   var body: some View {
     VStack {
       ScrollViewReader { proxy in
@@ -337,11 +358,12 @@ struct ChatView: View {
                 if value.translation.height > 0 {
                   focusedField = .none
                 }
-              })
+              }
+          )
         #if !os(iOS)
-              .onExitCommand(perform: {
-                replyingId = -1
-              })
+          .onExitCommand(perform: {
+            replyingId = -1
+          })
         #endif
       }
       .navigationTitle(currentChat?.recipient?.username ?? currentChat?.name ?? "Chat name error")
@@ -351,7 +373,7 @@ struct ChatView: View {
           print("User tapped:", id)
           return .handled
         }
-        
+
         return .systemAction
       })
       #if os(iOS)
@@ -370,7 +392,7 @@ struct ChatView: View {
                     UserRow(user: user)
                   }
                 }
-                  
+
                 Section("Offline") {
                   ForEach(chatUsers.filter { $0.status.value == .offline }, id: \.id) { user in
                     UserRow(user: user, isOffline: true)
@@ -388,6 +410,7 @@ struct ChatView: View {
       messagesSubscription()
       editingSubscription()
       deletingSubscription()
+      userStatusSubscription()
     }
     .onChange(of: chatOpen) {
       getChat(chatId: chatOpen)

@@ -53,6 +53,7 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "ReadReceipt": return PrivateUploaderAPI.Objects.ReadReceipt
     case "Star": return PrivateUploaderAPI.Objects.Star
     case "StarUploadResponse": return PrivateUploaderAPI.Objects.StarUploadResponse
+    case "StatusEvent": return PrivateUploaderAPI.Objects.StatusEvent
     case "Subscription": return PrivateUploaderAPI.Objects.Subscription
     case "Upload": return PrivateUploaderAPI.Objects.Upload
     case "User": return PrivateUploaderAPI.Objects.User

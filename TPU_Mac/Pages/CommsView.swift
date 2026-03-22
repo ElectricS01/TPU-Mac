@@ -29,33 +29,33 @@ struct CommsView: View {
   @State private var apolloSubscription: Apollo.Cancellable?
   @State private var notifications: Int = 0
   @State private var showUsers: Bool = true
-  
+
   private var chatUsers: [StateQuery.Data.TrackedUser] {
     guard let association = chatsList.first(where: { $0.association?.id == chatOpen }),
           let coreUsers = store.coreUsers
     else { return [] }
-    
+
     return association.users.compactMap { member in
       coreUsers.first { $0.id == member.user?.id }
     }
   }
-  
+
   func getChats() {
-    Network.shared.apollo.fetch(query: ChatsQuery()) { result in
+    Network.shared.apollo.fetch(query: ChatsQuery(), cachePolicy: .returnCacheDataAndFetch) { result in
       switch result {
-      case .success(let graphQLResult):
+      case let .success(graphQLResult):
         if let unwrapped = graphQLResult.data {
           chatsList = unwrapped.chats
         }
-      case .failure(let error):
+      case let .failure(error):
         print("Failure! Error: \(error)")
       }
     }
   }
-  
+
   func newToChat(chatObject: ChatsQuery.Data.Chat, self: Bool) -> ChatsQuery.Data.Chat {
     var chatData = DataDict(data: [:], fulfilledFragments: Set<ObjectIdentifier>())
-    
+
     chatData["id"] = chatObject.id
     chatData["type"] = chatObject.type
     chatData["name"] = chatObject.name
@@ -65,12 +65,10 @@ struct CommsView: View {
     chatData["users"] = chatObject.users
     chatData["sortDate"] = String(Date().timeIntervalSince1970 * 1000)
     chatData["recipient"] = chatObject.recipient
-    
-    let chat = ChatsQuery.Data.Chat(_dataDict: chatData)
-    
-    return chat
+
+    return ChatsQuery.Data.Chat(_dataDict: chatData)
   }
-  
+
   func scheduleNotification(title: String, body: String, to: Int) {
     notifications += 1
     UNUserNotificationCenter.current().setBadgeCount(notifications)
@@ -79,48 +77,48 @@ struct CommsView: View {
     content.body = body
     content.sound = UNNotificationSound.default
     content.userInfo = ["to": to]
-    
+
     let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
     UNUserNotificationCenter.current().add(request) { error in
-      if let error = error {
+      if let error {
         print("Error scheduling notification: \(error)")
       }
     }
   }
-  
+
   func messagesSubscription() {
     if apolloSubscription == nil {
       apolloSubscription = Network.shared.apollo.subscribe(subscription: UpdateMessagesSubscription()) { result in
         switch result {
-        case .success(let graphQLResult):
+        case let .success(graphQLResult):
           if let message = graphQLResult.data?.onMessage.message {
             let index = chatsList.firstIndex(where: { $0.id == message.chatId })
             let newChat = newToChat(chatObject: chatsList[index ?? 0], self: store.coreUser?.id != message.userId)
             chatsList[index ?? 0] = newChat
-            
+
             chatsList.sort {
               Double($0.sortDate ?? "0") ?? 0 > Double($1.sortDate ?? "0") ?? 0
             }
-            
+
             #if os(macOS)
               if !NSApplication.shared.isActive, store.coreUser?.id != message.userId {
                 scheduleNotification(title: message.user?.username ?? "Unknown User", body: message.content ?? "Unknown Message", to: message.chatId)
               }
             #endif
           }
-        case .failure(let error):
+        case let .failure(error):
           print("Failed to subscribe \(error)")
         }
       }
     }
   }
-  
+
   func getStatusColor(_ status: PrivateUploaderAPI.UserStatus) -> Color {
     switch status {
-    case .offline: return .gray
-    case .online: return .green
-    case .busy: return .red
-    default: return .yellow
+    case .offline: .gray
+    case .online: .green
+    case .busy: .red
+    default: .yellow
     }
   }
 
@@ -174,7 +172,7 @@ struct CommsView: View {
                     UserRow(user: user)
                   }
                 }
-                
+
                 Section("Offline") {
                   ForEach(chatUsers.filter { $0.status.value == .offline }, id: \.id) { user in
                     UserRow(user: user, isOffline: true)

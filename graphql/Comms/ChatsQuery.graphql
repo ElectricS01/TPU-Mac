@@ -40,3 +40,10 @@ query ChatsQuery {
     }
   }
 }
+
+subscription UpdatedUser {
+  onUserStatus {
+    id
+    status
+  }
+}

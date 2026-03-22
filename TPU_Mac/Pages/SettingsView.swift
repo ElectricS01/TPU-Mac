@@ -14,14 +14,14 @@ struct SettingsView: View {
   var body: some View {
     VStack {
       Text("Settings")
-#if os(macOS)
-      Text("Coming soon")
-#else
-      Text("TPU iOS").font(.system(size: 32, weight: .semibold))
-      Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (19/03/2026)")
-      Text("Made by ElectricS01")
-      Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
-#endif
+      #if os(macOS)
+        Text("Coming soon")
+      #else
+        Text("TPU iOS").font(.system(size: 32, weight: .semibold))
+        Text("Version " + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "") + " (22/03/2026)")
+        Text("Made by ElectricS01")
+        Text("[Give it a Star on GitHub](https://github.com/ElectricS01/TPU-Mac)")
+      #endif
       Text("Logged in as " + (store.coreUser?.username ?? "Unknown"))
       Button("Log out") {
         keychain.delete("token")
