@@ -60,6 +60,7 @@ func renderRichText(
 struct ChatView: View {
   @Binding var chatsList: [ChatsQuery.Data.Chat]
   @EnvironmentObject var store: Store
+  @EnvironmentObject var showingUserStore: ShowingUserStore
   @FocusState private var focusedField: FocusedField?
   @State private var chatMessages: [MessagesQuery.Data.Message] = []
   @Binding var chatOpen: Int
@@ -369,8 +370,8 @@ struct ChatView: View {
       .navigationTitle(currentChat?.recipient?.username ?? currentChat?.name ?? "Chat name error")
       .environment(\.openURL, OpenURLAction { url in
         if url.scheme == "mention" {
-          let id = url.host ?? ""
-          print("User tapped:", id)
+          showingUserStore.shownUser = store.coreUsers?.first { $0.id == currentChat?.recipient?.id }
+          showingUserStore.isShowingUser = true
           return .handled
         }
 

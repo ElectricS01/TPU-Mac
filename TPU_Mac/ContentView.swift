@@ -18,9 +18,15 @@ class Store: ObservableObject {
   @Published var coreUsers: [StateQuery.Data.TrackedUser]?
 }
 
+class ShowingUserStore: ObservableObject {
+  @Published var isShowingUser: Bool = false
+  @Published var shownUser: StateQuery.Data.TrackedUser?
+}
+
 struct ContentView: View {
   @Binding var selection: Destination
   @StateObject var store = Store()
+  @StateObject var showingUserStore = ShowingUserStore()
   @State private var showingLogin = keychain.get("token") == nil || keychain.get("token") == ""
   @State private var showingTerms = false
   @State private var coreNotifications: [StateQuery.Data.CurrentUser.Notification]?
@@ -132,6 +138,7 @@ struct ContentView: View {
         .onAppear {
           getState()
         }.environmentObject(store)
+        .environmentObject(showingUserStore)
         .toolbar(id: "nav") {
           ToolbarItem(id: "bell") {
             Button(action: {
@@ -169,6 +176,11 @@ struct ContentView: View {
             }.padding()
           }.interactiveDismissDisabled()
         }
+        .sheet(isPresented: $showingUserStore.isShowingUser) {
+          if let user = showingUserStore.shownUser {
+            UserSheetView(user: user)
+          }
+        }
       #else
         TabView {
           HomeView().tabItem {
@@ -190,6 +202,7 @@ struct ContentView: View {
         .onAppear {
           getState()
         }.environmentObject(store)
+        .environmentObject(showingUserStore)
         .sheet(isPresented: $showingTerms) {
           VStack {
             Text("The Privacy Policy has been updated").font(.system(size: 24, weight: .semibold)).padding()

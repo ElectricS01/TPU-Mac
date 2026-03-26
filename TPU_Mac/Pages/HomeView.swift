@@ -31,10 +31,19 @@ struct HomeStat: View {
 
 struct NewsItem: View {
   @Binding var item: StateQuery.Data.CoreState.Announcement
+  @EnvironmentObject var store: Store
+  @EnvironmentObject var showingUserStore: ShowingUserStore
 
   var body: some View {
-    ProfilePicture(avatar: item.user?.avatar, size: 48)
-    Text(item.user?.username ?? "Deleted User").font(.system(size: 16, weight: .semibold))
+    Button {
+      showingUserStore.shownUser = store.coreUsers?.first { $0.id == item.userId }
+      showingUserStore.isShowingUser = true
+    } label: {
+      VStack {
+        ProfilePicture(avatar: item.user?.avatar, size: 48)
+        Text(item.user?.username ?? "Deleted User").font(.system(size: 16, weight: .semibold))
+      }
+    }.buttonStyle(.plain)
     Markdown(item.content)
       .markdownSoftBreakMode(.lineBreak)
       .textSelection(.enabled)

@@ -1,0 +1,7 @@
+query UserProfile($input: UserProfileInput!) {
+  user(input: $input) {
+    banner
+    description
+    id
+  }
+}

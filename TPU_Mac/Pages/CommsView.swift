@@ -18,6 +18,7 @@ struct CommsView: View {
   }
 
   @EnvironmentObject var store: Store
+  @EnvironmentObject var showingUserStore: ShowingUserStore
   @FocusState private var focusedField: FocusedField?
   @State private var chatsList: [ChatsQuery.Data.Chat] = []
   @State private var chatOpen: Int = -1
@@ -129,19 +130,12 @@ struct CommsView: View {
           ForEach(0 ..< chatsList.count, id: \.self) { result in
             Button(action: { chatOpen = chatsList[result].association?.id ?? -1 }) {
               HStack {
-                let recipient = chatsList[result].recipient
-                ProfilePicture(avatar: chatsList[result].recipient?.avatar ?? chatsList[result].icon, placeholder: recipient != nil ? "person.crop.circle" : "person.3.fill")
-                  .overlay(alignment: .bottomTrailing) {
-                    if let recipient2 = recipient {
-                      Circle()
-                        .fill(getStatusColor(store.coreUsers?.first { $0.id == recipient2.id }?.status.value ?? .offline))
-                        .frame(width: 10, height: 10)
-                        .overlay(
-                          Circle()
-                            .stroke(.background, lineWidth: 2)
-                        )
-                    }
-                  }
+                if let recipient = chatsList[result].recipient {
+                  ProfileStatus(avatar: recipient.avatar, status: store.coreUsers?.first { $0.id == recipient.id }?.status.value ?? .offline)
+                } else {
+                  ProfilePicture(avatar: chatsList[result].icon, placeholder: "person.3.fill")
+                }
+
                 Text(chatsList[result].recipient?.username ?? chatsList[result].name).lineLimit(1)
                 Spacer()
                 if chatsList[result].unread != 0 {
@@ -153,6 +147,15 @@ struct CommsView: View {
               }.contentShape(Rectangle())
             }.buttonStyle(.plain)
               .contextMenu {
+                if let recipient = chatsList[result].recipient {
+                  Button {
+                    showingUserStore.shownUser = store.coreUsers?.first { $0.id == recipient.id }
+                    showingUserStore.isShowingUser = true
+                  } label: {
+                    Label("Show Profile", systemImage: "person")
+                  }
+                }
+
                 Button {
                   copyToClipboard(String(chatsList[result].association?.id ?? chatsList[result].id))
                 } label: {

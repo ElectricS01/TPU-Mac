@@ -12,31 +12,15 @@ struct UserRow: View {
   let user: StateQuery.Data.TrackedUser
   var isOffline = false
   @EnvironmentObject var store: Store
-
-  private var statusColor: Color {
-    if isOffline { return .gray.opacity(1) }
-    switch user.status.value {
-    case .online: return .green.opacity(1)
-    case .busy: return .red.opacity(1)
-    default: return .yellow.opacity(1)
-    }
-  }
+  @EnvironmentObject var showingUserStore: ShowingUserStore
 
   var body: some View {
     Button {
-      print(user.username)
+      showingUserStore.shownUser = user
+      showingUserStore.isShowingUser = true
     } label: {
       HStack {
-        ProfilePicture(avatar: user.avatar)
-          .overlay(alignment: .bottomTrailing) {
-            Circle()
-              .fill(statusColor)
-              .frame(width: 10, height: 10)
-              .overlay {
-                Circle()
-                  .stroke(Color(NSColor.windowBackgroundColor), lineWidth: 2)
-              }
-          }
+        ProfileStatus(avatar: user.avatar, status: user.status.value ?? .offline)
 
         Text(user.username)
           .foregroundStyle(isOffline ? .gray : .primary)
@@ -49,7 +33,8 @@ struct UserRow: View {
     .listRowSeparator(.hidden)
     .contextMenu {
       Button {
-        print(user.username)
+        showingUserStore.shownUser = user
+        showingUserStore.isShowingUser = true
       } label: {
         Label("Show Profile", systemImage: "person")
       }

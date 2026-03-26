@@ -22,6 +22,7 @@ struct ChatMessageView: View {
   @Binding var editingId: Int
   let onInputClear: () -> Void
   @EnvironmentObject var store: Store
+  @EnvironmentObject var showingUserStore: ShowingUserStore
   @State private var editingMessage: String = ""
   @State private var hovered: Bool = false
 
@@ -30,7 +31,7 @@ struct ChatMessageView: View {
       switch result {
       case .success:
         onInputClear()
-      case .failure(let error):
+      case let .failure(error):
         print("Failure! Error: \(error)")
       }
     }
@@ -41,7 +42,7 @@ struct ChatMessageView: View {
       switch result {
       case .success:
         onInputClear()
-      case .failure(let error):
+      case let .failure(error):
         print("Failure! Error: \(error)")
       }
     }
@@ -52,14 +53,14 @@ struct ChatMessageView: View {
       switch result {
       case .success:
         onInputClear()
-      case .failure(let error):
+      case let .failure(error):
         print("Failure! Error: \(error)")
       }
     }
   }
 
   func merge(message: MessagesQuery.Data.Message, previousMessage: MessagesQuery.Data.Message?) -> Bool {
-    if message.userId == previousMessage?.userId && message.replyId == nil && previousMessage?.type == .message {
+    if message.userId == previousMessage?.userId, message.replyId == nil, previousMessage?.type == .message {
       return false
     }
     return true
@@ -104,20 +105,20 @@ struct ChatMessageView: View {
 
     return result
   }
-  
+
   func leaveAttributedText(_ message: MessagesQuery.Data.Message) -> AttributedString {
     var result = AttributedString(message.user?.username ?? "User has been deleted")
     result.link = URL(string: "user://\(message.user?.id ?? 0)")
-    
+
     var pinned = AttributedString(" left the chat. ")
     pinned.foregroundColor = .secondary
     result += pinned
-    
+
     var date = AttributedString(DateUtils.dateFormat(message.createdAt))
     date.foregroundColor = .secondary
     date.font = .caption
     result += date
-    
+
     return result
   }
 
@@ -134,7 +135,7 @@ struct ChatMessageView: View {
       }
     }
     VStack {
-      if message.type == .message && message.reply != nil {
+      if message.type == .message, message.reply != nil {
         Button(action: {
           scrollProxy.scrollTo(message.replyId)
         }) {
@@ -167,14 +168,20 @@ struct ChatMessageView: View {
           }.frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
         } else {
           if dontMerge {
-            ProfilePicture(avatar: message.user?.avatar)
+            ProfilePicture(avatar: message.user?.avatar).onTapGesture {
+              showingUserStore.shownUser = store.coreUsers?.first { $0.id == message.user?.id }
+              showingUserStore.isShowingUser = true
+            }
           } else {
             Spacer().frame(width: 32)
           }
           VStack {
             if dontMerge {
               HStack {
-                Text(message.user?.username ?? "User has been deleted")
+                Text(message.user?.username ?? "User has been deleted").onTapGesture {
+                  showingUserStore.shownUser = store.coreUsers?.first { $0.id == message.user?.id }
+                  showingUserStore.isShowingUser = true
+                }
                 Text(DateUtils.dateFormat(message.createdAt)).foregroundColor(.secondary).font(.caption)
               }.frame(minWidth: 0,
                       maxWidth: .infinity,
@@ -199,16 +206,16 @@ struct ChatMessageView: View {
             } else {
               TextField("Keep it civil!", text: $editingMessage)
                 .focused($focusedField, equals: .editing)
-#if !os(iOS)
+              #if !os(iOS)
                 .onExitCommand(perform: {
                   editingId = -1
                   focusedField = .sending
                 })
-#endif
-                .onSubmit {
-                  editMessage()
-                }
-                .textFieldStyle(RoundedBorderTextFieldStyle())
+              #endif
+                  .onSubmit {
+                    editMessage()
+                  }
+                  .textFieldStyle(RoundedBorderTextFieldStyle())
             }
             ForEach(message.embeds, id: \.self) { embed in
               HStack(alignment: .top) {
@@ -302,51 +309,51 @@ struct ChatMessageView: View {
             }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
           }
         }
-#if os(macOS)
-        HStack {
-          if hovered {
-            Spacer()
-            Button(action: {
-              onReplyClick(message.id)
-            }) {
-              Image(systemName: "arrowshape.turn.up.left.fill").frame(width: 16, height: 16)
-            }.buttonStyle(.borderless).frame(width: 20, height: 20)
-            if message.type == .message {
-              if store.coreUser?.id == message.userId {
-                Button(action: {
-                  deleteMessage(messageId: message.id)
-                }) {
-                  Image(systemName: "trash.fill").frame(width: 16, height: 16)
-                }.buttonStyle(.borderless).frame(width: 20, height: 20)
-              }
+        #if os(macOS)
+          HStack {
+            if hovered {
+              Spacer()
               Button(action: {
-                pinMessage(messageId: message.id, pinned: message.pinned)
+                onReplyClick(message.id)
               }) {
-                Image(systemName: message.pinned ? "pin.slash.fill" : "pin.fill").frame(width: 16, height: 16)
+                Image(systemName: "arrowshape.turn.up.left.fill").frame(width: 16, height: 16)
               }.buttonStyle(.borderless).frame(width: 20, height: 20)
-              if store.coreUser?.id == message.userId {
+              if message.type == .message {
+                if store.coreUser?.id == message.userId {
+                  Button(action: {
+                    deleteMessage(messageId: message.id)
+                  }) {
+                    Image(systemName: "trash.fill").frame(width: 16, height: 16)
+                  }.buttonStyle(.borderless).frame(width: 20, height: 20)
+                }
                 Button(action: {
-                  if editingId != message.id {
-                    editingId = message.id
-                    editingMessage = message.content ?? ""
-                    focusedField = .editing
-                  } else {
-                    editingId = -1
-                    focusedField = .sending
-                  }
+                  pinMessage(messageId: message.id, pinned: message.pinned)
                 }) {
-                  Image(systemName: "pencil").frame(width: 16, height: 16)
+                  Image(systemName: message.pinned ? "pin.slash.fill" : "pin.fill").frame(width: 16, height: 16)
                 }.buttonStyle(.borderless).frame(width: 20, height: 20)
+                if store.coreUser?.id == message.userId {
+                  Button(action: {
+                    if editingId != message.id {
+                      editingId = message.id
+                      editingMessage = message.content ?? ""
+                      focusedField = .editing
+                    } else {
+                      editingId = -1
+                      focusedField = .sending
+                    }
+                  }) {
+                    Image(systemName: "pencil").frame(width: 16, height: 16)
+                  }.buttonStyle(.borderless).frame(width: 20, height: 20)
+                }
               }
             }
-          }
-        }.frame(width: 104, height: 20)
-#endif
+          }.frame(width: 104, height: 20)
+        #endif
       }
     }.padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4)).id(message.id)
       .contentShape(Rectangle())
       .contextMenu {
-        if message.type == .message && store.coreUser?.id == message.userId {
+        if message.type == .message, store.coreUser?.id == message.userId {
           Button {
             if editingId != message.id {
               editingId = message.id
