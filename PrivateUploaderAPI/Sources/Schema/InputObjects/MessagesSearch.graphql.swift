@@ -1,18 +1,18 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import ApolloAPI
+@_spi(Internal) @_spi(Unsafe) import ApolloAPI
 
 public struct MessagesSearch: InputObject {
-  public private(set) var __data: InputDict
+  @_spi(Unsafe) public private(set) var __data: InputDict
 
-  public init(_ data: InputDict) {
+  @_spi(Unsafe) public init(_ data: InputDict) {
     __data = data
   }
 
   public init(
     query: GraphQLNullable<String> = nil,
-    userId: GraphQLNullable<Int> = nil,
+    userId: GraphQLNullable<Int32> = nil,
     before: GraphQLNullable<Date> = nil,
     after: GraphQLNullable<Date> = nil,
     pins: GraphQLNullable<Bool> = nil
@@ -31,7 +31,7 @@ public struct MessagesSearch: InputObject {
     set { __data["query"] = newValue }
   }
 
-  public var userId: GraphQLNullable<Int> {
+  public var userId: GraphQLNullable<Int32> {
     get { __data["userId"] }
     set { __data["userId"] = newValue }
   }

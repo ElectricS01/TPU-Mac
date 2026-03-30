@@ -2,8 +2,9 @@
 // This file was automatically generated and should not be edited.
 
 @_exported import ApolloAPI
+@_spi(Execution) @_spi(Unsafe) import ApolloAPI
 
-public class DeletedMessageSubscription: GraphQLSubscription {
+public struct DeletedMessageSubscription: GraphQLSubscription {
   public static let operationName: String = "DeletedMessage"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
@@ -13,14 +14,14 @@ public class DeletedMessageSubscription: GraphQLSubscription {
   public init() {}
 
   public struct Data: PrivateUploaderAPI.SelectionSet {
-    public let __data: DataDict
-    public init(_dataDict: DataDict) { __data = _dataDict }
+    @_spi(Unsafe) public let __data: DataDict
+    @_spi(Unsafe) public init(_dataDict: DataDict) { __data = _dataDict }
 
-    public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Subscription }
-    public static var __selections: [ApolloAPI.Selection] { [
+    @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Subscription }
+    @_spi(Execution) public static var __selections: [ApolloAPI.Selection] { [
       .field("onDeleteMessage", OnDeleteMessage.self),
     ] }
-    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+    @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
       DeletedMessageSubscription.Data.self
     ] }
 
@@ -30,16 +31,16 @@ public class DeletedMessageSubscription: GraphQLSubscription {
     ///
     /// Parent Type: `DeleteMessage`
     public struct OnDeleteMessage: PrivateUploaderAPI.SelectionSet {
-      public let __data: DataDict
-      public init(_dataDict: DataDict) { __data = _dataDict }
+      @_spi(Unsafe) public let __data: DataDict
+      @_spi(Unsafe) public init(_dataDict: DataDict) { __data = _dataDict }
 
-      public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.DeleteMessage }
-      public static var __selections: [ApolloAPI.Selection] { [
+      @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.DeleteMessage }
+      @_spi(Execution) public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("id", Int.self),
         .field("associationId", Int.self),
       ] }
-      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
         DeletedMessageSubscription.Data.OnDeleteMessage.self
       ] }
 

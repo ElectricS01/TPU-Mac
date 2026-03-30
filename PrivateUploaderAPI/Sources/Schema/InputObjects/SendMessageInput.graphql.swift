@@ -1,26 +1,26 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import ApolloAPI
+@_spi(Internal) @_spi(Unsafe) import ApolloAPI
 
 public struct SendMessageInput: InputObject {
-  public private(set) var __data: InputDict
+  @_spi(Unsafe) public private(set) var __data: InputDict
 
-  public init(_ data: InputDict) {
+  @_spi(Unsafe) public init(_ data: InputDict) {
     __data = data
   }
 
   public init(
     content: String,
-    associationId: Int,
+    associationId: Int32,
     attachments: [String]? = nil,
-    replyId: GraphQLNullable<Int> = nil,
+    replyId: GraphQLNullable<Int32> = nil,
     embeds: GraphQLNullable<[EmbedInput]> = nil
   ) {
     __data = InputDict([
       "content": content,
       "associationId": associationId,
-      "attachments": attachments,
+      "attachments": attachments ?? GraphQLNullable.none,
       "replyId": replyId,
       "embeds": embeds
     ])
@@ -31,7 +31,7 @@ public struct SendMessageInput: InputObject {
     set { __data["content"] = newValue }
   }
 
-  public var associationId: Int {
+  public var associationId: Int32 {
     get { __data["associationId"] }
     set { __data["associationId"] = newValue }
   }
@@ -41,7 +41,7 @@ public struct SendMessageInput: InputObject {
     set { __data["attachments"] = newValue }
   }
 
-  public var replyId: GraphQLNullable<Int> {
+  public var replyId: GraphQLNullable<Int32> {
     get { __data["replyId"] }
     set { __data["replyId"] = newValue }
   }

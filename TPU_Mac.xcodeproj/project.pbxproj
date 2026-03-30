@@ -829,8 +829,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apollographql/apollo-ios.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.6.1;
+				kind = exactVersion;
+				version = "2.1.0-rc-1";
 			};
 		};
 		C4FE71522AD3F084003E4DC0 /* XCRemoteSwiftPackageReference "keychain-swift" */ = {

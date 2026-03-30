@@ -28,25 +28,28 @@ class Network {
 
   private lazy var webSocketTransport: WebSocketTransport = {
     let url = URL(string: "https://api.flowinity.com/graphql")!
-    let webSocketClient = WebSocket(url: url, protocol: .graphql_transport_ws)
     let authPayload = ["token": KeychainSwift().get("token")]
     let config = WebSocketTransport.Configuration(connectingPayload: authPayload)
-    let transport = WebSocketTransport(websocket: webSocketClient, config: config)
-
-    return transport
+    do {
+      return try WebSocketTransport(urlSession: URLSession.shared,
+                                    store: store,
+                                    endpointURL: URL(string: "wss://example.com/graphql")!,
+                                    configuration: config)
+    } catch {
+      fatalError("Failed to create WebSocketTransport: \(error)")
+    }
   }()
 
-  private lazy var httpTransport: UploadingNetworkTransport = {
+  private lazy var httpTransport: RequestChainNetworkTransport = {
     let url = URL(string: "https://api.flowinity.com/graphql")!
-    let provider = NetworkInterceptorProvider(client: URLSessionClient(), store: store)
-    let transport = RequestChainNetworkTransport(interceptorProvider: provider, endpointURL: url)
-
-    return transport
+    let provider = NetworkInterceptorProvider()
+    return RequestChainNetworkTransport(urlSession: URLSession.shared, interceptorProvider: provider, store: store, endpointURL: url)
   }()
 
   private lazy var splitNetworkTransport = SplitNetworkTransport(
-    uploadingNetworkTransport: self.httpTransport,
-    webSocketNetworkTransport: self.webSocketTransport
+    queryTransport: self.httpTransport,
+    mutationTransport: self.httpTransport,
+    subscriptionTransport: self.webSocketTransport
   )
 
   private(set) lazy var apollo = ApolloClient(networkTransport: splitNetworkTransport, store: store)

@@ -15,7 +15,7 @@ struct UserSheetView: View {
   @State private var loading = false
 
   func getUserProfile(id: Int) {
-    Network.shared.apollo.fetch(query: UserProfileQuery(input: UserProfileInput(id: GraphQLNullable<Int>(integerLiteral: id))), cachePolicy: .returnCacheDataAndFetch) { result in
+    Network.shared.apollo.fetch(query: UserProfileQuery(input: UserProfileInput(id: GraphQLNullable<Int32>(integerLiteral: Int32.IntegerLiteralType(id)))), cachePolicy: .returnCacheDataAndFetch) { result in
       switch result {
       case let .success(graphQLResult):
         if let unwrapped = graphQLResult.data {

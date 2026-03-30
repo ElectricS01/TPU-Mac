@@ -1,12 +1,12 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import ApolloAPI
+@_spi(Internal) @_spi(Unsafe) import ApolloAPI
 
 public struct UpdateUserInput: InputObject {
-  public private(set) var __data: InputDict
+  @_spi(Unsafe) public private(set) var __data: InputDict
 
-  public init(_ data: InputDict) {
+  @_spi(Unsafe) public init(_ data: InputDict) {
     __data = data
   }
 
@@ -16,14 +16,14 @@ public struct UpdateUserInput: InputObject {
     discordPrecache: GraphQLNullable<Bool> = nil,
     darkTheme: GraphQLNullable<Bool> = nil,
     description: GraphQLNullable<String> = nil,
-    itemsPerPage: GraphQLNullable<Int> = nil,
+    itemsPerPage: GraphQLNullable<Int32> = nil,
     storedStatus: GraphQLNullable<String> = nil,
     weatherUnit: GraphQLNullable<String> = nil,
     themeEngine: GraphQLNullable<JSON> = nil,
     insights: GraphQLNullable<String> = nil,
     profileLayout: GraphQLNullable<JSON> = nil,
     language: GraphQLNullable<String> = nil,
-    excludedCollections: GraphQLNullable<[Int]> = nil,
+    excludedCollections: GraphQLNullable<[Int32]> = nil,
     publicProfile: GraphQLNullable<Bool> = nil,
     privacyPolicyAccepted: GraphQLNullable<Bool> = nil,
     nameColor: GraphQLNullable<String> = nil,
@@ -79,7 +79,7 @@ public struct UpdateUserInput: InputObject {
     set { __data["description"] = newValue }
   }
 
-  public var itemsPerPage: GraphQLNullable<Int> {
+  public var itemsPerPage: GraphQLNullable<Int32> {
     get { __data["itemsPerPage"] }
     set { __data["itemsPerPage"] = newValue }
   }
@@ -114,7 +114,7 @@ public struct UpdateUserInput: InputObject {
     set { __data["language"] = newValue }
   }
 
-  public var excludedCollections: GraphQLNullable<[Int]> {
+  public var excludedCollections: GraphQLNullable<[Int32]> {
     get { __data["excludedCollections"] }
     set { __data["excludedCollections"] = newValue }
   }

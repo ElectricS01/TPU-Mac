@@ -2,22 +2,23 @@
 // This file was automatically generated and should not be edited.
 
 @_exported import ApolloAPI
+@_spi(Execution) @_spi(Unsafe) import ApolloAPI
 
 public struct StandardEmbed: PrivateUploaderAPI.SelectionSet, Fragment {
   public static var fragmentDefinition: StaticString {
     #"fragment StandardEmbed on EmbedDataV2 { __typename media { __typename url proxyUrl attachment width height isInternal upload { __typename name fileSize } videoEmbedUrl mimeType type } text { __typename imageProxyUrl text heading imageUrl } }"#
   }
 
-  public let __data: DataDict
-  public init(_dataDict: DataDict) { __data = _dataDict }
+  @_spi(Unsafe) public let __data: DataDict
+  @_spi(Unsafe) public init(_dataDict: DataDict) { __data = _dataDict }
 
-  public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedDataV2 }
-  public static var __selections: [ApolloAPI.Selection] { [
+  @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedDataV2 }
+  @_spi(Execution) public static var __selections: [ApolloAPI.Selection] { [
     .field("__typename", String.self),
     .field("media", [Medium]?.self),
     .field("text", [Text]?.self),
   ] }
-  public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+  @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
     StandardEmbed.self
   ] }
 
@@ -28,11 +29,11 @@ public struct StandardEmbed: PrivateUploaderAPI.SelectionSet, Fragment {
   ///
   /// Parent Type: `EmbedMedia`
   public struct Medium: PrivateUploaderAPI.SelectionSet {
-    public let __data: DataDict
-    public init(_dataDict: DataDict) { __data = _dataDict }
+    @_spi(Unsafe) public let __data: DataDict
+    @_spi(Unsafe) public init(_dataDict: DataDict) { __data = _dataDict }
 
-    public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedMedia }
-    public static var __selections: [ApolloAPI.Selection] { [
+    @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedMedia }
+    @_spi(Execution) public static var __selections: [ApolloAPI.Selection] { [
       .field("__typename", String.self),
       .field("url", String?.self),
       .field("proxyUrl", String?.self),
@@ -45,7 +46,7 @@ public struct StandardEmbed: PrivateUploaderAPI.SelectionSet, Fragment {
       .field("mimeType", String?.self),
       .field("type", GraphQLEnum<PrivateUploaderAPI.EmbedMediaType>.self),
     ] }
-    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+    @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
       StandardEmbed.Medium.self
     ] }
 
@@ -65,16 +66,16 @@ public struct StandardEmbed: PrivateUploaderAPI.SelectionSet, Fragment {
     ///
     /// Parent Type: `Upload`
     public struct Upload: PrivateUploaderAPI.SelectionSet {
-      public let __data: DataDict
-      public init(_dataDict: DataDict) { __data = _dataDict }
+      @_spi(Unsafe) public let __data: DataDict
+      @_spi(Unsafe) public init(_dataDict: DataDict) { __data = _dataDict }
 
-      public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Upload }
-      public static var __selections: [ApolloAPI.Selection] { [
+      @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Upload }
+      @_spi(Execution) public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("name", String?.self),
         .field("fileSize", Double.self),
       ] }
-      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
         StandardEmbed.Medium.Upload.self
       ] }
 
@@ -87,18 +88,18 @@ public struct StandardEmbed: PrivateUploaderAPI.SelectionSet, Fragment {
   ///
   /// Parent Type: `EmbedText`
   public struct Text: PrivateUploaderAPI.SelectionSet {
-    public let __data: DataDict
-    public init(_dataDict: DataDict) { __data = _dataDict }
+    @_spi(Unsafe) public let __data: DataDict
+    @_spi(Unsafe) public init(_dataDict: DataDict) { __data = _dataDict }
 
-    public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedText }
-    public static var __selections: [ApolloAPI.Selection] { [
+    @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.EmbedText }
+    @_spi(Execution) public static var __selections: [ApolloAPI.Selection] { [
       .field("__typename", String.self),
       .field("imageProxyUrl", String?.self),
       .field("text", String.self),
       .field("heading", Bool?.self),
       .field("imageUrl", String?.self),
     ] }
-    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+    @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
       StandardEmbed.Text.self
     ] }
 

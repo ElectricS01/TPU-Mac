@@ -1,32 +1,32 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import ApolloAPI
+@_spi(Internal) @_spi(Unsafe) import ApolloAPI
 
 public struct InfiniteMessagesInput: InputObject {
-  public private(set) var __data: InputDict
+  @_spi(Unsafe) public private(set) var __data: InputDict
 
-  public init(_ data: InputDict) {
+  @_spi(Unsafe) public init(_ data: InputDict) {
     __data = data
   }
 
   public init(
-    associationId: Int,
+    associationId: Int32,
     position: GraphQLNullable<GraphQLEnum<ScrollPosition>> = nil,
     search: GraphQLNullable<MessagesSearch> = nil,
-    limit: Int? = nil,
-    offset: GraphQLNullable<Int> = nil
+    limit: Int32? = nil,
+    offset: GraphQLNullable<Int32> = nil
   ) {
     __data = InputDict([
       "associationId": associationId,
       "position": position,
       "search": search,
-      "limit": limit,
+      "limit": limit ?? GraphQLNullable.none,
       "offset": offset
     ])
   }
 
-  public var associationId: Int {
+  public var associationId: Int32 {
     get { __data["associationId"] }
     set { __data["associationId"] = newValue }
   }
@@ -41,12 +41,12 @@ public struct InfiniteMessagesInput: InputObject {
     set { __data["search"] = newValue }
   }
 
-  public var limit: Int? {
+  public var limit: Int32? {
     get { __data["limit"] }
     set { __data["limit"] = newValue }
   }
 
-  public var offset: GraphQLNullable<Int> {
+  public var offset: GraphQLNullable<Int32> {
     get { __data["offset"] }
     set { __data["offset"] = newValue }
   }

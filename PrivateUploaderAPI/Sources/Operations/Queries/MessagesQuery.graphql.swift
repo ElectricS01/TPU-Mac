@@ -2,8 +2,9 @@
 // This file was automatically generated and should not be edited.
 
 @_exported import ApolloAPI
+@_spi(Execution) @_spi(Unsafe) import ApolloAPI
 
-public class MessagesQuery: GraphQLQuery {
+public struct MessagesQuery: GraphQLQuery {
   public static let operationName: String = "Messages"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
@@ -17,17 +18,17 @@ public class MessagesQuery: GraphQLQuery {
     self.input = input
   }
 
-  public var __variables: Variables? { ["input": input] }
+  @_spi(Unsafe) public var __variables: Variables? { ["input": input] }
 
   public struct Data: PrivateUploaderAPI.SelectionSet {
-    public let __data: DataDict
-    public init(_dataDict: DataDict) { __data = _dataDict }
+    @_spi(Unsafe) public let __data: DataDict
+    @_spi(Unsafe) public init(_dataDict: DataDict) { __data = _dataDict }
 
-    public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Query }
-    public static var __selections: [ApolloAPI.Selection] { [
+    @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Query }
+    @_spi(Execution) public static var __selections: [ApolloAPI.Selection] { [
       .field("messages", [Message].self, arguments: ["input": .variable("input")]),
     ] }
-    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+    @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
       MessagesQuery.Data.self
     ] }
 
@@ -37,15 +38,15 @@ public class MessagesQuery: GraphQLQuery {
     ///
     /// Parent Type: `Message`
     public struct Message: PrivateUploaderAPI.SelectionSet {
-      public let __data: DataDict
-      public init(_dataDict: DataDict) { __data = _dataDict }
+      @_spi(Unsafe) public let __data: DataDict
+      @_spi(Unsafe) public init(_dataDict: DataDict) { __data = _dataDict }
 
-      public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Message }
-      public static var __selections: [ApolloAPI.Selection] { [
+      @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Message }
+      @_spi(Execution) public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .fragment(StandardMessage.self),
       ] }
-      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
         MessagesQuery.Data.Message.self,
         StandardMessage.self
       ] }
@@ -68,8 +69,8 @@ public class MessagesQuery: GraphQLQuery {
       public var readReceipts: [ReadReceipt] { __data["readReceipts"] }
 
       public struct Fragments: FragmentContainer {
-        public let __data: DataDict
-        public init(_dataDict: DataDict) { __data = _dataDict }
+        @_spi(Unsafe) public let __data: DataDict
+        @_spi(Unsafe) public init(_dataDict: DataDict) { __data = _dataDict }
 
         public var standardMessage: StandardMessage { _toFragment() }
       }

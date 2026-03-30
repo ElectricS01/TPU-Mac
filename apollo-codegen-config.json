@@ -16,7 +16,8 @@
     "schemaTypes" : {
       "path" : "./PrivateUploaderAPI",
       "moduleType" : {
-        "swiftPackageManager" : {
+        "swiftPackage": {
+          "apolloSDKDependency" : {}
         }
       }
     },

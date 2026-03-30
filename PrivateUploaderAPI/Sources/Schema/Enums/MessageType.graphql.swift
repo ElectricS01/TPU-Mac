@@ -1,7 +1,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import ApolloAPI
+@_spi(Internal) import ApolloAPI
 
 /// The type of message. Can be null for legacy (Colubrina) messages where `MESSAGE` should be inferred.
 public enum MessageType: String, EnumType {

@@ -2,8 +2,9 @@
 // This file was automatically generated and should not be edited.
 
 @_exported import ApolloAPI
+@_spi(Execution) @_spi(Unsafe) import ApolloAPI
 
-public class UpdateMessagesSubscription: GraphQLSubscription {
+public struct UpdateMessagesSubscription: GraphQLSubscription {
   public static let operationName: String = "UpdateMessages"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
@@ -14,14 +15,14 @@ public class UpdateMessagesSubscription: GraphQLSubscription {
   public init() {}
 
   public struct Data: PrivateUploaderAPI.SelectionSet {
-    public let __data: DataDict
-    public init(_dataDict: DataDict) { __data = _dataDict }
+    @_spi(Unsafe) public let __data: DataDict
+    @_spi(Unsafe) public init(_dataDict: DataDict) { __data = _dataDict }
 
-    public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Subscription }
-    public static var __selections: [ApolloAPI.Selection] { [
+    @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Subscription }
+    @_spi(Execution) public static var __selections: [ApolloAPI.Selection] { [
       .field("onMessage", OnMessage.self),
     ] }
-    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+    @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
       UpdateMessagesSubscription.Data.self
     ] }
 
@@ -31,17 +32,17 @@ public class UpdateMessagesSubscription: GraphQLSubscription {
     ///
     /// Parent Type: `MessageSubscription`
     public struct OnMessage: PrivateUploaderAPI.SelectionSet {
-      public let __data: DataDict
-      public init(_dataDict: DataDict) { __data = _dataDict }
+      @_spi(Unsafe) public let __data: DataDict
+      @_spi(Unsafe) public init(_dataDict: DataDict) { __data = _dataDict }
 
-      public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.MessageSubscription }
-      public static var __selections: [ApolloAPI.Selection] { [
+      @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.MessageSubscription }
+      @_spi(Execution) public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("mention", Bool.self),
         .field("message", Message.self),
         .field("chat", Chat.self),
       ] }
-      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
         UpdateMessagesSubscription.Data.OnMessage.self
       ] }
 
@@ -53,15 +54,15 @@ public class UpdateMessagesSubscription: GraphQLSubscription {
       ///
       /// Parent Type: `Message`
       public struct Message: PrivateUploaderAPI.SelectionSet {
-        public let __data: DataDict
-        public init(_dataDict: DataDict) { __data = _dataDict }
+        @_spi(Unsafe) public let __data: DataDict
+        @_spi(Unsafe) public init(_dataDict: DataDict) { __data = _dataDict }
 
-        public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Message }
-        public static var __selections: [ApolloAPI.Selection] { [
+        @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Message }
+        @_spi(Execution) public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .fragment(StandardMessage.self),
         ] }
-        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
           UpdateMessagesSubscription.Data.OnMessage.Message.self,
           StandardMessage.self
         ] }
@@ -84,8 +85,8 @@ public class UpdateMessagesSubscription: GraphQLSubscription {
         public var readReceipts: [ReadReceipt] { __data["readReceipts"] }
 
         public struct Fragments: FragmentContainer {
-          public let __data: DataDict
-          public init(_dataDict: DataDict) { __data = _dataDict }
+          @_spi(Unsafe) public let __data: DataDict
+          @_spi(Unsafe) public init(_dataDict: DataDict) { __data = _dataDict }
 
           public var standardMessage: StandardMessage { _toFragment() }
         }
@@ -105,17 +106,17 @@ public class UpdateMessagesSubscription: GraphQLSubscription {
       ///
       /// Parent Type: `Chat`
       public struct Chat: PrivateUploaderAPI.SelectionSet {
-        public let __data: DataDict
-        public init(_dataDict: DataDict) { __data = _dataDict }
+        @_spi(Unsafe) public let __data: DataDict
+        @_spi(Unsafe) public init(_dataDict: DataDict) { __data = _dataDict }
 
-        public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Chat }
-        public static var __selections: [ApolloAPI.Selection] { [
+        @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Chat }
+        @_spi(Execution) public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("id", Int.self),
           .field("recipient", Recipient?.self),
           .field("type", String.self),
         ] }
-        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
           UpdateMessagesSubscription.Data.OnMessage.Chat.self
         ] }
 
@@ -127,16 +128,16 @@ public class UpdateMessagesSubscription: GraphQLSubscription {
         ///
         /// Parent Type: `PartialUserBase`
         public struct Recipient: PrivateUploaderAPI.SelectionSet {
-          public let __data: DataDict
-          public init(_dataDict: DataDict) { __data = _dataDict }
+          @_spi(Unsafe) public let __data: DataDict
+          @_spi(Unsafe) public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PartialUserBase }
-          public static var __selections: [ApolloAPI.Selection] { [
+          @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PartialUserBase }
+          @_spi(Execution) public static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
             .field("id", Int.self),
             .field("username", String.self),
           ] }
-          public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
             UpdateMessagesSubscription.Data.OnMessage.Chat.Recipient.self
           ] }
 

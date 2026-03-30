@@ -18,48 +18,49 @@ where Schema == PrivateUploaderAPI.SchemaMetadata {}
 public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
   public static let configuration: any ApolloAPI.SchemaConfiguration.Type = SchemaConfiguration.self
 
-  public static func objectType(forTypename typename: String) -> ApolloAPI.Object? {
-    switch typename {
-    case "Announcement": return PrivateUploaderAPI.Objects.Announcement
-    case "Badge": return PrivateUploaderAPI.Objects.Badge
-    case "Chat": return PrivateUploaderAPI.Objects.Chat
-    case "ChatAssociation": return PrivateUploaderAPI.Objects.ChatAssociation
-    case "ChatEmoji": return PrivateUploaderAPI.Objects.ChatEmoji
-    case "Collection": return PrivateUploaderAPI.Objects.Collection
-    case "CollectionItem": return PrivateUploaderAPI.Objects.CollectionItem
-    case "CoreState": return PrivateUploaderAPI.Objects.CoreState
-    case "CoreStats": return PrivateUploaderAPI.Objects.CoreStats
-    case "DeleteMessage": return PrivateUploaderAPI.Objects.DeleteMessage
-    case "Domain": return PrivateUploaderAPI.Objects.Domain
-    case "EditMessageEvent": return PrivateUploaderAPI.Objects.EditMessageEvent
-    case "EmbedDataV2": return PrivateUploaderAPI.Objects.EmbedDataV2
-    case "EmbedMedia": return PrivateUploaderAPI.Objects.EmbedMedia
-    case "EmbedText": return PrivateUploaderAPI.Objects.EmbedText
-    case "FriendNickname": return PrivateUploaderAPI.Objects.FriendNickname
-    case "GenericSuccessObject": return PrivateUploaderAPI.Objects.GenericSuccessObject
-    case "LoginResponse": return PrivateUploaderAPI.Objects.LoginResponse
-    case "Message": return PrivateUploaderAPI.Objects.Message
-    case "MessageSubscription": return PrivateUploaderAPI.Objects.MessageSubscription
-    case "Mutation": return PrivateUploaderAPI.Objects.Mutation
-    case "Notification": return PrivateUploaderAPI.Objects.Notification
-    case "Pager": return PrivateUploaderAPI.Objects.Pager
-    case "PaginatedCollectionResponse": return PrivateUploaderAPI.Objects.PaginatedCollectionResponse
-    case "PaginatedMessageResponse": return PrivateUploaderAPI.Objects.PaginatedMessageResponse
-    case "PaginatedUploadResponse": return PrivateUploaderAPI.Objects.PaginatedUploadResponse
-    case "PartialUserBase": return PrivateUploaderAPI.Objects.PartialUserBase
-    case "PartialUserFriend": return PrivateUploaderAPI.Objects.PartialUserFriend
-    case "PartialUserPublic": return PrivateUploaderAPI.Objects.PartialUserPublic
-    case "PermissionsMetadata": return PrivateUploaderAPI.Objects.PermissionsMetadata
-    case "Query": return PrivateUploaderAPI.Objects.Query
-    case "ReadReceipt": return PrivateUploaderAPI.Objects.ReadReceipt
-    case "Star": return PrivateUploaderAPI.Objects.Star
-    case "StarUploadResponse": return PrivateUploaderAPI.Objects.StarUploadResponse
-    case "StatusEvent": return PrivateUploaderAPI.Objects.StatusEvent
-    case "Subscription": return PrivateUploaderAPI.Objects.Subscription
-    case "Upload": return PrivateUploaderAPI.Objects.Upload
-    case "User": return PrivateUploaderAPI.Objects.User
-    default: return nil
-    }
+  private static let objectTypeMap: [String: ApolloAPI.Object] = [
+    "Announcement": PrivateUploaderAPI.Objects.Announcement,
+    "Badge": PrivateUploaderAPI.Objects.Badge,
+    "Chat": PrivateUploaderAPI.Objects.Chat,
+    "ChatAssociation": PrivateUploaderAPI.Objects.ChatAssociation,
+    "ChatEmoji": PrivateUploaderAPI.Objects.ChatEmoji,
+    "Collection": PrivateUploaderAPI.Objects.Collection,
+    "CollectionItem": PrivateUploaderAPI.Objects.CollectionItem,
+    "CoreState": PrivateUploaderAPI.Objects.CoreState,
+    "CoreStats": PrivateUploaderAPI.Objects.CoreStats,
+    "DeleteMessage": PrivateUploaderAPI.Objects.DeleteMessage,
+    "Domain": PrivateUploaderAPI.Objects.Domain,
+    "EditMessageEvent": PrivateUploaderAPI.Objects.EditMessageEvent,
+    "EmbedDataV2": PrivateUploaderAPI.Objects.EmbedDataV2,
+    "EmbedMedia": PrivateUploaderAPI.Objects.EmbedMedia,
+    "EmbedText": PrivateUploaderAPI.Objects.EmbedText,
+    "FriendNickname": PrivateUploaderAPI.Objects.FriendNickname,
+    "GenericSuccessObject": PrivateUploaderAPI.Objects.GenericSuccessObject,
+    "LoginResponse": PrivateUploaderAPI.Objects.LoginResponse,
+    "Message": PrivateUploaderAPI.Objects.Message,
+    "MessageSubscription": PrivateUploaderAPI.Objects.MessageSubscription,
+    "Mutation": PrivateUploaderAPI.Objects.Mutation,
+    "Notification": PrivateUploaderAPI.Objects.Notification,
+    "Pager": PrivateUploaderAPI.Objects.Pager,
+    "PaginatedCollectionResponse": PrivateUploaderAPI.Objects.PaginatedCollectionResponse,
+    "PaginatedMessageResponse": PrivateUploaderAPI.Objects.PaginatedMessageResponse,
+    "PaginatedUploadResponse": PrivateUploaderAPI.Objects.PaginatedUploadResponse,
+    "PartialUserBase": PrivateUploaderAPI.Objects.PartialUserBase,
+    "PartialUserFriend": PrivateUploaderAPI.Objects.PartialUserFriend,
+    "PartialUserPublic": PrivateUploaderAPI.Objects.PartialUserPublic,
+    "PermissionsMetadata": PrivateUploaderAPI.Objects.PermissionsMetadata,
+    "Query": PrivateUploaderAPI.Objects.Query,
+    "ReadReceipt": PrivateUploaderAPI.Objects.ReadReceipt,
+    "Star": PrivateUploaderAPI.Objects.Star,
+    "StarUploadResponse": PrivateUploaderAPI.Objects.StarUploadResponse,
+    "StatusEvent": PrivateUploaderAPI.Objects.StatusEvent,
+    "Subscription": PrivateUploaderAPI.Objects.Subscription,
+    "Upload": PrivateUploaderAPI.Objects.Upload,
+    "User": PrivateUploaderAPI.Objects.User
+  ]
+
+  @_spi(Execution) public static func objectType(forTypename typename: String) -> ApolloAPI.Object? {
+    objectTypeMap[typename]
   }
 }
 

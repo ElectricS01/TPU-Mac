@@ -1,24 +1,24 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import ApolloAPI
+@_spi(Internal) @_spi(Unsafe) import ApolloAPI
 
 public struct GalleryInput: InputObject {
-  public private(set) var __data: InputDict
+  @_spi(Unsafe) public private(set) var __data: InputDict
 
-  public init(_ data: InputDict) {
+  @_spi(Unsafe) public init(_ data: InputDict) {
     __data = data
   }
 
   public init(
     search: GraphQLNullable<String> = nil,
-    page: GraphQLNullable<Int> = nil,
-    limit: GraphQLNullable<Int> = nil,
+    page: GraphQLNullable<Int32> = nil,
+    limit: GraphQLNullable<Int32> = nil,
     filters: GraphQLNullable<[GraphQLEnum<GalleryFilter>]> = nil,
     sort: GraphQLNullable<GraphQLEnum<GallerySort>> = nil,
     order: GraphQLNullable<GraphQLEnum<GalleryOrder>> = nil,
     type: GraphQLNullable<GraphQLEnum<GalleryType>> = nil,
-    collectionId: GraphQLNullable<Int> = nil,
+    collectionId: GraphQLNullable<Int32> = nil,
     shareLink: GraphQLNullable<String> = nil,
     advanced: GraphQLNullable<[SearchModeInput]> = nil
   ) {
@@ -41,12 +41,12 @@ public struct GalleryInput: InputObject {
     set { __data["search"] = newValue }
   }
 
-  public var page: GraphQLNullable<Int> {
+  public var page: GraphQLNullable<Int32> {
     get { __data["page"] }
     set { __data["page"] = newValue }
   }
 
-  public var limit: GraphQLNullable<Int> {
+  public var limit: GraphQLNullable<Int32> {
     get { __data["limit"] }
     set { __data["limit"] = newValue }
   }
@@ -72,7 +72,7 @@ public struct GalleryInput: InputObject {
   }
 
   /// Requires Type to be COLLECTION
-  public var collectionId: GraphQLNullable<Int> {
+  public var collectionId: GraphQLNullable<Int32> {
     get { __data["collectionId"] }
     set { __data["collectionId"] = newValue }
   }

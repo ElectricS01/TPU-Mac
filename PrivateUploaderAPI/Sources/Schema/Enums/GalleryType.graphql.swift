@@ -1,7 +1,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import ApolloAPI
+@_spi(Internal) import ApolloAPI
 
 /// The type of gallery request, for example if it's the personal gallery page, or a Collection
 public enum GalleryType: String, EnumType {

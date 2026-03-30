@@ -1,7 +1,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import ApolloAPI
+@_spi(Internal) import ApolloAPI
 
 /// User status/presence that has `invisible` and is shown to the current user.
 public enum UserStoredStatus: String, EnumType {

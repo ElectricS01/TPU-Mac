@@ -2,17 +2,18 @@
 // This file was automatically generated and should not be edited.
 
 @_exported import ApolloAPI
+@_spi(Execution) @_spi(Unsafe) import ApolloAPI
 
 public struct PagerFragment: PrivateUploaderAPI.SelectionSet, Fragment {
   public static var fragmentDefinition: StaticString {
     #"fragment PagerFragment on Pager { __typename totalItems currentPage pageSize totalPages startPage endPage startIndex endIndex pages }"#
   }
 
-  public let __data: DataDict
-  public init(_dataDict: DataDict) { __data = _dataDict }
+  @_spi(Unsafe) public let __data: DataDict
+  @_spi(Unsafe) public init(_dataDict: DataDict) { __data = _dataDict }
 
-  public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Pager }
-  public static var __selections: [ApolloAPI.Selection] { [
+  @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.Pager }
+  @_spi(Execution) public static var __selections: [ApolloAPI.Selection] { [
     .field("__typename", String.self),
     .field("totalItems", Int.self),
     .field("currentPage", Int.self),
@@ -24,7 +25,7 @@ public struct PagerFragment: PrivateUploaderAPI.SelectionSet, Fragment {
     .field("endIndex", Int.self),
     .field("pages", [Int].self),
   ] }
-  public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+  @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
     PagerFragment.self
   ] }
 

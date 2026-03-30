@@ -89,7 +89,7 @@ struct ChatView: View {
     }
   }
 
-  func getMessages(chat: Int, completion: @escaping (Result<GraphQLResult<MessagesQuery.Data>, Error>) -> Void) {
+  func getMessages(chat: Int, completion: @escaping (Result<GraphQLResponse<MessagesQuery.Data>, Error>) -> Void) {
     Network.shared.apollo.fetch(query: MessagesQuery(input: InfiniteMessagesInput(associationId: chat, position: GraphQLNullable(ScrollPosition.top), limit: 60)), cachePolicy: .fetchIgnoringCacheData) { result in
       switch result {
       case .success:
@@ -126,8 +126,8 @@ struct ChatView: View {
   }
 
   func sendMessage() {
-    var replyId: GraphQLNullable<Int> = nil
-    if replyingId != -1 { replyId = GraphQLNullable<Int>(integerLiteral: replyingId) }
+    var replyId: GraphQLNullable<Int32> = nil
+    if replyingId != -1 { replyId = GraphQLNullable<Int32>(integerLiteral: Int32.IntegerLiteralType(replyingId)) }
     Network.shared.apollo.perform(mutation: SendMessageMutation(input: SendMessageInput(content: inputMessage, associationId: currentChat?.association?.id ?? 0, attachments: [], replyId: replyId))) { result in
       switch result {
       case .success:
