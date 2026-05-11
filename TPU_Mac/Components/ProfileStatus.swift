@@ -30,7 +30,11 @@ struct ProfileStatus: View {
           .frame(width: 10, height: 10)
           .overlay {
             Circle()
+            #if os(macOS)
               .stroke(Color(NSColor.windowBackgroundColor), lineWidth: 2)
+            #else
+              .stroke(Color(UIColor.systemBackground), lineWidth: 2)
+            #endif
           }
       }
   }
