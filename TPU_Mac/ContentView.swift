@@ -137,8 +137,7 @@ struct ContentView: View {
         }
         .onAppear {
           getState()
-        }.environmentObject(store)
-        .environmentObject(showingUserStore)
+        }
         .toolbar(id: "nav") {
           ToolbarItem(id: "bell") {
             Button(action: {
@@ -180,7 +179,8 @@ struct ContentView: View {
           if let user = showingUserStore.shownUser {
             UserSheetView(user: user)
           }
-        }
+        }.environmentObject(store)
+        .environmentObject(showingUserStore)
       #else
         TabView {
           HomeView().tabItem {
@@ -201,8 +201,7 @@ struct ContentView: View {
         }
         .onAppear {
           getState()
-        }.environmentObject(store)
-        .environmentObject(showingUserStore)
+        }
         .sheet(isPresented: $showingTerms) {
           VStack {
             Text("The Privacy Policy has been updated").font(.system(size: 24, weight: .semibold)).padding()
@@ -212,6 +211,12 @@ struct ContentView: View {
             }.padding()
           }.interactiveDismissDisabled()
         }
+        .sheet(isPresented: $showingUserStore.isShowingUser) {
+          if let user = showingUserStore.shownUser {
+            UserSheetView(user: user)
+          }
+        }.environmentObject(store)
+        .environmentObject(showingUserStore)
       #endif
     }
   }

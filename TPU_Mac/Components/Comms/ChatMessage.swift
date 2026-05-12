@@ -404,7 +404,8 @@ struct ChatMessageView: View {
       .environment(\.openURL, OpenURLAction { url in
         switch url.scheme {
         case "user":
-          print("User tapped:", url.host ?? "")
+          showingUserStore.shownUser = store.coreUsers?.first { $0.id == message.user?.id }
+          showingUserStore.isShowingUser = true
           return .handled
 
         case "message":

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		482506BC2F74927E00C9B7EB /* ProfileStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 482506BB2F74927E00C9B7EB /* ProfileStatus.swift */; };
+		4899A7832FB1A39B00E9E43B /* Friends.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4899A7822FB1A39400E9E43B /* Friends.swift */; };
 		48D23D9E2F751CE400C88793 /* UserSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48D23D9D2F751CE400C88793 /* UserSheetView.swift */; };
 		C4060AC42B8C10A600236E0E /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4060AC32B8C10A600236E0E /* HomeView.swift */; };
 		C40BC9892B8C8F9800444B56 /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = C40BC9882B8C8F9800444B56 /* NukeUI */; };
@@ -61,6 +62,7 @@
 
 /* Begin PBXFileReference section */
 		482506BB2F74927E00C9B7EB /* ProfileStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileStatus.swift; sourceTree = "<group>"; };
+		4899A7822FB1A39400E9E43B /* Friends.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Friends.swift; sourceTree = "<group>"; };
 		48D23D9D2F751CE400C88793 /* UserSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSheetView.swift; sourceTree = "<group>"; };
 		C4060AC32B8C10A600236E0E /* HomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		C427C6A52EC1F5A600A718FA /* TPU Mac.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "TPU Mac.icon"; sourceTree = "<group>"; };
@@ -235,6 +237,7 @@
 		C4B507C62F517843004EE562 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				4899A7822FB1A39400E9E43B /* Friends.swift */,
 				C47699552F59802E00A8F437 /* DateUtils.swift */,
 				C4B507CA2F517885004EE562 /* EmojiMapper.swift */,
 			);
@@ -393,6 +396,7 @@
 				C4CB94AF2F544B060050C4B7 /* AboutView.swift in Sources */,
 				C4DC9A022C9FD5E000C80E8C /* CollectionView.swift in Sources */,
 				C461D9D22F46617F00E566DE /* ChatMessage.swift in Sources */,
+				4899A7832FB1A39B00E9E43B /* Friends.swift in Sources */,
 				C4569DF72AD1828300F17C06 /* Network.swift in Sources */,
 				C45099172ACFFA7F00FA9247 /* ContentView.swift in Sources */,
 				C47E19752BEE04D1004B14C4 /* CollectionsView.swift in Sources */,
@@ -574,7 +578,7 @@
 				CODE_SIGN_ENTITLEMENTS = TPU_Mac/TPU_Mac.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"TPU_Mac/Preview Content\"";
 				DEVELOPMENT_TEAM = 9R84L57UN4;
@@ -604,7 +608,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.4.0;
+				MARKETING_VERSION = 0.4.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "ElectricS01.TPU-Mac";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -624,7 +628,7 @@
 				CODE_SIGN_ENTITLEMENTS = TPU_Mac/TPU_Mac.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"TPU_Mac/Preview Content\"";
 				DEVELOPMENT_TEAM = 9R84L57UN4;
@@ -654,7 +658,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.4.0;
+				MARKETING_VERSION = 0.4.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "ElectricS01.TPU-Mac";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

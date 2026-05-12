@@ -39,33 +39,30 @@ struct UserRow: View {
         Label("Show Profile", systemImage: "person")
       }
       Divider()
-      if user.friend == .none && user.id != store.coreUser?.id {
+      if user.friend == .none, user.id != store.coreUser?.id {
         Button {
-          print("Action for context menu item 1")
+          updateFriend(friendId: user.id, action: .send)
         } label: {
           Label("Add friend", systemImage: "person.badge.plus")
         }
         Divider()
-      }
-      else if user.friend == .incoming {
+      } else if user.friend == .incoming {
         Button {
-          print("Action for context menu item 2")
+          updateFriend(friendId: user.id, action: .accept)
         } label: {
           Label("Accept friend", systemImage: "person.badge.plus")
         }
         Divider()
-      }
-      else if user.friend == .outgoing {
+      } else if user.friend == .outgoing {
         Button {
-          print("Action for context menu item 3")
+          updateFriend(friendId: user.id, action: .remove)
         } label: {
           Label("Cancel friend", systemImage: "person.badge.minus")
         }
         Divider()
-      }
-      else if user.friend == .accepted {
+      } else if user.friend == .accepted {
         Button {
-          print("Action for context menu item 4")
+          updateFriend(friendId: user.id, action: .remove)
         } label: {
           Label("Remove friend", systemImage: "person.badge.minus")
         }

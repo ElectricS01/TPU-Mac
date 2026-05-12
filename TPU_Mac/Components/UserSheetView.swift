@@ -13,6 +13,7 @@ struct UserSheetView: View {
   let user: StateQuery.Data.TrackedUser
   @State private var profile: UserProfileQuery.Data.User?
   @State private var loading = false
+  @EnvironmentObject var store: Store
 
   func getUserProfile(id: Int) {
     Network.shared.apollo.fetch(query: UserProfileQuery(input: UserProfileInput(id: GraphQLNullable<Int>(integerLiteral: id))), cachePolicy: .returnCacheDataAndFetch) { result in
@@ -49,6 +50,35 @@ struct UserSheetView: View {
             Text(user.username)
           }
           Text(profile.description ?? "No description")
+          if user.friend == .none, user.id != store.coreUser?.id {
+            Divider()
+            Button {
+              updateFriend(friendId: user.id, action: .send)
+            } label: {
+              Label("Add friend", systemImage: "person.badge.plus")
+            }
+          } else if user.friend == .incoming {
+            Divider()
+            Button {
+              updateFriend(friendId: user.id, action: .accept)
+            } label: {
+              Label("Accept friend", systemImage: "person.badge.plus")
+            }
+          } else if user.friend == .outgoing {
+            Divider()
+            Button {
+              updateFriend(friendId: user.id, action: .remove)
+            } label: {
+              Label("Cancel friend", systemImage: "person.badge.minus")
+            }
+          } else if user.friend == .accepted {
+            Divider()
+            Button {
+              updateFriend(friendId: user.id, action: .remove)
+            } label: {
+              Label("Remove friend", systemImage: "person.badge.minus")
+            }
+          }
         }.padding()
       }
     }
