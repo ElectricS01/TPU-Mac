@@ -1,5 +1,5 @@
 {
-  "originHash" : "287158065089a781c8a313300327ab69cd639ff64b86f5087ffa4e3a12a35f3d",
+  "originHash" : "9cc4c5f900eb523b0eae8c9e053c085835e127d8358145aa84b66e6db7b3199c",
   "pins" : [
     {
       "identity" : "apollo-ios",
@@ -60,8 +60,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-cmark",
       "state" : {
-        "revision" : "5d9bdaa4228b381639fff09403e39a04926e2dbe",
-        "version" : "0.7.1"
+        "revision" : "924936d0427cb25a61169739a7660230bffa6ea6",
+        "version" : "0.8.0"
       }
     },
     {

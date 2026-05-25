@@ -27,9 +27,10 @@ struct CommsView: View {
   @State private var replyingId: Int = -1
   @State private var inputMessage: String = ""
   @State private var editingMessage: String = ""
-  @State private var apolloSubscription: Apollo.Cancellable?
+  @State private var messagesSubscription: Apollo.Cancellable?
   @State private var notifications: Int = 0
   @State private var showUsers: Bool = true
+  @State private var typingEvents: [OnTypingSubscription.Data.OnTyping] = []
 
   private var chatUsers: [StateQuery.Data.TrackedUser] {
     guard let association = chatsList.first(where: { $0.association?.id == chatOpen }),
@@ -87,9 +88,9 @@ struct CommsView: View {
     }
   }
 
-  func messagesSubscription() {
-    if apolloSubscription == nil {
-      apolloSubscription = Network.shared.apollo.subscribe(subscription: UpdateMessagesSubscription()) { result in
+  func tryMessagesSubscription() {
+    if messagesSubscription == nil {
+      messagesSubscription = Network.shared.apollo.subscribe(subscription: UpdateMessagesSubscription()) { result in
         switch result {
         case let .success(graphQLResult):
           if let message = graphQLResult.data?.onMessage.message {
@@ -114,6 +115,48 @@ struct CommsView: View {
     }
   }
 
+  func tryTypingSubscription() {
+    _ = Network.shared.apollo.subscribe(subscription: OnTypingSubscription()) { result in
+      switch result {
+      case let .success(graphQLResult):
+        guard let message = graphQLResult.data?.onTyping else {
+          return
+        }
+
+        Task {
+          let expiresAt =
+            TimeInterval(message.expires ?? 0) / 1000
+
+          let delay =
+            expiresAt - Date().timeIntervalSince1970
+
+          if delay < 0 {
+            return
+          }
+
+          typingEvents.removeAll {
+            $0.user.username == message.user.username &&
+              $0.chatId == message.chatId
+          }
+
+          typingEvents.append(message)
+
+          try? await Task.sleep(
+            for: .seconds(delay)
+          )
+
+          typingEvents.removeAll {
+            $0.user.username == message.user.username &&
+              $0.chatId == message.chatId &&
+              $0.expires == message.expires
+          }
+        }
+      case let .failure(error):
+        print("Failed to subscribe \(error)")
+      }
+    }
+  }
+
   func getStatusColor(_ status: PrivateUploaderAPI.UserStatus) -> Color {
     switch status {
     case .offline: .gray
@@ -131,7 +174,7 @@ struct CommsView: View {
             Button(action: { chatOpen = chatsList[result].association?.id ?? -1 }) {
               HStack {
                 if let recipient = chatsList[result].recipient {
-                  ProfileStatus(avatar: recipient.avatar, status: store.coreUsers?.first { $0.id == recipient.id }?.status.value ?? .offline)
+                  ProfileStatus(avatar: recipient.avatar, status: store.coreUsers?.first { $0.id == recipient.id }?.status.value ?? .offline, isTyping: typingEvents.contains(where: { $0.user.username == chatsList[result].recipient?.username }))
                 } else {
                   ProfilePicture(avatar: chatsList[result].icon, placeholder: "person.3.fill")
                 }
@@ -145,7 +188,8 @@ struct CommsView: View {
                     .cornerRadius(10)
                 }
               }.contentShape(Rectangle())
-            }.buttonStyle(.plain)
+            }.padding(4).buttonStyle(.plain).background(RoundedRectangle(cornerRadius: 8)
+              .fill(chatsList[result].association?.id == chatOpen ? Color(.tertiarySystemFill) : Color.clear))
               .contextMenu {
                 if let recipient = chatsList[result].recipient {
                   Button {
@@ -164,7 +208,7 @@ struct CommsView: View {
               }
           }
         }
-        .frame(width: 150)
+        .frame(width: 160)
         .padding(EdgeInsets(top: -8, leading: -10, bottom: -8, trailing: 0))
         if chatOpen != -1 {
           ChatView(chatsList: $chatsList, chatOpen: $chatOpen)
@@ -203,12 +247,13 @@ struct CommsView: View {
       .navigationTitle("Comms")
       .onAppear {
         getChats()
-        messagesSubscription()
+        tryMessagesSubscription()
+        tryTypingSubscription()
       }
       .onDisappear {
-        if let subscription = apolloSubscription {
+        if let subscription = messagesSubscription {
           subscription.cancel()
-          apolloSubscription = nil
+          messagesSubscription = nil
         }
       }
       .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("NavigateToPage"))) { notification in
