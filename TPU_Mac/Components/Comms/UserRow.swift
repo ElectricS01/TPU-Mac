@@ -11,6 +11,8 @@ import SwiftUI
 struct UserRow: View {
   let user: StateQuery.Data.TrackedUser
   var isOffline = false
+  var isTyping = false
+
   @EnvironmentObject var store: Store
   @EnvironmentObject var showingUserStore: ShowingUserStore
 
@@ -20,7 +22,7 @@ struct UserRow: View {
       showingUserStore.isShowingUser = true
     } label: {
       HStack {
-        ProfileStatus(avatar: user.avatar, status: user.status.value ?? .offline)
+        ProfileStatus(avatar: user.avatar, status: user.status.value ?? .offline, isTyping: isTyping)
 
         Text(user.username)
           .foregroundStyle(isOffline ? .gray : .primary)

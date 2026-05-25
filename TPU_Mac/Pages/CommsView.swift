@@ -157,6 +157,26 @@ struct CommsView: View {
     }
   }
 
+  func tryCancelTypingSubscription() {
+    _ = Network.shared.apollo.subscribe(subscription: OnCancelTypingSubscription()) { result in
+      switch result {
+      case let .success(graphQLResult):
+        guard let message = graphQLResult.data?.onCancelTyping else {
+          return
+        }
+
+        Task {
+          typingEvents.removeAll {
+            $0.user.username == message.user.username &&
+              $0.chatId == message.chatId
+          }
+        }
+      case let .failure(error):
+        print("Failed to subscribe \(error)")
+      }
+    }
+  }
+
   func getStatusColor(_ status: PrivateUploaderAPI.UserStatus) -> Color {
     switch status {
     case .offline: .gray
@@ -174,7 +194,7 @@ struct CommsView: View {
             Button(action: { chatOpen = chatsList[result].association?.id ?? -1 }) {
               HStack {
                 if let recipient = chatsList[result].recipient {
-                  ProfileStatus(avatar: recipient.avatar, status: store.coreUsers?.first { $0.id == recipient.id }?.status.value ?? .offline, isTyping: typingEvents.contains(where: { $0.user.username == chatsList[result].recipient?.username }))
+                  ProfileStatus(avatar: recipient.avatar, status: store.coreUsers?.first { $0.id == recipient.id }?.status.value ?? .offline, isTyping: typingEvents.contains(where: { $0.user.username == chatsList[result].recipient?.username && $0.chatId == chatsList[result].id }))
                 } else {
                   ProfilePicture(avatar: chatsList[result].icon, placeholder: "person.3.fill")
                 }
@@ -214,15 +234,16 @@ struct CommsView: View {
           ChatView(chatsList: $chatsList, chatOpen: $chatOpen)
             .inspector(isPresented: $showUsers) {
               List {
+                let chatId: Int = chatsList.first { $0.association?.id == chatOpen }?.id ?? -1
                 Section("Online") {
                   ForEach(chatUsers.filter { $0.status.value != .offline }, id: \.id) { user in
-                    UserRow(user: user)
+                    UserRow(user: user, isTyping: typingEvents.contains(where: { $0.user.username == user.username && $0.chatId == chatId }))
                   }
                 }
 
                 Section("Offline") {
                   ForEach(chatUsers.filter { $0.status.value == .offline }, id: \.id) { user in
-                    UserRow(user: user, isOffline: true)
+                    UserRow(user: user, isOffline: true, isTyping: typingEvents.contains(where: { $0.user.username == user.username && $0.chatId == chatId }))
                   }
                 }
               }.scrollContentBackground(.hidden).inspectorColumnWidth(min: 160, ideal: 160, max: 220)
@@ -249,6 +270,7 @@ struct CommsView: View {
         getChats()
         tryMessagesSubscription()
         tryTypingSubscription()
+        tryCancelTypingSubscription()
       }
       .onDisappear {
         if let subscription = messagesSubscription {
@@ -276,7 +298,12 @@ struct CommsView: View {
             ForEach(0 ..< chatsList.count, id: \.self) { result in
               NavigationLink(destination: ChatView(chatsList: $chatsList, chatOpen: .constant(chatsList[result].association?.id ?? -1)).toolbar(.hidden, for: .tabBar)) {
                 HStack {
-                  ProfilePicture(avatar: chatsList[result].recipient?.avatar ?? chatsList[result].icon)
+                  if let recipient = chatsList[result].recipient {
+                    ProfileStatus(avatar: recipient.avatar, status: store.coreUsers?.first { $0.id == recipient.id }?.status.value ?? .offline, isTyping: typingEvents.contains(where: { $0.user.username == chatsList[result].recipient?.username && $0.chatId == chatsList[result].id }))
+                  } else {
+                    ProfilePicture(avatar: chatsList[result].icon, placeholder: "person.3.fill")
+                  }
+
                   Text(chatsList[result].recipient?.username ?? chatsList[result].name).lineLimit(1)
                   Spacer()
                   if chatsList[result].unread != 0 {
@@ -300,6 +327,9 @@ struct CommsView: View {
       }
       .onAppear {
         getChats()
+        tryMessagesSubscription()
+        tryTypingSubscription()
+        tryCancelTypingSubscription()
       }
       .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("NavigateToPage"))) { notification in
         if let userInfo = notification.userInfo, let pageID = userInfo["to"] as? Int {
