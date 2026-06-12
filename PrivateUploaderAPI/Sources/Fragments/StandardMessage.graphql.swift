@@ -5,7 +5,7 @@
 
 public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
   public static var fragmentDefinition: StaticString {
-    #"fragment StandardMessage on Message { __typename id createdAt updatedAt chatId userId content type emoji { __typename name icon id chatId } embeds { __typename ...StandardEmbed } reply { __typename content userId id embeds { __typename media { __typename type } } user { __typename username id avatar } } user { __typename username id avatar } edited editedAt replyId pinned readReceipts { __typename user { __typename id avatar username } } }"#
+    #"fragment StandardMessage on Message { __typename id createdAt updatedAt chatId userId content type emoji { __typename name icon id chatId } embeds { __typename ...StandardEmbed } reply { __typename content userId id embeds { __typename media { __typename type } } user { __typename username id avatar } } user { __typename username id avatar } edited editedAt replyId pinned }"#
   }
 
   public let __data: DataDict
@@ -29,7 +29,6 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
     .field("editedAt", PrivateUploaderAPI.Date?.self),
     .field("replyId", Int?.self),
     .field("pinned", Bool.self),
-    .field("readReceipts", [ReadReceipt].self),
   ] }
   public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
     StandardMessage.self
@@ -50,7 +49,6 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
   public var editedAt: PrivateUploaderAPI.Date? { __data["editedAt"] }
   public var replyId: Int? { __data["replyId"] }
   public var pinned: Bool { __data["pinned"] }
-  public var readReceipts: [ReadReceipt] { __data["readReceipts"] }
 
   /// Emoji
   ///
@@ -218,47 +216,5 @@ public struct StandardMessage: PrivateUploaderAPI.SelectionSet, Fragment {
     public var username: String { __data["username"] }
     public var id: Int { __data["id"] }
     public var avatar: String? { __data["avatar"] }
-  }
-
-  /// ReadReceipt
-  ///
-  /// Parent Type: `ReadReceipt`
-  public struct ReadReceipt: PrivateUploaderAPI.SelectionSet {
-    public let __data: DataDict
-    public init(_dataDict: DataDict) { __data = _dataDict }
-
-    public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.ReadReceipt }
-    public static var __selections: [ApolloAPI.Selection] { [
-      .field("__typename", String.self),
-      .field("user", User?.self),
-    ] }
-    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-      StandardMessage.ReadReceipt.self
-    ] }
-
-    public var user: User? { __data["user"] }
-
-    /// ReadReceipt.User
-    ///
-    /// Parent Type: `PartialUserBase`
-    public struct User: PrivateUploaderAPI.SelectionSet {
-      public let __data: DataDict
-      public init(_dataDict: DataDict) { __data = _dataDict }
-
-      public static var __parentType: any ApolloAPI.ParentType { PrivateUploaderAPI.Objects.PartialUserBase }
-      public static var __selections: [ApolloAPI.Selection] { [
-        .field("__typename", String.self),
-        .field("id", Int.self),
-        .field("avatar", String?.self),
-        .field("username", String.self),
-      ] }
-      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-        StandardMessage.ReadReceipt.User.self
-      ] }
-
-      public var id: Int { __data["id"] }
-      public var avatar: String? { __data["avatar"] }
-      public var username: String { __data["username"] }
-    }
   }
 }

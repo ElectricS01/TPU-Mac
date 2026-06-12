@@ -42,6 +42,14 @@ struct CommsView: View {
     }
   }
 
+  private var onlineUsers: [StateQuery.Data.TrackedUser] {
+    chatUsers.filter { $0.status.value != .offline }
+  }
+
+  private var offlineUsers: [StateQuery.Data.TrackedUser] {
+    chatUsers.filter { $0.status.value == .offline }
+  }
+
   func getChats() {
     Network.shared.apollo.fetch(query: ChatsQuery(), cachePolicy: .returnCacheDataAndFetch) { result in
       switch result {
@@ -235,15 +243,19 @@ struct CommsView: View {
             .inspector(isPresented: $showUsers) {
               List {
                 let chatId: Int = chatsList.first { $0.association?.id == chatOpen }?.id ?? -1
-                Section("Online") {
-                  ForEach(chatUsers.filter { $0.status.value != .offline }, id: \.id) { user in
-                    UserRow(user: user, isTyping: typingEvents.contains(where: { $0.user.username == user.username && $0.chatId == chatId }))
+                if !onlineUsers.isEmpty {
+                  Section("Online") {
+                    ForEach(onlineUsers, id: \.id) { user in
+                      UserRow(user: user, isTyping: typingEvents.contains(where: { $0.user.username == user.username && $0.chatId == chatId }))
+                    }
                   }
                 }
 
-                Section("Offline") {
-                  ForEach(chatUsers.filter { $0.status.value == .offline }, id: \.id) { user in
-                    UserRow(user: user, isOffline: true, isTyping: typingEvents.contains(where: { $0.user.username == user.username && $0.chatId == chatId }))
+                if !offlineUsers.isEmpty {
+                  Section("Offline") {
+                    ForEach(offlineUsers, id: \.id) { user in
+                      UserRow(user: user, isOffline: true, isTyping: typingEvents.contains(where: { $0.user.username == user.username && $0.chatId == chatId }))
+                    }
                   }
                 }
               }.scrollContentBackground(.hidden).inspectorColumnWidth(min: 160, ideal: 160, max: 220)

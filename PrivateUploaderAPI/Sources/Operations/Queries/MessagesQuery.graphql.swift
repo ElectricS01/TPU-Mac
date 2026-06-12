@@ -65,7 +65,6 @@ public class MessagesQuery: GraphQLQuery {
       public var editedAt: PrivateUploaderAPI.Date? { __data["editedAt"] }
       public var replyId: Int? { __data["replyId"] }
       public var pinned: Bool { __data["pinned"] }
-      public var readReceipts: [ReadReceipt] { __data["readReceipts"] }
 
       public struct Fragments: FragmentContainer {
         public let __data: DataDict
@@ -81,8 +80,6 @@ public class MessagesQuery: GraphQLQuery {
       public typealias Reply = StandardMessage.Reply
 
       public typealias User = StandardMessage.User
-
-      public typealias ReadReceipt = StandardMessage.ReadReceipt
     }
   }
 }

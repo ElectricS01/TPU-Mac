@@ -20,6 +20,9 @@ struct ChatMessageView: View {
   let unread: Bool
   let onReplyClick: (Int) -> Void
   @Binding var editingId: Int
+  let readBy: [MessageReadUser]
+  let userCount: Int
+  let isReadByAll: Bool
   let onInputClear: () -> Void
   @EnvironmentObject var store: Store
   @EnvironmentObject var showingUserStore: ShowingUserStore
@@ -349,10 +352,29 @@ struct ChatMessageView: View {
             }
           }.frame(width: 104, height: 20)
         #endif
+        if isReadByAll {
+          Image(systemName: "checkmark.circle.fill").frame(width: 20, height: 20)
+        }
       }
     }.padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4)).id(message.id)
       .contentShape(Rectangle())
       .contextMenu {
+        if !readBy.isEmpty {
+          Menu {
+            ForEach(readBy, id: \.userName) { by in
+              Button {
+                showingUserStore.shownUser = store.coreUsers?.first { $0.id == by.userId }
+                showingUserStore.isShowingUser = true
+              } label: {
+                Text(by.userName)
+              }
+            }
+          } label: {
+              Label("Read by \(readBy.count) of \(userCount)", systemImage: "eye")
+          }
+        } else {
+          Label("Read by 0 of \(userCount)", systemImage: "eye.slash").foregroundStyle(.secondary)
+        }
         if message.type == .message, store.coreUser?.id == message.userId {
           Button {
             if editingId != message.id {

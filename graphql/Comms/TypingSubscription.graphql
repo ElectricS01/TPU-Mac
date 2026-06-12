@@ -1,6 +1,5 @@
 subscription OnTyping {
   onTyping {
-    id
     chatId
     expires
     user {
@@ -11,7 +10,6 @@ subscription OnTyping {
 
 subscription OnCancelTyping {
   onCancelTyping {
-    id
     chatId
     expires
     user {

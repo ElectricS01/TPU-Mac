@@ -96,13 +96,6 @@ fragment StandardMessage on Message {
   editedAt
   replyId
   pinned
-  readReceipts {
-    user {
-      id
-      avatar
-      username
-    }
-  }
 }
 
 query Messages($input: InfiniteMessagesInput!) {

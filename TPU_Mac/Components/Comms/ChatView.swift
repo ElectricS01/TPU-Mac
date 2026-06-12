@@ -57,6 +57,11 @@ func renderRichText(
   return result as String
 }
 
+struct MessageReadUser {
+  let userId: Int
+  let userName: String
+}
+
 struct ChatView: View {
   @Binding var chatsList: [ChatsQuery.Data.Chat]
   @EnvironmentObject var store: Store
@@ -87,6 +92,25 @@ struct ChatView: View {
     return currentUsers.compactMap { member in
       coreUsers.first { $0.id == member.user?.id }
     }
+  }
+
+  private var readByAll: Int {
+    currentChat?.users.compactMap(\.lastRead).min() ?? 0
+  }
+
+  func getReaders(for messageId: Int) -> [MessageReadUser] {
+    currentChat?.users.compactMap { user -> MessageReadUser? in
+      guard let lastRead = user.lastRead,
+            lastRead >= messageId
+      else {
+        return nil
+      }
+
+      return MessageReadUser(
+        userId: user.user?.id ?? 0,
+        userName: user.user?.username ?? "Unknown"
+      )
+    } ?? []
   }
 
   func getMessages(chat: Int, completion: @escaping (Result<GraphQLResult<MessagesQuery.Data>, Error>) -> Void) {
@@ -157,7 +181,6 @@ struct ChatView: View {
     messageData["editedAt"] = subscriptionObject.editedAt
     messageData["replyId"] = subscriptionObject.replyId
     messageData["pinned"] = subscriptionObject.pinned
-    messageData["readReceipts"] = subscriptionObject.readReceipts
 
     return MessagesQuery.Data.Message(_dataDict: messageData)
   }
@@ -180,7 +203,6 @@ struct ChatView: View {
     messageData["editedAt"] = editObject.editedAt
     messageData["replyId"] = messageObject.replyId
     messageData["pinned"] = editObject.pinned
-    messageData["readReceipts"] = messageObject.readReceipts
 
     return MessagesQuery.Data.Message(_dataDict: messageData)
   }
@@ -259,7 +281,7 @@ struct ChatView: View {
   }
 
   func userStatusSubscription() {
-    _ = Network.shared.apollo.subscribe(subscription: UpdatedUserSubscription()) { result in
+    _ = Network.shared.apollo.subscribe(subscription: UserStatusSubscription()) { result in
       switch result {
       case let .success(graphQLResult):
         if let userId = graphQLResult.data?.onUserStatus.id,
@@ -309,6 +331,9 @@ struct ChatView: View {
                 unread: message.id == unreadId,
                 onReplyClick: handleReplyClick,
                 editingId: $editingId,
+                readBy: getReaders(for: message.id),
+                userCount: currentChat?.users.count ?? 0,
+                isReadByAll: message.id == readByAll,
                 onInputClear: handleInputClear
               )
             }.padding(EdgeInsets(top: 0, leading: 8, bottom: 0, trailing: 12))

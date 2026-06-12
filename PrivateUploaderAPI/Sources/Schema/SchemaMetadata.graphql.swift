@@ -52,7 +52,6 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "PartialUserPublic": return PrivateUploaderAPI.Objects.PartialUserPublic
     case "PermissionsMetadata": return PrivateUploaderAPI.Objects.PermissionsMetadata
     case "Query": return PrivateUploaderAPI.Objects.Query
-    case "ReadReceipt": return PrivateUploaderAPI.Objects.ReadReceipt
     case "Star": return PrivateUploaderAPI.Objects.Star
     case "StarUploadResponse": return PrivateUploaderAPI.Objects.StarUploadResponse
     case "StatusEvent": return PrivateUploaderAPI.Objects.StatusEvent

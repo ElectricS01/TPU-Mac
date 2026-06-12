@@ -3,11 +3,11 @@
 
 @_exported import ApolloAPI
 
-public class UpdatedUserSubscription: GraphQLSubscription {
-  public static let operationName: String = "UpdatedUser"
+public class UserStatusSubscription: GraphQLSubscription {
+  public static let operationName: String = "UserStatus"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"subscription UpdatedUser { onUserStatus { __typename id status } }"#
+      #"subscription UserStatus { onUserStatus { __typename id status } }"#
     ))
 
   public init() {}
@@ -21,7 +21,7 @@ public class UpdatedUserSubscription: GraphQLSubscription {
       .field("onUserStatus", OnUserStatus.self),
     ] }
     public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-      UpdatedUserSubscription.Data.self
+      UserStatusSubscription.Data.self
     ] }
 
     public var onUserStatus: OnUserStatus { __data["onUserStatus"] }
@@ -40,7 +40,7 @@ public class UpdatedUserSubscription: GraphQLSubscription {
         .field("status", GraphQLEnum<PrivateUploaderAPI.UserStatus>.self),
       ] }
       public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-        UpdatedUserSubscription.Data.OnUserStatus.self
+        UserStatusSubscription.Data.OnUserStatus.self
       ] }
 
       public var id: Int { __data["id"] }

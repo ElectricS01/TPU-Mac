@@ -1,0 +1,6 @@
+subscription UserStatus {
+  onUserStatus {
+    id
+    status
+  }
+}
