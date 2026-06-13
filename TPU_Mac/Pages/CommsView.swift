@@ -19,8 +19,8 @@ struct CommsView: View {
 
   @EnvironmentObject var store: Store
   @EnvironmentObject var showingUserStore: ShowingUserStore
+  @EnvironmentObject var chatsListStore: ChatsListStore
   @FocusState private var focusedField: FocusedField?
-  @State private var chatsList: [ChatsQuery.Data.Chat] = []
   @State private var chatOpen: Int = -1
   @State private var unreadId: Int = -1
   @State private var editingId: Int = -1
@@ -33,7 +33,7 @@ struct CommsView: View {
   @State private var typingEvents: [OnTypingSubscription.Data.OnTyping] = []
 
   private var chatUsers: [StateQuery.Data.TrackedUser] {
-    guard let association = chatsList.first(where: { $0.association?.id == chatOpen }),
+    guard let association = chatsListStore.chats.first(where: { $0.association?.id == chatOpen }),
           let coreUsers = store.coreUsers
     else { return [] }
 
@@ -48,19 +48,6 @@ struct CommsView: View {
 
   private var offlineUsers: [StateQuery.Data.TrackedUser] {
     chatUsers.filter { $0.status.value == .offline }
-  }
-
-  func getChats() {
-    Network.shared.apollo.fetch(query: ChatsQuery(), cachePolicy: .returnCacheDataAndFetch) { result in
-      switch result {
-      case let .success(graphQLResult):
-        if let unwrapped = graphQLResult.data {
-          chatsList = unwrapped.chats
-        }
-      case let .failure(error):
-        print("Failure! Error: \(error)")
-      }
-    }
   }
 
   func newToChat(chatObject: ChatsQuery.Data.Chat, self: Bool) -> ChatsQuery.Data.Chat {
@@ -102,13 +89,24 @@ struct CommsView: View {
         switch result {
         case let .success(graphQLResult):
           if let message = graphQLResult.data?.onMessage.message {
-            let index = chatsList.firstIndex(where: { $0.id == message.chatId })
-            let newChat = newToChat(chatObject: chatsList[index ?? 0], self: store.coreUser?.id != message.userId)
-            chatsList[index ?? 0] = newChat
+            guard let index = chatsListStore.chats.firstIndex(where: { $0.id == message.chatId }) else {
+              return
+            }
 
-            chatsList.sort {
+            var chats = chatsListStore.chats
+
+            chats[index] = newToChat(chatObject: chats[index], self: store.coreUser?.id != message.userId)
+
+            let unreadCount = chatsListStore.chats.reduce(0) { total, chat in
+              total + (chat.unread ?? 0)
+            }
+
+            chats.sort {
               Double($0.sortDate ?? "0") ?? 0 > Double($1.sortDate ?? "0") ?? 0
             }
+
+            chatsListStore.chats = chats
+            chatsListStore.unreadCount = unreadCount
 
             #if os(macOS)
               if !NSApplication.shared.isActive, store.coreUser?.id != message.userId {
@@ -198,28 +196,28 @@ struct CommsView: View {
     #if os(macOS)
       HStack {
         List {
-          ForEach(0 ..< chatsList.count, id: \.self) { result in
-            Button(action: { chatOpen = chatsList[result].association?.id ?? -1 }) {
+          ForEach(0 ..< chatsListStore.chats.count, id: \.self) { result in
+            Button(action: { chatOpen = chatsListStore.chats[result].association?.id ?? -1 }) {
               HStack {
-                if let recipient = chatsList[result].recipient {
-                  ProfileStatus(avatar: recipient.avatar, status: store.coreUsers?.first { $0.id == recipient.id }?.status.value ?? .offline, isTyping: typingEvents.contains(where: { $0.user.username == chatsList[result].recipient?.username && $0.chatId == chatsList[result].id }))
+                if let recipient = chatsListStore.chats[result].recipient {
+                  ProfileStatus(avatar: recipient.avatar, status: store.coreUsers?.first { $0.id == recipient.id }?.status.value ?? .offline, isTyping: typingEvents.contains(where: { $0.user.username == chatsListStore.chats[result].recipient?.username && $0.chatId == chatsListStore.chats[result].id }))
                 } else {
-                  ProfilePicture(avatar: chatsList[result].icon, placeholder: "person.3.fill")
+                  ProfilePicture(avatar: chatsListStore.chats[result].icon, placeholder: "person.3.fill")
                 }
 
-                Text(chatsList[result].recipient?.username ?? chatsList[result].name).lineLimit(1)
+                Text(chatsListStore.chats[result].recipient?.username ?? chatsListStore.chats[result].name).lineLimit(1)
                 Spacer()
-                if chatsList[result].unread != 0 {
-                  Text(String(chatsList[result].unread!))
+                if chatsListStore.chats[result].unread != 0 {
+                  Text(String(chatsListStore.chats[result].unread!))
                     .frame(minWidth: 16, minHeight: 16)
                     .background(Color.red)
                     .cornerRadius(10)
                 }
               }.contentShape(Rectangle())
             }.padding(4).buttonStyle(.plain).background(RoundedRectangle(cornerRadius: 8)
-              .fill(chatsList[result].association?.id == chatOpen ? Color(.tertiarySystemFill) : Color.clear))
+              .fill(chatsListStore.chats[result].association?.id == chatOpen ? Color(.tertiarySystemFill) : Color.clear))
               .contextMenu {
-                if let recipient = chatsList[result].recipient {
+                if let recipient = chatsListStore.chats[result].recipient {
                   Button {
                     showingUserStore.shownUser = store.coreUsers?.first { $0.id == recipient.id }
                     showingUserStore.isShowingUser = true
@@ -229,7 +227,7 @@ struct CommsView: View {
                 }
 
                 Button {
-                  copyToClipboard(String(chatsList[result].association?.id ?? chatsList[result].id))
+                  copyToClipboard(String(chatsListStore.chats[result].association?.id ?? chatsListStore.chats[result].id))
                 } label: {
                   Label("Copy Chat ID", systemImage: "person.text.rectangle")
                 }
@@ -239,10 +237,10 @@ struct CommsView: View {
         .frame(width: 160)
         .padding(EdgeInsets(top: -8, leading: -10, bottom: -8, trailing: 0))
         if chatOpen != -1 {
-          ChatView(chatsList: $chatsList, chatOpen: $chatOpen)
+          ChatView(chatsList: $chatsListStore.chats, chatOpen: $chatOpen)
             .inspector(isPresented: $showUsers) {
               List {
-                let chatId: Int = chatsList.first { $0.association?.id == chatOpen }?.id ?? -1
+                let chatId: Int = chatsListStore.chats.first { $0.association?.id == chatOpen }?.id ?? -1
                 if !onlineUsers.isEmpty {
                   Section("Online") {
                     ForEach(onlineUsers, id: \.id) { user in
@@ -279,7 +277,6 @@ struct CommsView: View {
       }
       .navigationTitle("Comms")
       .onAppear {
-        getChats()
         tryMessagesSubscription()
         tryTypingSubscription()
         tryCancelTypingSubscription()
@@ -292,12 +289,12 @@ struct CommsView: View {
       }
       .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("NavigateToPage"))) { notification in
         if let userInfo = notification.userInfo, let pageID = userInfo["to"] as? Int {
-          chatOpen = chatsList.first(where: { $0.id == pageID })?.association?.id ?? -1
+          chatOpen = chatsListStore.chats.first(where: { $0.id == pageID })?.association?.id ?? -1
         }
       }
     #else
       NavigationStack {
-        if chatsList.isEmpty {
+        if chatsListStore.chats.isEmpty {
           VStack {
             Spacer()
             Text("No chats")
@@ -307,7 +304,7 @@ struct CommsView: View {
           }
         } else {
           List {
-            ForEach(0 ..< chatsList.count, id: \.self) { result in
+            ForEach(0 ..< chatsListStore.chats.count, id: \.self) { result in
               NavigationLink(destination: ChatView(chatsList: $chatsList, chatOpen: .constant(chatsList[result].association?.id ?? -1)).toolbar(.hidden, for: .tabBar)) {
                 HStack {
                   if let recipient = chatsList[result].recipient {
@@ -338,14 +335,13 @@ struct CommsView: View {
         }
       }
       .onAppear {
-        getChats()
         tryMessagesSubscription()
         tryTypingSubscription()
         tryCancelTypingSubscription()
       }
       .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("NavigateToPage"))) { notification in
         if let userInfo = notification.userInfo, let pageID = userInfo["to"] as? Int {
-          chatOpen = chatsList.first(where: { $0.id == pageID })?.association?.id ?? -1
+          chatOpen = chatsListStore.chats.first(where: { $0.id == pageID })?.association?.id ?? -1
         }
       }
     #endif

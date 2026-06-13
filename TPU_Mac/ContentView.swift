@@ -23,10 +23,16 @@ class ShowingUserStore: ObservableObject {
   @Published var shownUser: StateQuery.Data.TrackedUser?
 }
 
+class ChatsListStore: ObservableObject {
+  @Published var chats: [ChatsQuery.Data.Chat] = []
+  @Published var unreadCount: Int = 0
+}
+
 struct ContentView: View {
   @Binding var selection: Destination
   @StateObject var store = Store()
   @StateObject var showingUserStore = ShowingUserStore()
+  @StateObject var chatsListStore = ChatsListStore()
   @State private var showingLogin = keychain.get("token") == nil || keychain.get("token") == ""
   @State private var showingTerms = false
   @State private var coreNotifications: [StateQuery.Data.CurrentUser.Notification]?
@@ -42,6 +48,22 @@ struct ContentView: View {
           coreNotifications = store.coreUser?.notifications
           store.coreUsers = unwrapped.trackedUsers
           showingTerms = !(unwrapped.currentUser?.privacyPolicyAccepted ?? false)
+        }
+      case let .failure(error):
+        print("Failure! Error: \(error)")
+      }
+    }
+  }
+
+  func getChats() {
+    Network.shared.apollo.fetch(query: ChatsQuery(), cachePolicy: .returnCacheDataAndFetch) { result in
+      switch result {
+      case let .success(graphQLResult):
+        if let unwrapped = graphQLResult.data {
+          chatsListStore.chats = unwrapped.chats
+          chatsListStore.unreadCount = unwrapped.chats.reduce(0) { total, chat in
+            total + (chat.unread ?? 0)
+          }
         }
       case let .failure(error):
         print("Failure! Error: \(error)")
@@ -111,12 +133,14 @@ struct ContentView: View {
             }
             NavigationLink(value: Destination.comms) {
               Label("Comms", systemImage: "message")
+                .badge(chatsListStore.unreadCount)
             }
             NavigationLink(value: Destination.about) {
               Label("About", systemImage: "info.circle")
             }
           }
           .navigationTitle("Menu")
+          .navigationSplitViewColumnWidth(150)
         } detail: {
           switch selection {
           case .home:
@@ -137,6 +161,7 @@ struct ContentView: View {
         }
         .onAppear {
           getState()
+          getChats()
         }
         .toolbar(id: "nav") {
           ToolbarItem(id: "bell") {
@@ -181,6 +206,7 @@ struct ContentView: View {
           }
         }.environmentObject(store)
         .environmentObject(showingUserStore)
+        .environmentObject(chatsListStore)
       #else
         TabView {
           HomeView().tabItem {
@@ -201,6 +227,7 @@ struct ContentView: View {
         }
         .onAppear {
           getState()
+          getChats()
         }
         .sheet(isPresented: $showingTerms) {
           VStack {
@@ -217,6 +244,7 @@ struct ContentView: View {
           }
         }.environmentObject(store)
         .environmentObject(showingUserStore)
+        .environmentObject(chatsListStore)
       #endif
     }
   }

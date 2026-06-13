@@ -5,8 +5,8 @@
 //  Created by ElectricS01  on 26/3/2026.
 //
 
-import NukeUI
 import PrivateUploaderAPI
+import SDWebImageSwiftUI
 import SwiftUI
 
 struct UserSheetView: View {
@@ -34,7 +34,7 @@ struct UserSheetView: View {
       if loading {
         ProgressView()
       } else if let profile {
-        LazyImage(url: URL(string: "https://i.electrics01.com/i/" + String(profile.banner ?? "d81dabf74c88.png"))) { state in
+        WebImage(url: URL(string: "https://i.electrics01.com/i/" + String(profile.banner ?? "d81dabf74c88.png"))) { state in
           if let image = state.image {
             image.resizable().interpolation(.high).antialiased(true).aspectRatio(contentMode: .fill)
           } else if state.error != nil {
