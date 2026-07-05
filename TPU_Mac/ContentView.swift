@@ -220,7 +220,7 @@ struct ContentView: View {
           }
           CommsView().tabItem {
             Label("Comms", systemImage: "message")
-          }
+          }.badge(chatsListStore.unreadCount)
           SettingsView(showingLogin: $showingLogin).tabItem {
             Label("Settings", systemImage: "gear")
           }

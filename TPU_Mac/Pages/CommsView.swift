@@ -305,18 +305,18 @@ struct CommsView: View {
         } else {
           List {
             ForEach(0 ..< chatsListStore.chats.count, id: \.self) { result in
-              NavigationLink(destination: ChatView(chatsList: $chatsList, chatOpen: .constant(chatsList[result].association?.id ?? -1)).toolbar(.hidden, for: .tabBar)) {
+              NavigationLink(destination: ChatView(chatsList: $chatsListStore.chats, chatOpen: .constant(chatsListStore.chats[result].association?.id ?? -1)).toolbar(.hidden, for: .tabBar)) {
                 HStack {
-                  if let recipient = chatsList[result].recipient {
-                    ProfileStatus(avatar: recipient.avatar, status: store.coreUsers?.first { $0.id == recipient.id }?.status.value ?? .offline, isTyping: typingEvents.contains(where: { $0.user.username == chatsList[result].recipient?.username && $0.chatId == chatsList[result].id }))
+                  if let recipient = chatsListStore.chats[result].recipient {
+                    ProfileStatus(avatar: recipient.avatar, status: store.coreUsers?.first { $0.id == recipient.id }?.status.value ?? .offline, isTyping: typingEvents.contains(where: { $0.user.username == chatsListStore.chats[result].recipient?.username && $0.chatId == chatsListStore.chats[result].id }))
                   } else {
-                    ProfilePicture(avatar: chatsList[result].icon, placeholder: "person.3.fill")
+                    ProfilePicture(avatar: chatsListStore.chats[result].icon, placeholder: "person.3.fill")
                   }
 
-                  Text(chatsList[result].recipient?.username ?? chatsList[result].name).lineLimit(1)
+                  Text(chatsListStore.chats[result].recipient?.username ?? chatsListStore.chats[result].name).lineLimit(1)
                   Spacer()
-                  if chatsList[result].unread != 0 {
-                    Text(String(chatsList[result].unread!))
+                  if chatsListStore.chats[result].unread != 0 {
+                    Text(String(chatsListStore.chats[result].unread!))
                       .frame(minWidth: 16, minHeight: 16)
                       .background(Color.red)
                       .cornerRadius(10)
@@ -325,7 +325,7 @@ struct CommsView: View {
               }.buttonStyle(.plain)
                 .contextMenu {
                   Button {
-                    copyToClipboard(String(chatsList[result].association?.id ?? chatsList[result].id))
+                    copyToClipboard(String(chatsListStore.chats[result].association?.id ?? chatsListStore.chats[result].id))
                   } label: {
                     Label("Copy Chat ID", systemImage: "person.text.rectangle")
                   }
