@@ -277,6 +277,9 @@ struct CommsView: View {
       }
       .navigationTitle("Comms")
       .onAppear {
+        if !chatsListStore.chats.isEmpty, chatOpen == -1 {
+          chatOpen = chatsListStore.chats.first?.association?.id ?? -1
+        }
         tryMessagesSubscription()
         tryTypingSubscription()
         tryCancelTypingSubscription()

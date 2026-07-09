@@ -370,7 +370,7 @@ struct ChatMessageView: View {
               }
             }
           } label: {
-              Label("Read by \(readBy.count) of \(userCount)", systemImage: "eye")
+            Label("Read by \(readBy.count) of \(userCount)", systemImage: "eye")
           }
         } else {
           Label("Read by 0 of \(userCount)", systemImage: "eye.slash").foregroundStyle(.secondary)
@@ -425,6 +425,15 @@ struct ChatMessageView: View {
       }
       .environment(\.openURL, OpenURLAction { url in
         switch url.scheme {
+        case "mention":
+          if let idString = url.host,
+             let id = Int(idString)
+          {
+            showingUserStore.shownUser = store.coreUsers?.first { $0.id == id }
+            showingUserStore.isShowingUser = true
+          }
+          return .handled
+
         case "user":
           showingUserStore.shownUser = store.coreUsers?.first { $0.id == message.user?.id }
           showingUserStore.isShowingUser = true

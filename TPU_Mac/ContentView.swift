@@ -119,8 +119,9 @@ struct ContentView: View {
             NavigationLink(value: Destination.home) {
               Label("Home", systemImage: "house")
             }
-            NavigationLink(value: Destination.settings) {
-              Label("Settings", systemImage: "gear")
+            NavigationLink(value: Destination.comms) {
+              Label("Comms", systemImage: "message")
+                .badge(chatsListStore.unreadCount)
             }
             NavigationLink(value: Destination.gallery) {
               Label("Gallery", systemImage: "photo.on.rectangle")
@@ -131,9 +132,8 @@ struct ContentView: View {
             NavigationLink(value: Destination.collections) {
               Label("Collections", systemImage: "person.2.crop.square.stack.fill")
             }
-            NavigationLink(value: Destination.comms) {
-              Label("Comms", systemImage: "message")
-                .badge(chatsListStore.unreadCount)
+            NavigationLink(value: Destination.settings) {
+              Label("Settings", systemImage: "gear")
             }
             NavigationLink(value: Destination.about) {
               Label("About", systemImage: "info.circle")

@@ -371,32 +371,43 @@ struct ChatView: View {
                    maxWidth: .infinity,
                    alignment: .topLeading)
         }
-        TextField("Keep it civil!", text: $inputMessage)
-          .focused($focusedField, equals: .sending)
-          .onSubmit {
-            sendMessage()
-          }
-          .padding(EdgeInsets(top: 0, leading: 10, bottom: 10, trailing: 10))
-          .textFieldStyle(RoundedBorderTextFieldStyle())
-          .gesture(
-            DragGesture(minimumDistance: 20, coordinateSpace: .local)
-              .onEnded { value in
-                if value.translation.height > 0 {
-                  focusedField = .none
+        HStack {
+          TextField("Keep it civil!", text: $inputMessage, axis: .vertical)
+            .lineLimit(1 ... 4)
+            .focused($focusedField, equals: .sending)
+            .onSubmit {
+              sendMessage()
+            }
+            .padding(EdgeInsets(top: 0, leading: 10, bottom: 10, trailing: 4))
+            .textFieldStyle(RoundedBorderTextFieldStyle())
+            .gesture(
+              DragGesture(minimumDistance: 20, coordinateSpace: .local)
+                .onEnded { value in
+                  if value.translation.height > 0 {
+                    focusedField = .none
+                  }
                 }
-              }
-          )
-        #if !os(iOS)
-          .onExitCommand(perform: {
-            replyingId = -1
-          })
-        #endif
+            )
+          #if !os(iOS)
+            .onExitCommand(perform: {
+              replyingId = -1
+            })
+          #endif
+          Button(action: sendMessage, label: {
+            Image(systemName: "arrow.up")
+          }).padding(EdgeInsets(top: 0, leading: 0, bottom: 10, trailing: 10))
+        }
       }
       .navigationTitle(currentChat?.recipient?.username ?? currentChat?.name ?? "Chat name error")
       .environment(\.openURL, OpenURLAction { url in
         if url.scheme == "mention" {
-          showingUserStore.shownUser = store.coreUsers?.first { $0.id == currentChat?.recipient?.id }
-          showingUserStore.isShowingUser = true
+          if let idString = url.host,
+             let id = Int(idString)
+          {
+            showingUserStore.shownUser = store.coreUsers?.first { $0.id == id }
+            showingUserStore.isShowingUser = true
+          }
+
           return .handled
         }
 

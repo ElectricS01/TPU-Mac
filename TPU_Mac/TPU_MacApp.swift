@@ -46,11 +46,11 @@ struct TPU_MacApp: App {
     .commands {
       CommandGroup(after: .sidebar) {
         Button("Home") { selection = .home }.keyboardShortcut("1", modifiers: [.command])
-        Button("Settings") { selection = .settings }.keyboardShortcut("2", modifiers: [.command])
+        Button("Communications") { selection = .comms }.keyboardShortcut("2", modifiers: [.command])
         Button("Gallery") { selection = .gallery }.keyboardShortcut("3", modifiers: [.command])
         Button("Stars") { selection = .stars }.keyboardShortcut("4", modifiers: [.command])
         Button("Collections") { selection = .collections }.keyboardShortcut("5", modifiers: [.command])
-        Button("Comms") { selection = .comms }.keyboardShortcut("6", modifiers: [.command])
+        Button("Settings") { selection = .settings }.keyboardShortcut("6", modifiers: [.command])
         Button("About") { selection = .about }.keyboardShortcut("7", modifiers: [.command])
       }
     }
